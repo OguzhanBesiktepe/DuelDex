@@ -169,13 +169,17 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 **Theme:** Dark mode only. Card art pops more on dark backgrounds.
 
-**Colors:**
-- Background: `#0a0b0f`
-- Surface: `#12141a`
-- Yu-Gi-Oh accent: `#f5c842` (gold)
-- Pokémon accent: `#e8394a` (red)
+**Colors:** (derived from the DuelDex logo)
+- Background: `#080B14` (deep navy-black)
+- Surface: `#0E1220` (dark navy)
+- Border: `#1A2035` (dim navy)
+- Yu-Gi-Oh accent: `#FF7A00` (fire orange — matches logo flames)
+- Pokémon accent: `#00AAFF` (electric blue — matches logo lightning)
+- Primary red: `#CC1F1F` (logo "Duel" text red)
+- Gold/highlight: `#FFD700` (logo lightning sparks)
 - Price color: `#3ecf6a` (green)
-- Expensive cards: `#f5c842` (gold)
+- Text primary: `#F0F2FF` (off-white with blue tint)
+- Text muted: `#7A8BA8` (slate)
 
 **Fonts:** Cinzel (logo/headings, serif) + Inter (body)
 
