@@ -28,9 +28,9 @@ Users can:
 | Auth | **Supabase Auth** | Free | Google OAuth built-in |
 | Database | **Supabase PostgreSQL** | Free | Stores user favorites |
 | YGO Cards | **YGOPRODeck API** | Free | No API key needed |
-| Pokémon Cards | **pokemontcg.io** | Free | Free key from dev.pokemontcg.io |
+| Pokémon Cards | **TCGdex API** | Free | No API key needed, open source |
 | YGO Images | **Cloudflare R2** | Free (10GB) | One-time bulk download |
-| Pokémon Images | **pokemontcg.io CDN** | Free | Hotlinking is fine for PKMN |
+| Pokémon Images | **TCGdex CDN** | Free | Hotlinking is fine for PKMN |
 
 ---
 
@@ -55,23 +55,27 @@ Users can:
 - **Images:** `card_images[0].image_url_small` — ⚠️ Download and self-host, do NOT hotlink
 - **All card types:** Effect Monster, Normal Monster, Flip Effect Monster, Ritual Monster, Synchro Monster, XYZ Monster, Link Monster, Pendulum Effect Monster, Spell Card, Trap Card
 
-### Pokémon — pokemontcg.io
-- **Base URL:** `https://api.pokemontcg.io/v2`
-- **Free API key:** Sign up at https://dev.pokemontcg.io (needed for 20k/day limit)
-- **Header:** `X-Api-Key: YOUR_KEY`
-- **Rate limit:** 20,000 requests/day with key (1,000/day without)
+### Pokémon — TCGdex
+- **Base URL:** `https://api.tcgdex.net/v2/en`
+- **No API key required** — fully free and open source
+- **Also supports:** REST + GraphQL, 10+ languages
+- **GitHub:** https://github.com/tcgdex/cards-database
 - **Key endpoints:**
   ```
-  Pokémon cards:      /cards?q=supertype:Pokémon&pageSize=24&page=1
-  Trainer cards:      /cards?q=supertype:Trainer&pageSize=24&page=1
-  Energy cards:       /cards?q=supertype:Energy&pageSize=24&page=1
-  By set:             /cards?q=set.name:"Scarlet & Violet"
+  All cards:          /cards?pagination[page]=1&pagination[itemsPerPage]=24
+  Pokémon cards:      /cards?filters[supertype]=Pokemon&pagination[page]=1&pagination[itemsPerPage]=24
+  Trainer cards:      /cards?filters[supertype]=Trainer&pagination[page]=1&pagination[itemsPerPage]=24
+  Energy cards:       /cards?filters[supertype]=Energy&pagination[page]=1&pagination[itemsPerPage]=24
+  Single card:        /cards/{id}          e.g. /cards/swsh1-1
   All sets:           /sets
-  Search:             /cards?q=name:charizard
+  Single set:         /sets/{id}           e.g. /sets/swsh1
+  Search by name:     /cards?filters[name]=charizard
+  By set:             /cards?filters[set.name]=Scarlet%20%26%20Violet
   ```
-- **Prices:** `tcgplayer.prices.holofoil.market` (or `normal.market`)
-- **TCGPlayer buy link:** `tcgplayer.url` — direct link per card ✅
-- **Images:** `images.small` and `images.large` — CDN hotlinking is fine ✅
+- **Prices:** `variants.normal` / `variants.holofoil` (TCGPlayer market pricing)
+- **TCGPlayer buy link:** included per card ✅
+- **Images:** `{baseUrl}/{quality}.webp` — CDN hotlinking is fine ✅
+- **Pagination:** `pagination[page]=1`, `pagination[itemsPerPage]=24`
 
 ---
 
@@ -136,7 +140,7 @@ cardvault/
 ├── lib/
 │   ├── supabase.ts             ← Supabase client
 │   ├── yugioh.ts               ← YGOPRODeck fetch helpers
-│   └── pokemon.ts              ← pokemontcg.io fetch helpers
+│   └── pokemon.ts              ← TCGdex fetch helpers
 ├── .env.local                  ← API keys (never commit this)
 └── tailwind.config.ts
 ```
@@ -150,9 +154,7 @@ cardvault/
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
-# Pokémon TCG API
-NEXT_PUBLIC_POKEMON_API_KEY=your_pokemontcg_key
-
+# TCGdex — no key needed, leave blank or omit
 # YGOPRODeck — no key needed, leave blank or omit
 # Cloudflare R2 (for self-hosted YGO images — set up later)
 # R2_ACCOUNT_ID=
@@ -206,7 +208,7 @@ NEXT_PUBLIC_POKEMON_API_KEY=your_pokemontcg_key
 
 **Footer:**
 - Left: Logo + tagline + browse links + where to buy (TCGPlayer, Amazon, eBay)
-- Right: Data attribution (YGOPRODeck, pokemontcg.io) + copyright + GitHub icon + LinkedIn icon + "Made by [Your Name]"
+- Right: Data attribution (YGOPRODeck, TCGdex) + copyright + GitHub icon + LinkedIn icon + "Made by [Your Name]"
 
 ---
 
@@ -215,7 +217,7 @@ NEXT_PUBLIC_POKEMON_API_KEY=your_pokemontcg_key
 ### Step 1 — Accounts to Create First
 - [ ] **Vercel** — vercel.com (free, deploy with GitHub)
 - [ ] **Supabase** — supabase.com (free, no credit card)
-- [ ] **pokemontcg.io** — dev.pokemontcg.io (free API key)
+- [ ] **TCGdex** — api.tcgdex.net (no signup needed, just start using it)
 - [ ] **Google Cloud Console** — console.cloud.google.com (for OAuth credentials)
 - [ ] **Cloudflare** — cloudflare.com (for R2 image hosting — can do later)
 
@@ -260,15 +262,15 @@ npm install @supabase/supabase-js @supabase/auth-helpers-nextjs
 
 2. **YGO image rule for development:** Direct URLs are fine while building locally. Only matters when real users start hitting the site.
 
-3. **Pokémon images — hotlinking IS fine.** Their CDN is designed for it. Use `images.small` for the grid and `images.large` for the modal.
+3. **Pokémon images — hotlinking IS fine.** TCGdex CDN is designed for it. Images are served as `.webp` via the card's `image` field + quality suffix.
 
 4. **Supabase free tier pauses after 1 week of inactivity.** Not a problem during active development. Just know it wakes up on first request.
 
-5. **pokemontcg.io without API key = 1,000 req/day.** Get the free key immediately. 20,000/day is plenty.
+5. **TCGdex requires no API key** and has no hard rate limit documented. It is free and open source. No signup needed.
 
 6. **YGO pagination:** Use `num=24&offset=0`, then `offset=24`, `offset=48`, etc.
 
-7. **Pokémon pagination:** Use `pageSize=24&page=1`, then `page=2`, etc.
+7. **Pokémon pagination:** Use `pagination[page]=1&pagination[itemsPerPage]=24`, then `pagination[page]=2`, etc.
 
 8. **Never commit `.env.local`** to GitHub. Vercel has its own env var settings in the dashboard.
 
@@ -279,8 +281,8 @@ npm install @supabase/supabase-js @supabase/auth-helpers-nextjs
 | Resource | URL |
 |---|---|
 | YGOPRODeck API Guide | https://ygoprodeck.com/api-guide/ |
-| pokemontcg.io Docs | https://docs.pokemontcg.io |
-| pokemontcg.io Dev Portal | https://dev.pokemontcg.io |
+| TCGdex Docs | https://tcgdex.dev |
+| TCGdex GitHub (card database) | https://github.com/tcgdex/cards-database |
 | Supabase Docs | https://supabase.com/docs |
 | Supabase Auth + Next.js | https://supabase.com/docs/guides/auth/auth-helpers/nextjs |
 | Next.js App Router Docs | https://nextjs.org/docs/app |
