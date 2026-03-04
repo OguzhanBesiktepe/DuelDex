@@ -4,18 +4,61 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 
+// Iconic card images used as category thumbnails in the dropdown
+// YGO images are from YGOPRODeck (fine for dev; self-host on R2 for prod)
+// Pokémon images are from TCGdex CDN (hotlinking is explicitly allowed)
 const ygoLinks = [
-  { href: "/yugioh/monsters", label: "Monster Cards", icon: "⚔️" },
-  { href: "/yugioh/spells", label: "Spell Cards", icon: "✨" },
-  { href: "/yugioh/traps", label: "Trap Cards", icon: "🪤" },
-  { href: "/yugioh/sets", label: "Browse All Sets", icon: "📦" },
+  {
+    href: "/yugioh/monsters",
+    label: "Monster Cards",
+    image: "https://images.ygoprodeck.com/images/cards_small/46986414.jpg", // Dark Magician
+    hint: "Dark Magician",
+  },
+  {
+    href: "/yugioh/spells",
+    label: "Spell Cards",
+    image: "https://images.ygoprodeck.com/images/cards_small/83764719.jpg", // Monster Reborn
+    hint: "Monster Reborn",
+  },
+  {
+    href: "/yugioh/traps",
+    label: "Trap Cards",
+    image: "https://images.ygoprodeck.com/images/cards_small/44095762.jpg", // Mirror Force
+    hint: "Mirror Force",
+  },
+  {
+    href: "/yugioh/sets",
+    label: "Browse All Sets",
+    image: "https://images.ygoprodeck.com/images/cards_small/89631139.jpg", // Blue-Eyes White Dragon
+    hint: "Blue-Eyes White Dragon",
+  },
 ];
 
 const pokemonLinks = [
-  { href: "/pokemon/pokemon", label: "Pokémon", icon: "⚡" },
-  { href: "/pokemon/trainer", label: "Trainer Cards", icon: "🎴" },
-  { href: "/pokemon/energy", label: "Energy Cards", icon: "⚪" },
-  { href: "/pokemon/sets", label: "Browse All Sets", icon: "📦" },
+  {
+    href: "/pokemon/pokemon",
+    label: "Pokémon",
+    image: "https://assets.tcgdex.net/en/base/base1/4/low.webp", // Charizard Base Set
+    hint: "Charizard",
+  },
+  {
+    href: "/pokemon/trainer",
+    label: "Trainer Cards",
+    image: "https://assets.tcgdex.net/en/base/base1/88/low.webp", // Professor Oak
+    hint: "Professor Oak",
+  },
+  {
+    href: "/pokemon/energy",
+    label: "Energy Cards",
+    image: "https://assets.tcgdex.net/en/base/base1/98/low.webp", // Fire Energy
+    hint: "Fire Energy",
+  },
+  {
+    href: "/pokemon/sets",
+    label: "Browse All Sets",
+    image: "https://assets.tcgdex.net/en/base/base1/58/low.webp", // Pikachu
+    hint: "Pikachu",
+  },
 ];
 
 export default function Navbar() {
@@ -62,9 +105,16 @@ export default function Navbar() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 transition hover:bg-white/5 hover:text-white"
+                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 transition hover:bg-white/5 hover:text-white"
                   >
-                    <span>{link.icon}</span>
+                    <img
+                      src={link.image}
+                      alt={link.hint}
+                      width={32}
+                      height={45}
+                      className="rounded object-cover shadow-md"
+                      style={{ minWidth: 32 }}
+                    />
                     {link.label}
                   </Link>
                 ))}
@@ -90,9 +140,16 @@ export default function Navbar() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 transition hover:bg-white/5 hover:text-white"
+                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 transition hover:bg-white/5 hover:text-white"
                   >
-                    <span>{link.icon}</span>
+                    <img
+                      src={link.image}
+                      alt={link.hint}
+                      width={32}
+                      height={45}
+                      className="rounded object-cover shadow-md"
+                      style={{ minWidth: 32 }}
+                    />
                     {link.label}
                   </Link>
                 ))}
@@ -145,22 +202,38 @@ export default function Navbar() {
               key={link.href}
               href={link.href}
               onClick={() => setMenuOpen(false)}
-              className="flex items-center gap-2 py-2 text-sm text-gray-300"
+              className="flex items-center gap-3 py-2 text-sm text-gray-300"
             >
-              {link.icon} {link.label}
+              <img
+                src={link.image}
+                alt={link.hint}
+                width={28}
+                height={39}
+                className="rounded object-cover shadow-md"
+                style={{ minWidth: 28 }}
+              />
+              {link.label}
             </Link>
           ))}
           <p className="pb-1 pt-3 text-xs font-semibold uppercase tracking-widest text-gray-500">
-            Pokémonsters
+            Pokémon
           </p>
           {pokemonLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setMenuOpen(false)}
-              className="flex items-center gap-2 py-2 text-sm text-gray-300"
+              className="flex items-center gap-3 py-2 text-sm text-gray-300"
             >
-              {link.icon} {link.label}
+              <img
+                src={link.image}
+                alt={link.hint}
+                width={28}
+                height={39}
+                className="rounded object-cover shadow-md"
+                style={{ minWidth: 28 }}
+              />
+              {link.label}
             </Link>
           ))}
           <button
