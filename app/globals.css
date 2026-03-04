@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/*
+
+Chose these colors to match the Logo
+
+*/
+
 :root {
   --background: #080B14;
   --surface: #0E1220;
@@ -17,4 +23,32 @@ body {
   background: var(--background);
   color: var(--text-primary);
   font-family: var(--font-inter), Arial, sans-serif;
+}
+
+/* ── Hero card float animation ─────────────────────────────────────────────── */
+@keyframes card-float {
+  0%, 100% { transform: translateY(0px)   rotate(-4deg); }
+  50%       { transform: translateY(-22px) rotate(-4deg); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.55; transform: translateX(-50%) scaleX(1)    scaleY(1);   }
+  50%       { opacity: 0.2;  transform: translateX(-50%) scaleX(0.72) scaleY(0.6); }
+}
+
+.hero-card {
+  animation: card-float 3.6s ease-in-out infinite;
+  transition: transform 0.45s cubic-bezier(0.23, 1, 0.32, 1),
+              box-shadow 0.45s ease;
+  cursor: pointer;
+  will-change: transform;
+}
+
+.hero-card:hover {
+  animation-play-state: paused;
+  transform: rotate(-4deg) translateY(-10px) perspective(900px) rotateY(-10deg) scale(1.04);
+}
+
+.hero-glow {
+  animation: glow-pulse 3.6s ease-in-out infinite;
 }

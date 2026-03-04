@@ -1,0 +1,72 @@
+/* ── Float keyframes ─────────────────────────────────────────────────────── */
+
+@keyframes float-left {
+  0%, 100% { transform: rotate(-8deg) translateY(0px); }
+  50%       { transform: rotate(-8deg) translateY(-16px); }
+}
+
+@keyframes float-center {
+  0%, 100% { transform: translateX(-50%) translateY(0px); }
+  50%       { transform: translateX(-50%) translateY(-16px); }
+}
+
+@keyframes float-right {
+  0%, 100% { transform: rotate(8deg) translateY(0px); }
+  50%       { transform: rotate(8deg) translateY(-16px); }
+}
+
+/* ── Card wrappers (positioning + animation) ─────────────────────────────── */
+
+.hwLeft {
+  position: absolute;
+  left: 0;
+  top: 70px;
+  z-index: 10;
+  animation: float-left 3.4s ease-in-out infinite;
+}
+
+.hwCenter {
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  z-index: 20;
+  animation: float-center 3.8s ease-in-out infinite 0.5s;
+}
+
+.hwRight {
+  position: absolute;
+  right: 0;
+  top: 70px;
+  z-index: 10;
+  animation: float-right 3.2s ease-in-out infinite 1s;
+}
+
+.hwLeft:hover,
+.hwRight:hover {
+  z-index: 30;
+}
+
+/* ── Card images (hover scale — separate element so no conflict with animation) ── */
+
+.card {
+  display: block;
+  border-radius: 12px;
+  object-fit: contain;
+  cursor: pointer;
+  transition:
+    transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.3s ease;
+}
+
+.cardSide {
+  opacity: 0.85;
+}
+
+.cardSide:hover {
+  transform: scale(1.08) translateY(-10px);
+  opacity: 1;
+}
+
+.cardCenter:hover {
+  transform: scale(1.09) translateY(-12px);
+}
