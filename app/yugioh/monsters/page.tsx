@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import CardGrid from "@/components/CardGrid";
 import MonsterFilter from "@/components/MonsterFilter";
+import AttributeFilter from "@/components/AttributeFilter";
+import LevelFilter from "@/components/LevelFilter";
 import { MONSTER_TYPES } from "@/lib/monsterTypes";
 import { fetchYGOCards } from "@/lib/yugioh";
 
@@ -18,7 +20,12 @@ function seededShuffle<T>(arr: T[], seed: number): T[] {
   return a;
 }
 
-async function fetchMonsterCards(types: string[], page: number) {
+async function fetchMonsterCards(
+  types: string[],
+  page: number,
+  attribute?: string,
+  level?: number,
+) {
   const isAll = types.length === 0;
   const typesToFetch = isAll ? ALL_MONSTER_TYPES : types;
   const perPage = 24;
@@ -26,7 +33,7 @@ async function fetchMonsterCards(types: string[], page: number) {
   const offset = (page - 1) * perType;
 
   const results = await Promise.all(
-    typesToFetch.map((type) => fetchYGOCards(type, perType, offset))
+    typesToFetch.map((type) => fetchYGOCards(type, perType, offset, undefined, attribute, level))
   );
 
   const merged = seededShuffle(results.flatMap((r) => r.cards), page).slice(0, perPage);
@@ -39,7 +46,7 @@ async function fetchMonsterCards(types: string[], page: number) {
 export default async function MonstersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; type?: string | string[] }>;
+  searchParams: Promise<{ page?: string; type?: string | string[]; attribute?: string; level?: string }>;
 }) {
   const params = await searchParams;
   const page = Math.max(1, parseInt(params.page ?? "1", 10));
@@ -49,7 +56,15 @@ export default async function MonstersPage({
     ? Array.isArray(rawTypes) ? rawTypes : [rawTypes]
     : [];
 
-  const { cards, total, totalPages } = await fetchMonsterCards(selectedTypes, page);
+  const selectedAttribute = params.attribute ?? "";
+  const selectedLevel = params.level ? parseInt(params.level, 10) : null;
+
+  const { cards, total, totalPages } = await fetchMonsterCards(
+    selectedTypes,
+    page,
+    selectedAttribute || undefined,
+    selectedLevel ?? undefined,
+  );
 
   const mapped = cards.map((c) => ({
     id: String(c.id),
@@ -62,6 +77,10 @@ export default async function MonstersPage({
   }));
 
   const typeQuery = selectedTypes.map((t) => `&type=${encodeURIComponent(t)}`).join("");
+  const filterQuery =
+    typeQuery +
+    (selectedAttribute ? `&attribute=${encodeURIComponent(selectedAttribute)}` : "") +
+    (selectedLevel ? `&level=${selectedLevel}` : "");
 
   return (
     <div style={{ background: "#080B14", minHeight: "100vh" }}>
@@ -78,9 +97,19 @@ export default async function MonstersPage({
           </p>
         </div>
 
-        <Suspense fallback={null}>
-          <MonsterFilter selected={selectedTypes} />
-        </Suspense>
+        <div className="flex flex-wrap gap-3 items-center justify-between mb-6">
+          <div className="flex flex-wrap gap-3 items-center">
+            <Suspense fallback={null}>
+              <MonsterFilter selected={selectedTypes} />
+            </Suspense>
+            <Suspense fallback={null}>
+              <AttributeFilter selected={selectedAttribute} />
+            </Suspense>
+          </div>
+          <Suspense fallback={null}>
+            <LevelFilter selected={selectedLevel} />
+          </Suspense>
+        </div>
 
         <CardGrid cards={mapped} game="yugioh" />
 
@@ -88,7 +117,7 @@ export default async function MonstersPage({
           <div className="flex items-center justify-center gap-2 mt-8">
             {page > 1 && (
               <a
-                href={`?page=${page - 1}${typeQuery}`}
+                href={`?page=${page - 1}${filterQuery}`}
                 className="px-3 py-1.5 rounded text-sm"
                 style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
               >
@@ -100,7 +129,7 @@ export default async function MonstersPage({
             </span>
             {page < totalPages && (
               <a
-                href={`?page=${page + 1}${typeQuery}`}
+                href={`?page=${page + 1}${filterQuery}`}
                 className="px-3 py-1.5 rounded text-sm"
                 style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
               >

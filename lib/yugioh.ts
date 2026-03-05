@@ -25,9 +25,13 @@ export async function fetchYGOCards(
   num = 24,
   offset = 0,
   race?: string,
+  attribute?: string,
+  level?: number,
 ): Promise<{ cards: YGOCard[]; total: number }> {
   const raceParam = race ? `&race=${encodeURIComponent(race)}` : "";
-  const url = `${YGO_BASE}/cardinfo.php?type=${encodeURIComponent(type)}&num=${num}&offset=${offset}${raceParam}`;
+  const attributeParam = attribute ? `&attribute=${encodeURIComponent(attribute)}` : "";
+  const levelParam = level ? `&level=${level}` : "";
+  const url = `${YGO_BASE}/cardinfo.php?type=${encodeURIComponent(type)}&num=${num}&offset=${offset}${raceParam}${attributeParam}${levelParam}`;
   const res = await fetch(url, { next: { revalidate: 3600 } });
   if (!res.ok) return { cards: [], total: 0 };
   const json = await res.json();
@@ -66,6 +70,15 @@ export async function searchYGOCards(query: string): Promise<YGOCard[]> {
   if (!res.ok) return [];
   const json = await res.json();
   return json.data ?? [];
+}
+
+// Fetch all alternate art versions by searching the name and filtering exact matches
+export async function fetchYGOCardAltArts(name: string): Promise<YGOCard[]> {
+  const url = `${YGO_BASE}/cardinfo.php?fname=${encodeURIComponent(name)}`;
+  const res = await fetch(url, { next: { revalidate: 3600 } });
+  if (!res.ok) return [];
+  const json = await res.json();
+  return (json.data ?? []).filter((c: YGOCard) => c.name === name);
 }
 
 // Maps nav route segments to YGOPRODeck type strings

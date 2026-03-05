@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 // Iconic card images used as category thumbnails in the dropdown
 // YGO images are from YGOPRODeck (fine for dev; self-host on R2 for prod)
@@ -62,9 +63,11 @@ const pokemonLinks = [
 ];
 
 export default function Navbar() {
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const [ygoOpen, setYgoOpen] = useState(false);
   const [pkmnOpen, setPkmnOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   return (
     <nav
@@ -158,17 +161,27 @@ export default function Navbar() {
           </div>
 
           {/* Search bar */}
-          <div
+          <form
             className="ml-2 flex flex-1 items-center rounded-md border px-3 py-2"
             style={{ borderColor: "#1A2035", background: "#080B14" }}
+            onSubmit={(e) => {
+              e.preventDefault();
+              const q = searchQuery.trim();
+              if (q) {
+                router.push(`/search?q=${encodeURIComponent(q)}`);
+                setSearchQuery("");
+              }
+            }}
           >
             <span className="mr-2 text-gray-500">🔍</span>
             <input
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search cards..."
               className="flex-1 bg-transparent text-sm text-gray-300 outline-none placeholder:text-gray-600"
             />
-          </div>
+          </form>
 
           {/* Sign In */}
           <button

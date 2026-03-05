@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { fetchPokemonCardById } from "@/lib/pokemon";
 import { notFound } from "next/navigation";
 import CardImageZoom from "@/components/CardImageZoom";
+import BackButton from "@/components/BackButton";
 
 export default async function PokemonCardPage({
   params,
@@ -13,25 +13,20 @@ export default async function PokemonCardPage({
   if (!card) notFound();
 
   const imageUrl = card.image ? `${card.image}/high.webp` : "";
+  const images = imageUrl ? [{ url: imageUrl, id: 0 }] : [];
   const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(card.name + " pokemon card")}`;
 
   return (
     <div style={{ background: "#080B14", minHeight: "100vh" }}>
       <div className="max-w-screen-lg mx-auto px-4 py-8">
         {/* Back */}
-        <Link
-          href="/pokemon/pokemon"
-          className="text-sm mb-6 inline-block"
-          style={{ color: "#7A8BA8" }}
-        >
-          &larr; Back to Pokémon
-        </Link>
+        <BackButton label="Back to Pokémon" />
 
         <div className="flex flex-col md:flex-row gap-8">
           {/* Card image */}
-          {imageUrl && (
+          {images.length > 0 && (
             <div className="shrink-0 mx-auto md:mx-0 flex flex-col items-center gap-4">
-              <CardImageZoom src={imageUrl} alt={card.name} />
+              <CardImageZoom images={images} alt={card.name} />
               <a
                 href={ebayUrl}
                 target="_blank"

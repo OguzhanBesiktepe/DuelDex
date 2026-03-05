@@ -1,4 +1,4 @@
-import { fetchYGOCardById } from "@/lib/yugioh";
+import { fetchYGOCardById, fetchYGOCardAltArts } from "@/lib/yugioh";
 import BackButton from "@/components/BackButton";
 import { notFound } from "next/navigation";
 import CardImageZoom from "@/components/CardImageZoom";
@@ -12,7 +12,13 @@ export default async function YGOCardPage({
   const card = await fetchYGOCardById(id);
   if (!card) notFound();
 
-  const image = card.card_images[0]?.image_url ?? "";
+  // Build artwork list: clicked card always first, then other alt arts
+  const altArts = await fetchYGOCardAltArts(card.name);
+  const others = altArts.filter((c) => c.id !== card.id);
+  const images = [
+    { url: card.card_images[0]?.image_url ?? "", id: card.id },
+    ...others.map((c) => ({ url: c.card_images[0]?.image_url ?? "", id: c.id })),
+  ].filter((img) => img.url !== "");
   const price = card.card_prices?.[0];
   const sets = card.card_sets ?? [];
   const hasTCG = price && parseFloat(price.tcgplayer_price) > 0;
@@ -29,7 +35,7 @@ export default async function YGOCardPage({
         <div className="flex flex-col md:flex-row gap-8">
           {/* Card image */}
           <div className="shrink-0 mx-auto md:mx-0 flex flex-col items-center gap-4">
-            <CardImageZoom src={image} alt={card.name} />
+            <CardImageZoom images={images} alt={card.name} />
             {hasTCG && (
               <a
                 href={tcgPlayerUrl}
