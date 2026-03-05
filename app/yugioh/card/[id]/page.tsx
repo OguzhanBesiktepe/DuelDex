@@ -15,7 +15,10 @@ export default async function YGOCardPage({
   const image = card.card_images[0]?.image_url ?? "";
   const price = card.card_prices?.[0];
   const sets = card.card_sets ?? [];
+  const hasTCG = price && parseFloat(price.tcgplayer_price) > 0;
+  const hasEbay = price && parseFloat(price.ebay_price) > 0;
   const tcgPlayerUrl = `https://www.tcgplayer.com/search/yugioh/product?q=${encodeURIComponent(card.name)}`;
+  const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(card.name + " yugioh")}`;
 
   return (
     <div style={{ background: "#080B14", minHeight: "100vh" }}>
@@ -33,15 +36,28 @@ export default async function YGOCardPage({
           {/* Card image */}
           <div className="shrink-0 mx-auto md:mx-0 flex flex-col items-center gap-4">
             <CardImageZoom src={image} alt={card.name} />
-            <a
-              href={tcgPlayerUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full text-center px-4 py-2.5 rounded-lg text-sm font-bold transition-opacity hover:opacity-85"
-              style={{ background: "#FF7A00", color: "#080B14" }}
-            >
-              Buy on TCGPlayer ↗
-            </a>
+            {hasTCG && (
+              <a
+                href={tcgPlayerUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full text-center px-4 py-2.5 rounded-lg text-sm font-bold transition-opacity hover:opacity-85"
+                style={{ background: "#FF7A00", color: "#080B14" }}
+              >
+                Buy on TCGPlayer ↗
+              </a>
+            )}
+            {!hasTCG && hasEbay && (
+              <a
+                href={ebayUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full text-center px-4 py-2.5 rounded-lg text-sm font-bold transition-opacity hover:opacity-85"
+                style={{ background: "#F5AF02", color: "#080B14" }}
+              >
+                Buy on eBay ↗
+              </a>
+            )}
           </div>
 
           {/* Details */}

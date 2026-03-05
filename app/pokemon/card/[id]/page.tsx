@@ -13,7 +13,7 @@ export default async function PokemonCardPage({
   if (!card) notFound();
 
   const imageUrl = card.image ? `${card.image}/high.webp` : "";
-  const tcgPlayerUrl = `https://www.tcgplayer.com/search/pokemon/product?q=${encodeURIComponent(card.name)}`;
+  const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(card.name + " pokemon card")}`;
 
   return (
     <div style={{ background: "#080B14", minHeight: "100vh" }}>
@@ -33,13 +33,13 @@ export default async function PokemonCardPage({
             <div className="shrink-0 mx-auto md:mx-0 flex flex-col items-center gap-4">
               <CardImageZoom src={imageUrl} alt={card.name} />
               <a
-                href={tcgPlayerUrl}
+                href={ebayUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full text-center px-4 py-2.5 rounded-lg text-sm font-bold transition-opacity hover:opacity-85"
-                style={{ background: "#00AAFF", color: "#080B14" }}
+                style={{ background: "#F5AF02", color: "#080B14" }}
               >
-                Buy on TCGPlayer ↗
+                Buy on eBay ↗
               </a>
             </div>
           )}
