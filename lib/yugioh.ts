@@ -24,8 +24,10 @@ export async function fetchYGOCards(
   type: string,
   num = 24,
   offset = 0,
+  race?: string,
 ): Promise<{ cards: YGOCard[]; total: number }> {
-  const url = `${YGO_BASE}/cardinfo.php?type=${encodeURIComponent(type)}&num=${num}&offset=${offset}`;
+  const raceParam = race ? `&race=${encodeURIComponent(race)}` : "";
+  const url = `${YGO_BASE}/cardinfo.php?type=${encodeURIComponent(type)}&num=${num}&offset=${offset}${raceParam}`;
   const res = await fetch(url, { next: { revalidate: 3600 } });
   if (!res.ok) return { cards: [], total: 0 };
   const json = await res.json();

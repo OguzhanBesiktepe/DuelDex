@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { fetchYGOCardById } from "@/lib/yugioh";
+import BackButton from "@/components/BackButton";
 import { notFound } from "next/navigation";
 import CardImageZoom from "@/components/CardImageZoom";
 
@@ -24,13 +24,7 @@ export default async function YGOCardPage({
     <div style={{ background: "#080B14", minHeight: "100vh" }}>
       <div className="max-w-screen-lg mx-auto px-4 py-8">
         {/* Back */}
-        <Link
-          href="/yugioh/monsters"
-          className="text-sm mb-6 inline-block"
-          style={{ color: "#7A8BA8" }}
-        >
-          &larr; Back to Monster Cards
-        </Link>
+        <BackButton label="Back to Monster Cards" />
 
         <div className="flex flex-col md:flex-row gap-8">
           {/* Card image */}

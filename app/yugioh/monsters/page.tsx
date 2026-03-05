@@ -4,14 +4,15 @@ import MonsterFilter from "@/components/MonsterFilter";
 import { MONSTER_TYPES } from "@/lib/monsterTypes";
 import { fetchYGOCards } from "@/lib/yugioh";
 
-export const dynamic = "force-dynamic";
-
 const ALL_MONSTER_TYPES = MONSTER_TYPES.map((t) => t.value);
 
-function shuffle<T>(arr: T[]): T[] {
+// Deterministic shuffle: same page always produces same card order
+function seededShuffle<T>(arr: T[], seed: number): T[] {
   const a = [...arr];
+  let s = seed;
   for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    s = (s * 1664525 + 1013904223) & 0xffffffff;
+    const j = Math.abs(s) % (i + 1);
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
@@ -28,7 +29,7 @@ async function fetchMonsterCards(types: string[], page: number) {
     typesToFetch.map((type) => fetchYGOCards(type, perType, offset))
   );
 
-  const merged = shuffle(results.flatMap((r) => r.cards)).slice(0, perPage);
+  const merged = seededShuffle(results.flatMap((r) => r.cards), page).slice(0, perPage);
   const total = results.reduce((sum, r) => sum + r.total, 0);
   const totalPages = Math.ceil(total / perPage);
 

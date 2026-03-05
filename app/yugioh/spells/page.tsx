@@ -4,8 +4,6 @@ import TypeFilter from "@/components/TypeFilter";
 import { SPELL_TYPES } from "@/lib/cardTypes";
 import { fetchYGOCards } from "@/lib/yugioh";
 
-export const dynamic = "force-dynamic";
-
 export default async function SpellsPage({
   searchParams,
 }: {
@@ -21,11 +19,19 @@ export default async function SpellsPage({
     ? Array.isArray(rawSubtypes) ? rawSubtypes : [rawSubtypes]
     : [];
 
-  const { cards: raw, total } = await fetchYGOCards("Spell Card", perPage, offset);
-
-  const cards = selectedSubtypes.length > 0
-    ? raw.filter((c) => selectedSubtypes.includes(c.race))
-    : raw;
+  let cards, total: number;
+  if (selectedSubtypes.length === 0) {
+    ({ cards, total } = await fetchYGOCards("Spell Card", perPage, offset));
+  } else if (selectedSubtypes.length === 1) {
+    ({ cards, total } = await fetchYGOCards("Spell Card", perPage, offset, selectedSubtypes[0]));
+  } else {
+    const perSubtype = Math.ceil(perPage / selectedSubtypes.length);
+    const results = await Promise.all(
+      selectedSubtypes.map((s) => fetchYGOCards("Spell Card", perSubtype, offset, s))
+    );
+    cards = results.flatMap((r) => r.cards).slice(0, perPage);
+    total = results.reduce((sum, r) => sum + r.total, 0);
+  }
 
   const totalPages = Math.ceil(total / perPage);
   const subtypeQuery = selectedSubtypes.map((s) => `&subtype=${encodeURIComponent(s)}`).join("");
