@@ -41,7 +41,7 @@ const YGO_HIGH_RARITIES = new Set([
   "Ultra Rare",
 ]);
 
-// ─── Data fetchers ────────────────────────────────────────────────────────────
+// Fetching Yugioh
 
 async function fetchFeaturedYGO(): Promise<FeaturedSet | null> {
   try {
@@ -106,6 +106,8 @@ async function fetchFeaturedYGO(): Promise<FeaturedSet | null> {
     return null;
   }
 }
+
+//Fetching Pokemon
 
 async function fetchFeaturedPokemon(): Promise<FeaturedSet | null> {
   try {
