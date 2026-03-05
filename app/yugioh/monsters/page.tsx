@@ -21,25 +21,18 @@ async function fetchMonsterCards(types: string[], page: number) {
   const isAll = types.length === 0;
   const typesToFetch = isAll ? ALL_MONSTER_TYPES : types;
   const perPage = 24;
-
-  if (isAll) {
-    const perType = Math.ceil(32 / typesToFetch.length);
-    const results = await Promise.all(
-      typesToFetch.map((type) => fetchYGOCards(type, perType, 0))
-    );
-    const merged = results.flatMap((r) => r.cards);
-    const total = results.reduce((sum, r) => sum + r.total, 0);
-    return { cards: shuffle(merged).slice(0, perPage), total, totalPages: null };
-  }
-
-  const offset = (page - 1) * perPage;
   const perType = Math.ceil(perPage / typesToFetch.length);
+  const offset = (page - 1) * perType;
+
   const results = await Promise.all(
     typesToFetch.map((type) => fetchYGOCards(type, perType, offset))
   );
+
   const merged = shuffle(results.flatMap((r) => r.cards)).slice(0, perPage);
   const total = results.reduce((sum, r) => sum + r.total, 0);
-  return { cards: merged, total, totalPages: Math.ceil(total / perPage) };
+  const totalPages = Math.ceil(total / perPage);
+
+  return { cards: merged, total, totalPages };
 }
 
 export default async function MonstersPage({
@@ -90,7 +83,7 @@ export default async function MonstersPage({
 
         <CardGrid cards={mapped} game="yugioh" />
 
-        {totalPages && totalPages > 1 && (
+        {totalPages > 1 && (
           <div className="flex items-center justify-center gap-2 mt-8">
             {page > 1 && (
               <a
