@@ -12,11 +12,13 @@ export default async function YGOCardPage({
   const card = await fetchYGOCardById(id);
   if (!card) notFound();
 
-  // Build artwork list: clicked card always first, then other alt arts
+  // Build artwork list combining both storage patterns:
+  // 1. Multiple card_images on one record (e.g. Blue-Eyes White Dragon)
+  // 2. Multiple separate card records with same name (e.g. Dark Magician)
   const altArts = await fetchYGOCardAltArts(card.name);
   const others = altArts.filter((c) => c.id !== card.id);
   const images = [
-    { url: card.card_images[0]?.image_url ?? "", id: card.id },
+    ...card.card_images.map((img) => ({ url: img.image_url, id: img.id })),
     ...others.map((c) => ({ url: c.card_images[0]?.image_url ?? "", id: c.id })),
   ].filter((img) => img.url !== "");
   const price = card.card_prices?.[0];
