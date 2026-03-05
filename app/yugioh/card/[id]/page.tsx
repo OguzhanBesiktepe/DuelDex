@@ -15,6 +15,7 @@ export default async function YGOCardPage({
   const image = card.card_images[0]?.image_url ?? "";
   const price = card.card_prices?.[0];
   const sets = card.card_sets ?? [];
+  const tcgPlayerUrl = `https://www.tcgplayer.com/search/yugioh/product?q=${encodeURIComponent(card.name)}`;
 
   return (
     <div style={{ background: "#080B14", minHeight: "100vh" }}>
@@ -30,16 +31,27 @@ export default async function YGOCardPage({
 
         <div className="flex flex-col md:flex-row gap-8">
           {/* Card image */}
-          <div className="shrink-0 mx-auto md:mx-0">
-            <div className="relative w-60 aspect-[3/4] rounded-xl overflow-hidden">
-              <Image
-                src={image}
-                alt={card.name}
-                fill
-                className="object-contain"
-                unoptimized
-              />
-            </div>
+          <div className="shrink-0 mx-auto md:mx-0 flex flex-col items-center gap-4">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={image}
+              alt={card.name}
+              className="detail-card rounded-xl"
+              style={{
+                width: 240,
+                height: "auto",
+                boxShadow: "0 28px 56px rgba(0,0,0,0.7)",
+              }}
+            />
+            <a
+              href={tcgPlayerUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full text-center px-4 py-2.5 rounded-lg text-sm font-bold transition-opacity hover:opacity-85"
+              style={{ background: "#FF7A00", color: "#080B14" }}
+            >
+              Buy on TCGPlayer ↗
+            </a>
           </div>
 
           {/* Details */}
@@ -81,28 +93,45 @@ export default async function YGOCardPage({
             </div>
 
             {/* Stats */}
-            {(card.atk !== undefined || card.def !== undefined || card.level !== undefined) && (
+            {(card.atk !== undefined ||
+              card.def !== undefined ||
+              card.level !== undefined) && (
               <div className="flex gap-4 mb-4">
                 {card.level !== undefined && (
                   <div>
-                    <p className="text-xs" style={{ color: "#7A8BA8" }}>Level</p>
-                    <p className="text-lg font-bold" style={{ color: "#FFD700" }}>
+                    <p className="text-xs" style={{ color: "#7A8BA8" }}>
+                      Level
+                    </p>
+                    <p
+                      className="text-lg font-bold"
+                      style={{ color: "#FFD700" }}
+                    >
                       {card.level}
                     </p>
                   </div>
                 )}
                 {card.atk !== undefined && (
                   <div>
-                    <p className="text-xs" style={{ color: "#7A8BA8" }}>ATK</p>
-                    <p className="text-lg font-bold" style={{ color: "#F0F2FF" }}>
+                    <p className="text-xs" style={{ color: "#7A8BA8" }}>
+                      ATK
+                    </p>
+                    <p
+                      className="text-lg font-bold"
+                      style={{ color: "#F0F2FF" }}
+                    >
                       {card.atk}
                     </p>
                   </div>
                 )}
                 {card.def !== undefined && (
                   <div>
-                    <p className="text-xs" style={{ color: "#7A8BA8" }}>DEF</p>
-                    <p className="text-lg font-bold" style={{ color: "#F0F2FF" }}>
+                    <p className="text-xs" style={{ color: "#7A8BA8" }}>
+                      DEF
+                    </p>
+                    <p
+                      className="text-lg font-bold"
+                      style={{ color: "#F0F2FF" }}
+                    >
                       {card.def}
                     </p>
                   </div>
@@ -133,24 +162,39 @@ export default async function YGOCardPage({
                 <div className="flex flex-wrap gap-4">
                   {parseFloat(price.tcgplayer_price) > 0 && (
                     <div>
-                      <p className="text-xs" style={{ color: "#7A8BA8" }}>TCGPlayer</p>
-                      <p className="text-xl font-bold" style={{ color: "#3ecf6a" }}>
+                      <p className="text-xs" style={{ color: "#7A8BA8" }}>
+                        TCGPlayer
+                      </p>
+                      <p
+                        className="text-xl font-bold"
+                        style={{ color: "#3ecf6a" }}
+                      >
                         ${parseFloat(price.tcgplayer_price).toFixed(2)}
                       </p>
                     </div>
                   )}
                   {parseFloat(price.ebay_price) > 0 && (
                     <div>
-                      <p className="text-xs" style={{ color: "#7A8BA8" }}>eBay</p>
-                      <p className="text-xl font-bold" style={{ color: "#F0F2FF" }}>
+                      <p className="text-xs" style={{ color: "#7A8BA8" }}>
+                        eBay
+                      </p>
+                      <p
+                        className="text-xl font-bold"
+                        style={{ color: "#F0F2FF" }}
+                      >
                         ${parseFloat(price.ebay_price).toFixed(2)}
                       </p>
                     </div>
                   )}
                   {parseFloat(price.cardmarket_price) > 0 && (
                     <div>
-                      <p className="text-xs" style={{ color: "#7A8BA8" }}>Cardmarket</p>
-                      <p className="text-xl font-bold" style={{ color: "#F0F2FF" }}>
+                      <p className="text-xs" style={{ color: "#7A8BA8" }}>
+                        Cardmarket
+                      </p>
+                      <p
+                        className="text-xl font-bold"
+                        style={{ color: "#F0F2FF" }}
+                      >
                         ${parseFloat(price.cardmarket_price).toFixed(2)}
                       </p>
                     </div>
@@ -173,7 +217,10 @@ export default async function YGOCardPage({
                     <div
                       key={i}
                       className="flex items-center justify-between text-xs px-3 py-2 rounded"
-                      style={{ background: "#0E1220", border: "1px solid #1A2035" }}
+                      style={{
+                        background: "#0E1220",
+                        border: "1px solid #1A2035",
+                      }}
                     >
                       <span style={{ color: "#F0F2FF" }}>{s.set_name}</span>
                       <div className="flex gap-3">

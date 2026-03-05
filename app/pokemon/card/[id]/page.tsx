@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { fetchPokemonCardById } from "@/lib/pokemon";
 import { notFound } from "next/navigation";
@@ -13,6 +12,7 @@ export default async function PokemonCardPage({
   if (!card) notFound();
 
   const imageUrl = card.image ? `${card.image}/high.webp` : "";
+  const tcgPlayerUrl = `https://www.tcgplayer.com/search/pokemon/product?q=${encodeURIComponent(card.name)}`;
 
   return (
     <div style={{ background: "#080B14", minHeight: "100vh" }}>
@@ -29,16 +29,27 @@ export default async function PokemonCardPage({
         <div className="flex flex-col md:flex-row gap-8">
           {/* Card image */}
           {imageUrl && (
-            <div className="shrink-0 mx-auto md:mx-0">
-              <div className="relative w-60 aspect-[3/4] rounded-xl overflow-hidden">
-                <Image
-                  src={imageUrl}
-                  alt={card.name}
-                  fill
-                  className="object-contain"
-                  unoptimized
-                />
-              </div>
+            <div className="shrink-0 mx-auto md:mx-0 flex flex-col items-center gap-4">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={imageUrl}
+                alt={card.name}
+                className="detail-card rounded-xl"
+                style={{
+                  width: 240,
+                  height: "auto",
+                  boxShadow: "0 28px 56px rgba(0,0,0,0.7)",
+                }}
+              />
+              <a
+                href={tcgPlayerUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full text-center px-4 py-2.5 rounded-lg text-sm font-bold transition-opacity hover:opacity-85"
+                style={{ background: "#00AAFF", color: "#080B14" }}
+              >
+                Buy on TCGPlayer ↗
+              </a>
             </div>
           )}
 
