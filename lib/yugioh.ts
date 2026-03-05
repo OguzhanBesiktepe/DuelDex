@@ -65,11 +65,35 @@ export async function fetchYGOCardsBySet(
 }
 
 export async function searchYGOCards(query: string): Promise<YGOCard[]> {
-  const url = `${YGO_BASE}/cardinfo.php?fname=${encodeURIComponent(query)}`;
-  const res = await fetch(url, { next: { revalidate: 60 } });
-  if (!res.ok) return [];
-  const json = await res.json();
-  return json.data ?? [];
+  // Normalize: strip non-alphanumeric so "Blue Eyes" matches "Blue-Eyes"
+  const normalize = (s: string) =>
+    s.toLowerCase().replace(/[^a-z0-9]/g, " ").replace(/\s+/g, " ").trim();
+
+  const words = normalize(query).split(" ").filter((w) => w.length > 1);
+  if (words.length === 0) return [];
+
+  const apiFetch = async (q: string): Promise<YGOCard[]> => {
+    const url = `${YGO_BASE}/cardinfo.php?fname=${encodeURIComponent(q)}`;
+    const res = await fetch(url, { next: { revalidate: 60 } });
+    if (!res.ok) return [];
+    const json = await res.json();
+    return json.data ?? [];
+  };
+
+  // Try the full query first (works for most cards)
+  let results = await apiFetch(query);
+
+  // If nothing came back (e.g. "Blue Eyes" fails because API has "Blue-Eyes"),
+  // fall back to the longest word — always a real substring of the card name
+  if (results.length === 0) {
+    const longestWord = words.reduce((a, b) => (b.length > a.length ? b : a));
+    results = await apiFetch(longestWord);
+  }
+
+  // Filter client-side: every word the user typed must appear in the card name
+  return results.filter((c) =>
+    words.every((word) => normalize(c.name).includes(word))
+  );
 }
 
 // Fetch all alternate art versions by searching the name and filtering exact matches
