@@ -96,13 +96,15 @@ export async function searchYGOCards(query: string): Promise<YGOCard[]> {
   );
 }
 
-// Fetch all alternate art versions by searching the name and filtering exact matches
+// Fetch all alternate art versions via name= which returns the full card_images list
 export async function fetchYGOCardAltArts(name: string): Promise<YGOCard[]> {
-  const url = `${YGO_BASE}/cardinfo.php?fname=${encodeURIComponent(name)}`;
-  const res = await fetch(url, { next: { revalidate: 3600 } });
+  const res = await fetch(
+    `${YGO_BASE}/cardinfo.php?name=${encodeURIComponent(name)}`,
+    { next: { revalidate: 3600 } }
+  );
   if (!res.ok) return [];
   const json = await res.json();
-  return (json.data ?? []).filter((c: YGOCard) => c.name === name);
+  return json?.data ?? [];
 }
 
 // Maps nav route segments to YGOPRODeck type strings

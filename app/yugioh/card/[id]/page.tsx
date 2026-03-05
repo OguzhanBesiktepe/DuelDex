@@ -12,15 +12,25 @@ export default async function YGOCardPage({
   const card = await fetchYGOCardById(id);
   if (!card) notFound();
 
-  // Build artwork list combining both storage patterns:
-  // 1. Multiple card_images on one record (e.g. Blue-Eyes White Dragon)
-  // 2. Multiple separate card records with same name (e.g. Dark Magician)
+  // Build artwork list:
+  // name= returns the canonical card record with ALL card_images variants listed.
+  // id= only returns limited image data. So we prefer the name= version's card_images.
   const altArts = await fetchYGOCardAltArts(card.name);
-  const others = altArts.filter((c) => c.id !== card.id);
-  const images = [
-    ...card.card_images.map((img) => ({ url: img.image_url, id: img.id })),
-    ...others.map((c) => ({ url: c.card_images[0]?.image_url ?? "", id: c.id })),
-  ].filter((img) => img.url !== "");
+  const selfInAltArts = altArts.find((c) => c.id === card.id);
+  const otherAltArts = altArts.filter((c) => c.id !== card.id);
+  const rawImages = [
+    // Use name= version of this card if available — it has the full card_images list
+    ...(selfInAltArts ?? card).card_images.map((img) => ({ url: img.image_url, id: img.id })),
+    // Also include images from any separate alt-art card records
+    ...otherAltArts.flatMap((c) => c.card_images.map((img) => ({ url: img.image_url, id: img.id }))),
+  ];
+  // Deduplicate by image id and remove empty URLs
+  const seen = new Set<number>();
+  const images = rawImages.filter((img) => {
+    if (!img.url || seen.has(img.id)) return false;
+    seen.add(img.id);
+    return true;
+  });
   const price = card.card_prices?.[0];
   const sets = card.card_sets ?? [];
   const hasTCG = price && parseFloat(price.tcgplayer_price) > 0;

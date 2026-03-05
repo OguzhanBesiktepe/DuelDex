@@ -99,9 +99,9 @@ export default function LevelFilter({ selected }: { selected: number | null }) {
         })}
       </div>
 
-      {selected !== null && (
-        <span className="text-xs font-bold" style={{ color: "#FFD700" }}>
-          {selected}
+      {(hovered !== null || selected !== null) && (
+        <span className="text-xs font-bold" style={{ color: "#FFD700", minWidth: 16 }}>
+          {hovered ?? selected}
         </span>
       )}
     </div>
