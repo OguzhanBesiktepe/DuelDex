@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { fetchPokemonCardById } from "@/lib/pokemon";
 import { notFound } from "next/navigation";
+import CardImageZoom from "@/components/CardImageZoom";
 
 export default async function PokemonCardPage({
   params,
@@ -30,17 +31,7 @@ export default async function PokemonCardPage({
           {/* Card image */}
           {imageUrl && (
             <div className="shrink-0 mx-auto md:mx-0 flex flex-col items-center gap-4">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={imageUrl}
-                alt={card.name}
-                className="detail-card rounded-xl"
-                style={{
-                  width: 240,
-                  height: "auto",
-                  boxShadow: "0 28px 56px rgba(0,0,0,0.7)",
-                }}
-              />
+              <CardImageZoom src={imageUrl} alt={card.name} />
               <a
                 href={tcgPlayerUrl}
                 target="_blank"

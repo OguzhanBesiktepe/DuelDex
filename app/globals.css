@@ -59,16 +59,21 @@ body {
   50%       { transform: translateY(-14px); }
 }
 
-.detail-card {
+/* Wrapper floats — never interrupted */
+.detail-float-wrapper {
   animation: detail-float 3.6s ease-in-out infinite;
-  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1),
-              box-shadow 0.4s ease;
   will-change: transform;
-  cursor: default;
 }
 
-.detail-card:hover {
-  animation-play-state: paused;
-  transform: translateY(-8px) perspective(900px) rotateY(-6deg) scale(1.03);
+/* Inner image handles hover tilt independently */
+.detail-card-img {
+  display: block;
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+              box-shadow 0.4s ease;
+  cursor: zoom-in;
+}
+
+.detail-card-img:hover {
+  transform: perspective(900px) rotateY(-6deg) scale(1.04);
   box-shadow: 0 40px 80px rgba(0, 0, 0, 0.75);
 }

@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { fetchYGOCardById } from "@/lib/yugioh";
 import { notFound } from "next/navigation";
+import CardImageZoom from "@/components/CardImageZoom";
 
 export default async function YGOCardPage({
   params,
@@ -32,17 +32,7 @@ export default async function YGOCardPage({
         <div className="flex flex-col md:flex-row gap-8">
           {/* Card image */}
           <div className="shrink-0 mx-auto md:mx-0 flex flex-col items-center gap-4">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={image}
-              alt={card.name}
-              className="detail-card rounded-xl"
-              style={{
-                width: 240,
-                height: "auto",
-                boxShadow: "0 28px 56px rgba(0,0,0,0.7)",
-              }}
-            />
+            <CardImageZoom src={image} alt={card.name} />
             <a
               href={tcgPlayerUrl}
               target="_blank"
