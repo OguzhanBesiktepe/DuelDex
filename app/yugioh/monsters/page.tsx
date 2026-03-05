@@ -8,7 +8,6 @@ export const dynamic = "force-dynamic";
 
 const ALL_MONSTER_TYPES = MONSTER_TYPES.map((t) => t.value);
 
-// Seeded shuffle so the order is stable per page load but varied
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -24,18 +23,15 @@ async function fetchMonsterCards(types: string[], page: number) {
   const perPage = 24;
 
   if (isAll) {
-    // Fetch a few from each type then scatter — ~4 per type across 8 types = 32, slice to 24
     const perType = Math.ceil(32 / typesToFetch.length);
     const results = await Promise.all(
       typesToFetch.map((type) => fetchYGOCards(type, perType, 0))
     );
     const merged = results.flatMap((r) => r.cards);
     const total = results.reduce((sum, r) => sum + r.total, 0);
-    const scattered = shuffle(merged).slice(0, perPage);
-    return { cards: scattered, total, totalPages: null };
+    return { cards: shuffle(merged).slice(0, perPage), total, totalPages: null };
   }
 
-  // Specific types selected — fetch and merge with pagination
   const offset = (page - 1) * perPage;
   const perType = Math.ceil(perPage / typesToFetch.length);
   const results = await Promise.all(
@@ -43,8 +39,7 @@ async function fetchMonsterCards(types: string[], page: number) {
   );
   const merged = shuffle(results.flatMap((r) => r.cards)).slice(0, perPage);
   const total = results.reduce((sum, r) => sum + r.total, 0);
-  const totalPages = Math.ceil(total / perPage);
-  return { cards: merged, total, totalPages };
+  return { cards: merged, total, totalPages: Math.ceil(total / perPage) };
 }
 
 export default async function MonstersPage({
@@ -57,9 +52,7 @@ export default async function MonstersPage({
 
   const rawTypes = params.type;
   const selectedTypes: string[] = rawTypes
-    ? Array.isArray(rawTypes)
-      ? rawTypes
-      : [rawTypes]
+    ? Array.isArray(rawTypes) ? rawTypes : [rawTypes]
     : [];
 
   const { cards, total, totalPages } = await fetchMonsterCards(selectedTypes, page);

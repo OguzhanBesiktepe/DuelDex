@@ -26,7 +26,6 @@ export default function CardItem({
   game,
 }: CardItemProps) {
   const href = `/${game}/card/${id}`;
-  const accent = game === "yugioh" ? "#FF7A00" : "#00AAFF";
   const rarityColor = getRarityColor(rarity, game);
 
   const tcg = price && parseFloat(price) > 0 ? parseFloat(price) : null;
@@ -37,10 +36,11 @@ export default function CardItem({
   return (
     <Link href={href} className="group block">
       <div
-        className="relative rounded-xl overflow-hidden transition-transform duration-200 group-hover:-translate-y-1"
+        className="relative rounded-xl overflow-hidden transition-all duration-300"
         style={{
           background: "#0E1220",
-          border: "1px solid #1A2035",
+          border: `2px solid ${rarityColor}90`,
+          boxShadow: `0 0 16px ${rarityColor}25`,
         }}
       >
         {/* Card image */}
@@ -49,37 +49,34 @@ export default function CardItem({
             src={imageUrl}
             alt={name}
             fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw"
-            className="object-contain p-2 transition-transform duration-200 group-hover:scale-105"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-contain p-4 transition-transform duration-300 group-hover:scale-105"
             unoptimized
           />
         </div>
 
         {/* Info */}
-        <div className="p-2">
+        <div className="p-3">
           <p
-            className="text-xs font-semibold truncate"
+            className="text-sm font-semibold truncate mb-1"
             style={{ color: "#F0F2FF", fontFamily: "var(--font-inter)" }}
           >
             {name}
           </p>
 
-          <div className="flex items-center justify-between mt-1 gap-1">
+          <div className="flex items-center justify-between gap-1">
             {type && (
-              <span
-                className="text-[10px] truncate"
-                style={{ color: "#7A8BA8" }}
-              >
+              <span className="text-[11px] truncate" style={{ color: "#7A8BA8" }}>
                 {type}
               </span>
             )}
             {rarity && (
               <span
-                className="text-[10px] px-1.5 py-0.5 rounded-full shrink-0"
+                className="text-[10px] px-1.5 py-0.5 rounded-full shrink-0 font-medium"
                 style={{
-                  background: `${rarityColor}22`,
+                  background: `${rarityColor}20`,
                   color: rarityColor,
-                  border: `1px solid ${rarityColor}44`,
+                  border: `1px solid ${rarityColor}50`,
                 }}
               >
                 {rarity}
@@ -88,12 +85,12 @@ export default function CardItem({
           </div>
 
           {displayPrice && (
-            <div className="flex items-center gap-1 mt-1">
-              <p className="text-xs font-bold" style={{ color: "#3ecf6a" }}>
+            <div className="flex items-center gap-1 mt-1.5">
+              <p className="text-sm font-bold" style={{ color: "#3ecf6a" }}>
                 ${displayPrice.toFixed(2)}
               </p>
               {priceLabel && (
-                <span className="text-[9px]" style={{ color: "#7A8BA8" }}>
+                <span className="text-[10px]" style={{ color: "#7A8BA8" }}>
                   {priceLabel}
                 </span>
               )}
@@ -101,10 +98,12 @@ export default function CardItem({
           )}
         </div>
 
-        {/* Hover accent line */}
+        {/* Hover: brighten the rarity border + glow */}
         <div
-          className="absolute bottom-0 left-0 right-0 h-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
-          style={{ background: accent }}
+          className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+          style={{
+            boxShadow: `inset 0 0 0 2px ${rarityColor}, 0 0 32px ${rarityColor}45`,
+          }}
         />
       </div>
     </Link>
