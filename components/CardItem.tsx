@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { getRarityColor } from "@/lib/rarityColors";
 
 interface CardItemProps {
   id: string;
@@ -26,6 +27,7 @@ export default function CardItem({
 }: CardItemProps) {
   const href = `/${game}/card/${id}`;
   const accent = game === "yugioh" ? "#FF7A00" : "#00AAFF";
+  const rarityColor = getRarityColor(rarity, game);
 
   const tcg = price && parseFloat(price) > 0 ? parseFloat(price) : null;
   const ebay = ebayPrice && parseFloat(ebayPrice) > 0 ? parseFloat(ebayPrice) : null;
@@ -75,9 +77,9 @@ export default function CardItem({
               <span
                 className="text-[10px] px-1.5 py-0.5 rounded-full shrink-0"
                 style={{
-                  background: `${accent}22`,
-                  color: accent,
-                  border: `1px solid ${accent}44`,
+                  background: `${rarityColor}22`,
+                  color: rarityColor,
+                  border: `1px solid ${rarityColor}44`,
                 }}
               >
                 {rarity}
