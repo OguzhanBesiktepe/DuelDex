@@ -7,6 +7,7 @@ interface CardData {
   type?: string;
   rarity?: string;
   price?: string;
+  ebayPrice?: string;
 }
 
 interface CardGridProps {

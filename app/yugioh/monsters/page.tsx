@@ -71,6 +71,7 @@ export default async function MonstersPage({
     type: c.race,
     rarity: c.card_sets?.[0]?.set_rarity,
     price: c.card_prices?.[0]?.tcgplayer_price,
+    ebayPrice: c.card_prices?.[0]?.ebay_price,
   }));
 
   const typeQuery = selectedTypes.map((t) => `&type=${encodeURIComponent(t)}`).join("");

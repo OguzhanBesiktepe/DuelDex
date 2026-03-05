@@ -10,6 +10,7 @@ interface CardItemProps {
   type?: string;
   rarity?: string;
   price?: string;
+  ebayPrice?: string;
   game: "yugioh" | "pokemon";
 }
 
@@ -20,11 +21,16 @@ export default function CardItem({
   type,
   rarity,
   price,
+  ebayPrice,
   game,
 }: CardItemProps) {
   const href = `/${game}/card/${id}`;
   const accent = game === "yugioh" ? "#FF7A00" : "#00AAFF";
-  const hasPrice = price && parseFloat(price) > 0;
+
+  const tcg = price && parseFloat(price) > 0 ? parseFloat(price) : null;
+  const ebay = ebayPrice && parseFloat(ebayPrice) > 0 ? parseFloat(ebayPrice) : null;
+  const displayPrice = tcg ?? ebay;
+  const priceLabel = displayPrice ? (tcg ? null : "eBay") : null;
 
   return (
     <Link href={href} className="group block">
@@ -79,13 +85,17 @@ export default function CardItem({
             )}
           </div>
 
-          {hasPrice && (
-            <p
-              className="text-xs font-bold mt-1"
-              style={{ color: "#3ecf6a" }}
-            >
-              ${parseFloat(price!).toFixed(2)}
-            </p>
+          {displayPrice && (
+            <div className="flex items-center gap-1 mt-1">
+              <p className="text-xs font-bold" style={{ color: "#3ecf6a" }}>
+                ${displayPrice.toFixed(2)}
+              </p>
+              {priceLabel && (
+                <span className="text-[9px]" style={{ color: "#7A8BA8" }}>
+                  {priceLabel}
+                </span>
+              )}
+            </div>
           )}
         </div>
 

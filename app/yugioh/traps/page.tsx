@@ -23,6 +23,7 @@ export default async function TrapsPage({
     type: c.race,
     rarity: c.card_sets?.[0]?.set_rarity,
     price: c.card_prices?.[0]?.tcgplayer_price,
+    ebayPrice: c.card_prices?.[0]?.ebay_price,
   }));
 
   return (
