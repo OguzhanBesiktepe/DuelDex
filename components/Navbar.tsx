@@ -79,6 +79,7 @@ export default function Navbar() {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
   const searchRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown on click outside
@@ -117,6 +118,40 @@ export default function Navbar() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
+  // Reset active index whenever the suggestion list changes
+  useEffect(() => { setActiveIndex(-1); }, [suggestions]);
+
+  // Keyboard navigation for the autocomplete dropdown
+  // Indices 0..suggestions.length-1 are card results; suggestions.length is "See all results"
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>, closeMobileMenu?: () => void) => {
+      if (!dropdownOpen) return;
+      const total = suggestions.length + 1; // +1 for "See all results"
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setActiveIndex((prev) => (prev + 1) % total);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setActiveIndex((prev) => (prev <= 0 ? total - 1 : prev - 1));
+      } else if (e.key === "Enter" && activeIndex >= 0) {
+        e.preventDefault();
+        if (activeIndex < suggestions.length) {
+          router.push(suggestions[activeIndex].href);
+        } else {
+          router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+        }
+        setSearchQuery("");
+        setDropdownOpen(false);
+        setActiveIndex(-1);
+        closeMobileMenu?.();
+      } else if (e.key === "Escape") {
+        setDropdownOpen(false);
+        setActiveIndex(-1);
+      }
+    },
+    [dropdownOpen, suggestions, activeIndex, router, searchQuery],
+  );
+
   return (
     <nav
       className="sticky top-0 z-50 w-full border-b"
@@ -144,7 +179,7 @@ export default function Navbar() {
             onMouseEnter={() => setYgoOpen(true)}
             onMouseLeave={() => setYgoOpen(false)}
           >
-            <button className="flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium text-gray-300 transition hover:text-white">
+            <button className="flex items-center gap-1 rounded-md px-3 py-2 text-base font-semibold text-gray-100 transition hover:text-white">
               Yu-Gi-Oh! <span className="text-xs">▾</span>
             </button>
             {ygoOpen && (
@@ -179,7 +214,7 @@ export default function Navbar() {
             onMouseEnter={() => setPkmnOpen(true)}
             onMouseLeave={() => setPkmnOpen(false)}
           >
-            <button className="flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium text-gray-300 transition hover:text-white">
+            <button className="flex items-center gap-1 rounded-md px-3 py-2 text-base font-semibold text-gray-100 transition hover:text-white">
               Pokémon <span className="text-xs">▾</span>
             </button>
             {pkmnOpen && (
@@ -234,9 +269,7 @@ export default function Navbar() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Escape") setDropdownOpen(false);
-                }}
+                onKeyDown={(e) => handleKeyDown(e)}
                 placeholder="Search cards..."
                 className="flex-1 bg-transparent text-sm text-gray-300 outline-none placeholder:text-gray-600"
                 autoComplete="off"
@@ -261,17 +294,20 @@ export default function Navbar() {
                   boxShadow: "0 16px 48px rgba(0,0,0,0.6)",
                 }}
               >
-                {suggestions.map((s) => (
+                {suggestions.map((s, i) => (
                   <Link
                     key={`${s.game}-${s.id}`}
                     href={s.href}
                     onClick={() => {
                       setDropdownOpen(false);
                       setSearchQuery("");
+                      setActiveIndex(-1);
                     }}
-                    className="flex items-center gap-3 px-3 py-2 transition-colors hover:bg-white/5"
+                    onMouseEnter={() => setActiveIndex(i)}
+                    onMouseLeave={() => setActiveIndex(-1)}
+                    className="flex items-center gap-3 px-3 py-2 transition-colors"
+                    style={{ background: i === activeIndex ? "rgba(255,255,255,0.08)" : undefined }}
                   >
-                    {/* Card front thumbnail */}
                     {s.image && (
                       <img
                         src={s.image}
@@ -282,7 +318,6 @@ export default function Navbar() {
                         style={{ width: 28, height: 39 }}
                       />
                     )}
-                    {/* Card name */}
                     <span
                       className="flex-1 text-sm truncate"
                       style={{ color: "#F0F2FF" }}
@@ -293,14 +328,19 @@ export default function Navbar() {
                 ))}
                 <button
                   onClick={() => {
-                    router.push(
-                      `/search?q=${encodeURIComponent(searchQuery.trim())}`,
-                    );
+                    router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
                     setDropdownOpen(false);
                     setSearchQuery("");
+                    setActiveIndex(-1);
                   }}
-                  className="w-full px-4 py-2 text-xs text-left transition-colors hover:bg-white/5"
-                  style={{ color: "#7A8BA8", borderTop: "1px solid #1A2035" }}
+                  onMouseEnter={() => setActiveIndex(suggestions.length)}
+                  onMouseLeave={() => setActiveIndex(-1)}
+                  className="w-full px-4 py-2 text-xs text-left transition-colors"
+                  style={{
+                    color: "#7A8BA8",
+                    borderTop: "1px solid #1A2035",
+                    background: activeIndex === suggestions.length ? "rgba(255,255,255,0.08)" : undefined,
+                  }}
                 >
                   See all results for &quot;{searchQuery}&quot; →
                 </button>
@@ -356,7 +396,7 @@ export default function Navbar() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Escape") setDropdownOpen(false); }}
+                onKeyDown={(e) => handleKeyDown(e, () => setMenuOpen(false))}
                 placeholder="Search cards..."
                 className="flex-1 bg-transparent text-sm text-gray-300 outline-none placeholder:text-gray-600"
                 autoComplete="off"
@@ -370,12 +410,15 @@ export default function Navbar() {
                 className="absolute left-0 right-0 top-full mt-1 rounded-xl overflow-hidden z-50"
                 style={{ background: "#0E1220", border: "1px solid #1A2035", boxShadow: "0 16px 48px rgba(0,0,0,0.6)" }}
               >
-                {suggestions.map((s) => (
+                {suggestions.map((s, i) => (
                   <Link
                     key={`mobile-${s.game}-${s.id}`}
                     href={s.href}
-                    onClick={() => { setDropdownOpen(false); setSearchQuery(""); setMenuOpen(false); }}
-                    className="flex items-center gap-3 px-3 py-2 transition-colors hover:bg-white/5"
+                    onClick={() => { setDropdownOpen(false); setSearchQuery(""); setActiveIndex(-1); setMenuOpen(false); }}
+                    onMouseEnter={() => setActiveIndex(i)}
+                    onMouseLeave={() => setActiveIndex(-1)}
+                    className="flex items-center gap-3 px-3 py-2 transition-colors"
+                    style={{ background: i === activeIndex ? "rgba(255,255,255,0.08)" : undefined }}
                   >
                     {s.image && (
                       <img src={s.image} alt={s.name} width={28} height={39} className="rounded shrink-0 object-contain" style={{ width: 28, height: 39 }} />
@@ -388,10 +431,17 @@ export default function Navbar() {
                     router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
                     setDropdownOpen(false);
                     setSearchQuery("");
+                    setActiveIndex(-1);
                     setMenuOpen(false);
                   }}
-                  className="w-full px-4 py-2 text-xs text-left transition-colors hover:bg-white/5"
-                  style={{ color: "#7A8BA8", borderTop: "1px solid #1A2035" }}
+                  onMouseEnter={() => setActiveIndex(suggestions.length)}
+                  onMouseLeave={() => setActiveIndex(-1)}
+                  className="w-full px-4 py-2 text-xs text-left transition-colors"
+                  style={{
+                    color: "#7A8BA8",
+                    borderTop: "1px solid #1A2035",
+                    background: activeIndex === suggestions.length ? "rgba(255,255,255,0.08)" : undefined,
+                  }}
                 >
                   See all results for &quot;{searchQuery}&quot; →
                 </button>
