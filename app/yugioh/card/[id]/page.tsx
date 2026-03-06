@@ -36,6 +36,16 @@ export default async function YGOCardPage({
     seen.add(img.id);
     return true;
   });
+  const ATTRIBUTE_COLORS: Record<string, string> = {
+    LIGHT: "#FFD700",
+    DARK: "#9B6BFF",
+    WATER: "#00AAFF",
+    FIRE: "#FF4422",
+    EARTH: "#A0784A",
+    WIND: "#44CC88",
+    DIVINE: "#FFB347",
+  };
+
   const price = card.card_prices?.[0];
   const sets = card.card_sets ?? [];
   const hasTCG = price && parseFloat(price.tcgplayer_price) > 0;
@@ -105,14 +115,21 @@ export default async function YGOCardPage({
                   {card.race}
                 </span>
               )}
-              {card.attribute && (
-                <span
-                  className="text-xs px-2 py-1 rounded-full"
-                  style={{ background: "#1A2035", color: "#7A8BA8" }}
-                >
-                  {card.attribute}
-                </span>
-              )}
+              {card.attribute && (() => {
+                const attrColor = ATTRIBUTE_COLORS[card.attribute] ?? "#7A8BA8";
+                return (
+                  <span
+                    className="text-xs px-2 py-1 rounded-full"
+                    style={{
+                      background: `${attrColor}22`,
+                      color: attrColor,
+                      border: `1px solid ${attrColor}44`,
+                    }}
+                  >
+                    {card.attribute}
+                  </span>
+                );
+              })()}
             </div>
 
             {/* Stats */}
@@ -230,23 +247,23 @@ export default async function YGOCardPage({
             {sets.length > 0 && (
               <div>
                 <p
-                  className="text-xs font-semibold uppercase tracking-wide mb-2"
+                  className="text-xs md:text-sm font-semibold uppercase tracking-wide mb-2 md:mb-3"
                   style={{ color: "#7A8BA8" }}
                 >
                   Printings ({sets.length})
                 </p>
-                <div className="flex flex-col gap-1 max-h-40 overflow-y-auto">
+                <div className="flex flex-col gap-1 md:gap-2 max-h-40 md:max-h-80 overflow-y-auto">
                   {sets.map((s, i) => (
                     <div
                       key={i}
-                      className="flex items-center justify-between text-xs px-3 py-2 rounded"
+                      className="flex items-center justify-between text-xs md:text-sm px-3 md:px-4 py-2 md:py-3 rounded md:rounded-lg"
                       style={{
                         background: "#0E1220",
                         border: "1px solid #1A2035",
                       }}
                     >
                       <span style={{ color: "#F0F2FF" }}>{s.set_name}</span>
-                      <div className="flex gap-3">
+                      <div className="flex gap-3 md:gap-4 shrink-0 ml-2">
                         <span style={{ color: "#7A8BA8" }}>{s.set_rarity}</span>
                         {parseFloat(s.set_price) > 0 && (
                           <span style={{ color: "#3ecf6a" }}>

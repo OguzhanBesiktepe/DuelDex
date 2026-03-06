@@ -84,7 +84,9 @@ export default async function PokemonCardPage({
             <div className="flex gap-4 mb-4">
               {card.hp && (
                 <div>
-                  <p className="text-xs" style={{ color: "#7A8BA8" }}>HP</p>
+                  <p className="text-xs" style={{ color: "#7A8BA8" }}>
+                    HP
+                  </p>
                   <p className="text-lg font-bold" style={{ color: "#CC1F1F" }}>
                     {card.hp}
                   </p>
@@ -92,7 +94,9 @@ export default async function PokemonCardPage({
               )}
               {card.stage && (
                 <div>
-                  <p className="text-xs" style={{ color: "#7A8BA8" }}>Stage</p>
+                  <p className="text-xs" style={{ color: "#7A8BA8" }}>
+                    Stage
+                  </p>
                   <p className="text-lg font-bold" style={{ color: "#F0F2FF" }}>
                     {card.stage}
                   </p>
@@ -124,20 +128,32 @@ export default async function PokemonCardPage({
                     <div
                       key={i}
                       className="px-3 py-2 rounded"
-                      style={{ background: "#0E1220", border: "1px solid #1A2035" }}
+                      style={{
+                        background: "#0E1220",
+                        border: "1px solid #1A2035",
+                      }}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-semibold" style={{ color: "#F0F2FF" }}>
+                        <span
+                          className="text-sm font-semibold"
+                          style={{ color: "#F0F2FF" }}
+                        >
                           {atk.name}
                         </span>
                         {atk.damage && (
-                          <span className="text-sm font-bold" style={{ color: "#CC1F1F" }}>
+                          <span
+                            className="text-sm font-bold"
+                            style={{ color: "#CC1F1F" }}
+                          >
                             {atk.damage}
                           </span>
                         )}
                       </div>
                       {atk.effect && (
-                        <p className="text-xs mt-1" style={{ color: "#7A8BA8" }}>
+                        <p
+                          className="text-xs mt-1"
+                          style={{ color: "#7A8BA8" }}
+                        >
                           {atk.effect}
                         </p>
                       )}
