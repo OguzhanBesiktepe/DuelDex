@@ -19,7 +19,9 @@ export default function RarityFilter({ selected }: RarityFilterProps) {
 
       if (current.includes(label)) {
         params.delete("rarity");
-        current.filter((r) => r !== label).forEach((r) => params.append("rarity", r));
+        current
+          .filter((r) => r !== label)
+          .forEach((r) => params.append("rarity", r));
       } else {
         params.append("rarity", label);
       }
@@ -73,7 +75,9 @@ export default function RarityFilter({ selected }: RarityFilterProps) {
               style={{
                 background: active ? `${group.color}25` : "#1A2035",
                 color: active ? group.color : "#7A8BA8",
-                border: active ? `1px solid ${group.color}80` : "1px solid #1A2035",
+                border: active
+                  ? `1px solid ${group.color}80`
+                  : "1px solid #1A2035",
                 boxShadow: active ? `0 0 8px ${group.color}30` : "none",
               }}
             >

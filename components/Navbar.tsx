@@ -212,7 +212,13 @@ export default function Navbar() {
           <div ref={searchRef} className="ml-2 flex-1 relative">
             <form
               className="flex items-center rounded-md border px-3 py-2"
-              style={{ borderColor: dropdownOpen && suggestions.length > 0 ? "#FF7A00" : "#1A2035", background: "#080B14" }}
+              style={{
+                borderColor:
+                  dropdownOpen && suggestions.length > 0
+                    ? "#FF7A00"
+                    : "#1A2035",
+                background: "#080B14",
+              }}
               onSubmit={(e) => {
                 e.preventDefault();
                 const q = searchQuery.trim();
@@ -228,13 +234,20 @@ export default function Navbar() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Escape") setDropdownOpen(false); }}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") setDropdownOpen(false);
+                }}
                 placeholder="Search cards..."
                 className="flex-1 bg-transparent text-sm text-gray-300 outline-none placeholder:text-gray-600"
                 autoComplete="off"
               />
               {loading && (
-                <span className="ml-2 text-xs animate-pulse" style={{ color: "#7A8BA8" }}>...</span>
+                <span
+                  className="ml-2 text-xs animate-pulse"
+                  style={{ color: "#7A8BA8" }}
+                >
+                  ...
+                </span>
               )}
             </form>
 
@@ -242,13 +255,20 @@ export default function Navbar() {
             {dropdownOpen && suggestions.length > 0 && (
               <div
                 className="absolute left-0 right-0 top-full mt-1 rounded-xl overflow-hidden z-50"
-                style={{ background: "#0E1220", border: "1px solid #1A2035", boxShadow: "0 16px 48px rgba(0,0,0,0.6)" }}
+                style={{
+                  background: "#0E1220",
+                  border: "1px solid #1A2035",
+                  boxShadow: "0 16px 48px rgba(0,0,0,0.6)",
+                }}
               >
                 {suggestions.map((s) => (
                   <Link
                     key={`${s.game}-${s.id}`}
                     href={s.href}
-                    onClick={() => { setDropdownOpen(false); setSearchQuery(""); }}
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      setSearchQuery("");
+                    }}
                     className="flex items-center gap-3 px-3 py-2 transition-colors hover:bg-white/5"
                   >
                     {/* Card front thumbnail */}
@@ -263,12 +283,19 @@ export default function Navbar() {
                       />
                     )}
                     {/* Card name */}
-                    <span className="flex-1 text-sm truncate" style={{ color: "#F0F2FF" }}>{s.name}</span>
+                    <span
+                      className="flex-1 text-sm truncate"
+                      style={{ color: "#F0F2FF" }}
+                    >
+                      {s.name}
+                    </span>
                   </Link>
                 ))}
                 <button
                   onClick={() => {
-                    router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+                    router.push(
+                      `/search?q=${encodeURIComponent(searchQuery.trim())}`,
+                    );
                     setDropdownOpen(false);
                     setSearchQuery("");
                   }}

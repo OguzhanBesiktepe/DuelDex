@@ -14,7 +14,11 @@ interface TypeFilterProps {
   accent?: string;
 }
 
-export default function TypeFilter({ options, selected, accent = "#FF7A00" }: TypeFilterProps) {
+export default function TypeFilter({
+  options,
+  selected,
+  accent = "#FF7A00",
+}: TypeFilterProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [open, setOpen] = useState(false);
@@ -25,7 +29,9 @@ export default function TypeFilter({ options, selected, accent = "#FF7A00" }: Ty
       const current = params.getAll("subtype");
       if (current.includes(value)) {
         params.delete("subtype");
-        current.filter((t) => t !== value).forEach((t) => params.append("subtype", t));
+        current
+          .filter((t) => t !== value)
+          .forEach((t) => params.append("subtype", t));
       } else {
         params.append("subtype", value);
       }
@@ -62,8 +68,12 @@ export default function TypeFilter({ options, selected, accent = "#FF7A00" }: Ty
         }}
       >
         <span style={{ color: "#7A8BA8" }}>Type:</span>
-        <span className="flex-1 text-left" style={{ color: accent }}>{label}</span>
-        <span style={{ color: "#7A8BA8", fontSize: 10 }}>{open ? "▲" : "▼"}</span>
+        <span className="flex-1 text-left" style={{ color: accent }}>
+          {label}
+        </span>
+        <span style={{ color: "#7A8BA8", fontSize: 10 }}>
+          {open ? "▲" : "▼"}
+        </span>
       </button>
 
       {open && (
@@ -78,7 +88,10 @@ export default function TypeFilter({ options, selected, accent = "#FF7A00" }: Ty
         >
           <div className="flex flex-col gap-1">
             <button
-              onClick={() => { selectAll(); setOpen(false); }}
+              onClick={() => {
+                selectAll();
+                setOpen(false);
+              }}
               className="flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs text-left transition-colors"
               style={{
                 background: allSelected ? `${accent}18` : "transparent",
@@ -92,12 +105,16 @@ export default function TypeFilter({ options, selected, accent = "#FF7A00" }: Ty
                   background: allSelected ? accent : "transparent",
                 }}
               >
-                {allSelected && <span style={{ color: "#080B14", fontSize: 9 }}>✓</span>}
+                {allSelected && (
+                  <span style={{ color: "#080B14", fontSize: 9 }}>✓</span>
+                )}
               </span>
               All Types
             </button>
 
-            <div style={{ height: 1, background: "#1A2035", margin: "4px 0" }} />
+            <div
+              style={{ height: 1, background: "#1A2035", margin: "4px 0" }}
+            />
 
             {options.map((t) => {
               const active = selected.includes(t.value);
@@ -118,7 +135,9 @@ export default function TypeFilter({ options, selected, accent = "#FF7A00" }: Ty
                       background: active ? accent : "transparent",
                     }}
                   >
-                    {active && <span style={{ color: "#080B14", fontSize: 9 }}>✓</span>}
+                    {active && (
+                      <span style={{ color: "#080B14", fontSize: 9 }}>✓</span>
+                    )}
                   </span>
                   {t.label}
                 </button>

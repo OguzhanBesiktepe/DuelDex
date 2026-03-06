@@ -8,7 +8,8 @@ const MAX = 12;
 // YGO-style 5-pointed star inside an orange circle
 function YGOStar({ fill, size = 26 }: { fill: string; size?: number }) {
   const dim = fill === "dim";
-  const points = "12,3 14.4,9.6 21.5,9.6 15.9,13.9 18,20.5 12,16.5 6,20.5 8.1,13.9 2.5,9.6 9.6,9.6";
+  const points =
+    "12,3 14.4,9.6 21.5,9.6 15.9,13.9 18,20.5 12,16.5 6,20.5 8.1,13.9 2.5,9.6 9.6,9.6";
   return (
     <svg
       width={size}
@@ -29,15 +30,7 @@ function YGOStar({ fill, size = 26 }: { fill: string; size?: number }) {
         strokeWidth="1.5"
       />
       {/* Inner circle highlight */}
-      {!dim && (
-        <circle
-          cx="12"
-          cy="12"
-          r="9"
-          fill="#E06000"
-          opacity="0.6"
-        />
-      )}
+      {!dim && <circle cx="12" cy="12" r="9" fill="#E06000" opacity="0.6" />}
       {/* Star */}
       <polygon
         points={points}
@@ -73,7 +66,9 @@ export default function LevelFilter({ selected }: { selected: number | null }) {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-xs shrink-0" style={{ color: "#7A8BA8" }}>Level:</span>
+      <span className="text-xs shrink-0" style={{ color: "#7A8BA8" }}>
+        Level:
+      </span>
 
       <div className="flex items-center gap-0.5">
         {Array.from({ length: MAX }, (_, i) => {
@@ -88,10 +83,21 @@ export default function LevelFilter({ selected }: { selected: number | null }) {
               onMouseEnter={() => setHovered(lvl)}
               onMouseLeave={() => setHovered(null)}
               aria-label={`Level ${lvl}`}
-              style={{ padding: 1, background: "none", border: "none", cursor: "pointer" }}
+              style={{
+                padding: 1,
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+              }}
             >
               <YGOStar
-                fill={isActive ? (isSelected || hovered !== null ? "active" : "lit") : "dim"}
+                fill={
+                  isActive
+                    ? isSelected || hovered !== null
+                      ? "active"
+                      : "lit"
+                    : "dim"
+                }
                 size={20}
               />
             </button>
@@ -99,11 +105,16 @@ export default function LevelFilter({ selected }: { selected: number | null }) {
         })}
       </div>
 
-      {(hovered !== null || selected !== null) && (
-        <span className="text-xs font-bold" style={{ color: "#FFD700", minWidth: 16 }}>
-          {hovered ?? selected}
-        </span>
-      )}
+      <span
+        className="text-xs font-bold"
+        style={{
+          color: "#FFD700",
+          minWidth: 16,
+          visibility: hovered !== null || selected !== null ? "visible" : "hidden",
+        }}
+      >
+        {hovered ?? selected ?? ""}
+      </span>
     </div>
   );
 }

@@ -20,9 +20,14 @@ export default async function YGOCardPage({
   const otherAltArts = altArts.filter((c) => c.id !== card.id);
   const rawImages = [
     // Use name= version of this card if available — it has the full card_images list
-    ...(selfInAltArts ?? card).card_images.map((img) => ({ url: img.image_url, id: img.id })),
+    ...(selfInAltArts ?? card).card_images.map((img) => ({
+      url: img.image_url,
+      id: img.id,
+    })),
     // Also include images from any separate alt-art card records
-    ...otherAltArts.flatMap((c) => c.card_images.map((img) => ({ url: img.image_url, id: img.id }))),
+    ...otherAltArts.flatMap((c) =>
+      c.card_images.map((img) => ({ url: img.image_url, id: img.id })),
+    ),
   ];
   // Deduplicate by image id and remove empty URLs
   const seen = new Set<number>();

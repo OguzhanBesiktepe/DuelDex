@@ -4,12 +4,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
 
 const ATTRIBUTES = [
-  { label: "LIGHT",  value: "LIGHT",  color: "#FFD700" },
-  { label: "DARK",   value: "DARK",   color: "#9B6BFF" },
-  { label: "WATER",  value: "WATER",  color: "#00AAFF" },
-  { label: "FIRE",   value: "FIRE",   color: "#FF4422" },
-  { label: "EARTH",  value: "EARTH",  color: "#A0784A" },
-  { label: "WIND",   value: "WIND",   color: "#44CC88" },
+  { label: "LIGHT", value: "LIGHT", color: "#FFD700" },
+  { label: "DARK", value: "DARK", color: "#9B6BFF" },
+  { label: "WATER", value: "WATER", color: "#00AAFF" },
+  { label: "FIRE", value: "FIRE", color: "#FF4422" },
+  { label: "EARTH", value: "EARTH", color: "#A0784A" },
+  { label: "WIND", value: "WIND", color: "#44CC88" },
   { label: "DIVINE", value: "DIVINE", color: "#FFB347" },
 ];
 
@@ -58,8 +58,12 @@ export default function AttributeFilter({ selected }: { selected: string }) {
         }}
       >
         <span style={{ color: "#7A8BA8" }}>Attribute:</span>
-        <span className="flex-1 text-left" style={{ color: accentColor }}>{label}</span>
-        <span style={{ color: "#7A8BA8", fontSize: 10 }}>{open ? "▲" : "▼"}</span>
+        <span className="flex-1 text-left" style={{ color: accentColor }}>
+          {label}
+        </span>
+        <span style={{ color: "#7A8BA8", fontSize: 10 }}>
+          {open ? "▲" : "▼"}
+        </span>
       </button>
 
       {open && (
@@ -88,12 +92,16 @@ export default function AttributeFilter({ selected }: { selected: string }) {
                   background: !selected ? "#FF7A00" : "transparent",
                 }}
               >
-                {!selected && <span style={{ color: "#080B14", fontSize: 9 }}>✓</span>}
+                {!selected && (
+                  <span style={{ color: "#080B14", fontSize: 9 }}>✓</span>
+                )}
               </span>
               All Attributes
             </button>
 
-            <div style={{ height: 1, background: "#1A2035", margin: "4px 0" }} />
+            <div
+              style={{ height: 1, background: "#1A2035", margin: "4px 0" }}
+            />
 
             {ATTRIBUTES.map((attr) => {
               const active = selected === attr.value;
@@ -114,7 +122,9 @@ export default function AttributeFilter({ selected }: { selected: string }) {
                       background: active ? attr.color : "transparent",
                     }}
                   >
-                    {active && <span style={{ color: "#080B14", fontSize: 9 }}>✓</span>}
+                    {active && (
+                      <span style={{ color: "#080B14", fontSize: 9 }}>✓</span>
+                    )}
                   </span>
                   {attr.label}
                 </button>

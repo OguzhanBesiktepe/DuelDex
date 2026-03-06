@@ -14,30 +14,40 @@ interface HeroCardProps {
 }
 
 const WRAPPER: Record<Variant, string> = {
-  left:   styles.hwLeft,
+  left: styles.hwLeft,
   center: styles.hwCenter,
-  right:  styles.hwRight,
+  right: styles.hwRight,
 };
 
 const IMG_CLASS: Record<Variant, string> = {
-  left:   `${styles.card} ${styles.cardSide}`,
+  left: `${styles.card} ${styles.cardSide}`,
   center: `${styles.card} ${styles.cardCenter}`,
-  right:  `${styles.card} ${styles.cardSide}`,
+  right: `${styles.card} ${styles.cardSide}`,
 };
 
-export default function HeroCard({ src, alt, variant, width, boxShadow }: HeroCardProps) {
+export default function HeroCard({
+  src,
+  alt,
+  variant,
+  width,
+  boxShadow,
+}: HeroCardProps) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (!open) return;
-    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [open]);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [open]);
 
   return (
@@ -56,7 +66,10 @@ export default function HeroCard({ src, alt, variant, width, boxShadow }: HeroCa
       {open && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-6"
-          style={{ background: "rgba(8, 11, 20, 0.92)", backdropFilter: "blur(8px)" }}
+          style={{
+            background: "rgba(8, 11, 20, 0.92)",
+            backdropFilter: "blur(8px)",
+          }}
           onClick={() => setOpen(false)}
         >
           <button
@@ -79,7 +92,10 @@ export default function HeroCard({ src, alt, variant, width, boxShadow }: HeroCa
               boxShadow: "0 48px 96px rgba(0,0,0,0.85)",
               cursor: "zoom-out",
             }}
-            onClick={(e) => { e.stopPropagation(); setOpen(false); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpen(false);
+            }}
           />
         </div>
       )}

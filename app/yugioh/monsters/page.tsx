@@ -33,10 +33,15 @@ async function fetchMonsterCards(
   const offset = (page - 1) * perType;
 
   const results = await Promise.all(
-    typesToFetch.map((type) => fetchYGOCards(type, perType, offset, undefined, attribute, level))
+    typesToFetch.map((type) =>
+      fetchYGOCards(type, perType, offset, undefined, attribute, level),
+    ),
   );
 
-  const merged = seededShuffle(results.flatMap((r) => r.cards), page).slice(0, perPage);
+  const merged = seededShuffle(
+    results.flatMap((r) => r.cards),
+    page,
+  ).slice(0, perPage);
   const total = results.reduce((sum, r) => sum + r.total, 0);
   const totalPages = Math.ceil(total / perPage);
 
@@ -46,14 +51,21 @@ async function fetchMonsterCards(
 export default async function MonstersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; type?: string | string[]; attribute?: string; level?: string }>;
+  searchParams: Promise<{
+    page?: string;
+    type?: string | string[];
+    attribute?: string;
+    level?: string;
+  }>;
 }) {
   const params = await searchParams;
   const page = Math.max(1, parseInt(params.page ?? "1", 10));
 
   const rawTypes = params.type;
   const selectedTypes: string[] = rawTypes
-    ? Array.isArray(rawTypes) ? rawTypes : [rawTypes]
+    ? Array.isArray(rawTypes)
+      ? rawTypes
+      : [rawTypes]
     : [];
 
   const selectedAttribute = params.attribute ?? "";
@@ -69,17 +81,22 @@ export default async function MonstersPage({
   const mapped = cards.map((c) => ({
     id: String(c.id),
     name: c.name,
-    imageUrl: c.card_images[0]?.image_url_small ?? c.card_images[0]?.image_url ?? "",
+    imageUrl:
+      c.card_images[0]?.image_url_small ?? c.card_images[0]?.image_url ?? "",
     type: c.race,
     rarity: c.card_sets?.[0]?.set_rarity,
     price: c.card_prices?.[0]?.tcgplayer_price,
     ebayPrice: c.card_prices?.[0]?.ebay_price,
   }));
 
-  const typeQuery = selectedTypes.map((t) => `&type=${encodeURIComponent(t)}`).join("");
+  const typeQuery = selectedTypes
+    .map((t) => `&type=${encodeURIComponent(t)}`)
+    .join("");
   const filterQuery =
     typeQuery +
-    (selectedAttribute ? `&attribute=${encodeURIComponent(selectedAttribute)}` : "") +
+    (selectedAttribute
+      ? `&attribute=${encodeURIComponent(selectedAttribute)}`
+      : "") +
     (selectedLevel ? `&level=${selectedLevel}` : "");
 
   return (
@@ -119,7 +136,11 @@ export default async function MonstersPage({
               <a
                 href={`?page=${page - 1}${filterQuery}`}
                 className="px-3 py-1.5 rounded text-sm"
-                style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
+                style={{
+                  background: "#0E1220",
+                  color: "#F0F2FF",
+                  border: "1px solid #1A2035",
+                }}
               >
                 Previous
               </a>
@@ -131,7 +152,11 @@ export default async function MonstersPage({
               <a
                 href={`?page=${page + 1}${filterQuery}`}
                 className="px-3 py-1.5 rounded text-sm"
-                style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
+                style={{
+                  background: "#0E1220",
+                  color: "#F0F2FF",
+                  border: "1px solid #1A2035",
+                }}
               >
                 Next
               </a>

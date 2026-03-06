@@ -29,7 +29,8 @@ export default function CardItem({
   const rarityColor = getRarityColor(rarity, game);
 
   const tcg = price && parseFloat(price) > 0 ? parseFloat(price) : null;
-  const ebay = ebayPrice && parseFloat(ebayPrice) > 0 ? parseFloat(ebayPrice) : null;
+  const ebay =
+    ebayPrice && parseFloat(ebayPrice) > 0 ? parseFloat(ebayPrice) : null;
   const displayPrice = tcg ?? ebay;
   const priceLabel = displayPrice ? (tcg ? null : "eBay") : null;
 
@@ -66,7 +67,10 @@ export default function CardItem({
 
           <div className="flex items-center justify-between gap-1">
             {type && (
-              <span className="text-[11px] truncate" style={{ color: "#7A8BA8" }}>
+              <span
+                className="text-[11px] truncate"
+                style={{ color: "#7A8BA8" }}
+              >
                 {type}
               </span>
             )}

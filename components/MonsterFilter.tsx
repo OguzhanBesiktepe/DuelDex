@@ -15,7 +15,9 @@ export default function MonsterFilter({ selected }: { selected: string[] }) {
       const current = params.getAll("type");
       if (current.includes(value)) {
         params.delete("type");
-        current.filter((t) => t !== value).forEach((t) => params.append("type", t));
+        current
+          .filter((t) => t !== value)
+          .forEach((t) => params.append("type", t));
       } else {
         params.append("type", value);
       }
@@ -36,7 +38,8 @@ export default function MonsterFilter({ selected }: { selected: string[] }) {
   const label = allSelected
     ? "All Types"
     : selected.length === 1
-      ? (MONSTER_TYPES.find((t) => t.value === selected[0])?.label ?? selected[0])
+      ? (MONSTER_TYPES.find((t) => t.value === selected[0])?.label ??
+        selected[0])
       : `${selected.length} Types`;
 
   return (
@@ -53,8 +56,12 @@ export default function MonsterFilter({ selected }: { selected: string[] }) {
         }}
       >
         <span style={{ color: "#7A8BA8" }}>Type:</span>
-        <span className="flex-1 text-left" style={{ color: "#FF7A00" }}>{label}</span>
-        <span style={{ color: "#7A8BA8", fontSize: 10 }}>{open ? "▲" : "▼"}</span>
+        <span className="flex-1 text-left" style={{ color: "#FF7A00" }}>
+          {label}
+        </span>
+        <span style={{ color: "#7A8BA8", fontSize: 10 }}>
+          {open ? "▲" : "▼"}
+        </span>
       </button>
 
       {/* Dropdown box */}
@@ -71,7 +78,10 @@ export default function MonsterFilter({ selected }: { selected: string[] }) {
           <div className="flex flex-col gap-1">
             {/* All option */}
             <button
-              onClick={() => { selectAll(); setOpen(false); }}
+              onClick={() => {
+                selectAll();
+                setOpen(false);
+              }}
               className="flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs text-left transition-colors"
               style={{
                 background: allSelected ? "#FF7A0018" : "transparent",
@@ -85,12 +95,16 @@ export default function MonsterFilter({ selected }: { selected: string[] }) {
                   background: allSelected ? "#FF7A00" : "transparent",
                 }}
               >
-                {allSelected && <span style={{ color: "#080B14", fontSize: 9 }}>✓</span>}
+                {allSelected && (
+                  <span style={{ color: "#080B14", fontSize: 9 }}>✓</span>
+                )}
               </span>
               All Types
             </button>
 
-            <div style={{ height: 1, background: "#1A2035", margin: "4px 0" }} />
+            <div
+              style={{ height: 1, background: "#1A2035", margin: "4px 0" }}
+            />
 
             {MONSTER_TYPES.map((t) => {
               const active = selected.includes(t.value);
@@ -111,7 +125,9 @@ export default function MonsterFilter({ selected }: { selected: string[] }) {
                       background: active ? "#FF7A00" : "transparent",
                     }}
                   >
-                    {active && <span style={{ color: "#080B14", fontSize: 9 }}>✓</span>}
+                    {active && (
+                      <span style={{ color: "#080B14", fontSize: 9 }}>✓</span>
+                    )}
                   </span>
                   {t.label}
                 </button>
