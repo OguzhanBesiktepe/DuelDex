@@ -2,6 +2,8 @@ import { fetchYGOCardById, fetchYGOCardAltArts } from "@/lib/yugioh";
 import BackButton from "@/components/BackButton";
 import { notFound } from "next/navigation";
 import CardImageZoom from "@/components/CardImageZoom";
+import PrintingsPanel from "@/components/PrintingsPanel";
+import { getYGOTypeColor } from "@/lib/typeColors";
 
 export default async function YGOCardPage({
   params,
@@ -97,16 +99,21 @@ export default async function YGOCardPage({
             </h1>
 
             <div className="flex flex-wrap gap-2 mb-4">
-              <span
-                className="text-xs px-2 py-1 rounded-full"
-                style={{
-                  background: "#FF7A0022",
-                  color: "#FF7A00",
-                  border: "1px solid #FF7A0044",
-                }}
-              >
-                {card.type}
-              </span>
+              {(() => {
+                const typeColor = getYGOTypeColor(card.type);
+                return (
+                  <span
+                    className="text-xs px-2 py-1 rounded-full"
+                    style={{
+                      background: `${typeColor}22`,
+                      color: typeColor,
+                      border: `1px solid ${typeColor}44`,
+                    }}
+                  >
+                    {card.type}
+                  </span>
+                );
+              })()}
               {card.race && (
                 <span
                   className="text-xs px-2 py-1 rounded-full"
@@ -187,95 +194,7 @@ export default async function YGOCardPage({
               {card.desc}
             </p>
 
-            {/* Prices */}
-            {price && (
-              <div
-                className="rounded-xl p-4 mb-6"
-                style={{ background: "#0E1220", border: "1px solid #1A2035" }}
-              >
-                <p
-                  className="text-xs font-semibold uppercase tracking-wide mb-3"
-                  style={{ color: "#7A8BA8" }}
-                >
-                  Market Prices
-                </p>
-                <div className="flex flex-wrap gap-4">
-                  {parseFloat(price.tcgplayer_price) > 0 && (
-                    <div>
-                      <p className="text-xs" style={{ color: "#7A8BA8" }}>
-                        TCGPlayer
-                      </p>
-                      <p
-                        className="text-xl font-bold"
-                        style={{ color: "#3ecf6a" }}
-                      >
-                        ${parseFloat(price.tcgplayer_price).toFixed(2)}
-                      </p>
-                    </div>
-                  )}
-                  {parseFloat(price.ebay_price) > 0 && (
-                    <div>
-                      <p className="text-xs" style={{ color: "#7A8BA8" }}>
-                        eBay
-                      </p>
-                      <p
-                        className="text-xl font-bold"
-                        style={{ color: "#F0F2FF" }}
-                      >
-                        ${parseFloat(price.ebay_price).toFixed(2)}
-                      </p>
-                    </div>
-                  )}
-                  {parseFloat(price.cardmarket_price) > 0 && (
-                    <div>
-                      <p className="text-xs" style={{ color: "#7A8BA8" }}>
-                        Cardmarket
-                      </p>
-                      <p
-                        className="text-xl font-bold"
-                        style={{ color: "#F0F2FF" }}
-                      >
-                        ${parseFloat(price.cardmarket_price).toFixed(2)}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Sets */}
-            {sets.length > 0 && (
-              <div>
-                <p
-                  className="text-xs md:text-sm font-semibold uppercase tracking-wide mb-2 md:mb-3"
-                  style={{ color: "#7A8BA8" }}
-                >
-                  Printings ({sets.length})
-                </p>
-                <div className="flex flex-col gap-1 md:gap-2 max-h-40 md:max-h-80 overflow-y-auto">
-                  {sets.map((s, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center justify-between text-xs md:text-sm px-3 md:px-4 py-2 md:py-3 rounded md:rounded-lg"
-                      style={{
-                        background: "#0E1220",
-                        border: "1px solid #1A2035",
-                      }}
-                    >
-                      <span style={{ color: "#F0F2FF" }}>{s.set_name}</span>
-                      <div className="flex gap-3 md:gap-4 shrink-0 ml-2">
-                        <span style={{ color: "#7A8BA8" }}>{s.set_rarity}</span>
-                        {parseFloat(s.set_price) > 0 && (
-                          <span style={{ color: "#3ecf6a" }}>
-                            ${parseFloat(s.set_price).toFixed(2)}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            <PrintingsPanel sets={sets} price={price ?? null} cardName={card.name} />
           </div>
         </div>
       </div>
