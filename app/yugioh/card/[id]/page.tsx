@@ -3,7 +3,7 @@ import BackButton from "@/components/BackButton";
 import { notFound } from "next/navigation";
 import CardImageZoom from "@/components/CardImageZoom";
 import PrintingsPanel from "@/components/PrintingsPanel";
-import { getYGOTypeColor } from "@/lib/typeColors";
+import { getYGOTypeColor, getYGORaceColor } from "@/lib/typeColors";
 
 export default async function YGOCardPage({
   params,
@@ -114,14 +114,21 @@ export default async function YGOCardPage({
                   </span>
                 );
               })()}
-              {card.race && (
-                <span
-                  className="text-xs px-2 py-1 rounded-full"
-                  style={{ background: "#1A2035", color: "#7A8BA8" }}
-                >
-                  {card.race}
-                </span>
-              )}
+              {card.race && (() => {
+                const raceColor = getYGORaceColor(card.race);
+                return (
+                  <span
+                    className="text-xs px-2 py-1 rounded-full"
+                    style={{
+                      background: `${raceColor}22`,
+                      color: raceColor,
+                      border: `1px solid ${raceColor}44`,
+                    }}
+                  >
+                    {card.race}
+                  </span>
+                );
+              })()}
               {card.attribute && (() => {
                 const attrColor = ATTRIBUTE_COLORS[card.attribute] ?? "#7A8BA8";
                 return (
