@@ -13,6 +13,8 @@ interface CardItemProps {
   rarity?: string;
   price?: string;
   ebayPrice?: string;
+  minPrice?: number;
+  maxPrice?: number;
   game: "yugioh" | "pokemon";
 }
 
@@ -24,6 +26,8 @@ export default function CardItem({
   rarity,
   price,
   ebayPrice,
+  minPrice,
+  maxPrice,
   game,
 }: CardItemProps) {
   const href = `/${game}/card/${id}`;
@@ -32,8 +36,11 @@ export default function CardItem({
   const tcg = price && parseFloat(price) > 0 ? parseFloat(price) : null;
   const ebay =
     ebayPrice && parseFloat(ebayPrice) > 0 ? parseFloat(ebayPrice) : null;
-  const displayPrice = tcg ?? ebay;
-  const priceLabel = displayPrice ? (tcg ? null : "eBay") : null;
+  const fallbackPrice = tcg ?? ebay;
+  const fallbackLabel = fallbackPrice ? (tcg ? null : "eBay") : null;
+
+  const hasRange = minPrice != null && minPrice > 0 && maxPrice != null && maxPrice > 0;
+  const isRange = hasRange && maxPrice - minPrice >= 0.01;
 
   return (
     <Link href={href} className="group block">
@@ -75,7 +82,7 @@ export default function CardItem({
                 {type}
               </span>
             )}
-            {rarity && (
+            {rarity && /[a-zA-Z]/.test(rarity) && (
               <span
                 className="text-[10px] px-1.5 py-0.5 rounded-full shrink-0 font-medium"
                 style={{
@@ -89,15 +96,23 @@ export default function CardItem({
             )}
           </div>
 
-          {displayPrice && (
-            <div className="flex items-center gap-1 mt-1.5">
-              <p className="text-sm font-bold" style={{ color: "#3ecf6a" }}>
-                ${displayPrice.toFixed(2)}
-              </p>
-              {priceLabel && (
-                <span className="text-[10px]" style={{ color: "#7A8BA8" }}>
-                  {priceLabel}
-                </span>
+          {(hasRange || fallbackPrice) && (
+            <div className="mt-1.5">
+              {isRange ? (
+                <p className="text-xs font-semibold leading-tight" style={{ color: "#3ecf6a" }}>
+                  ${minPrice!.toFixed(2)} – ${maxPrice!.toFixed(2)}
+                </p>
+              ) : (
+                <div className="flex items-center gap-1">
+                  <p className="text-sm font-bold" style={{ color: "#3ecf6a" }}>
+                    ${(hasRange ? minPrice! : fallbackPrice!).toFixed(2)}
+                  </p>
+                  {!hasRange && fallbackLabel && (
+                    <span className="text-[10px]" style={{ color: "#7A8BA8" }}>
+                      {fallbackLabel}
+                    </span>
+                  )}
+                </div>
               )}
             </div>
           )}

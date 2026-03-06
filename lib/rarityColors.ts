@@ -6,6 +6,7 @@ const AMETHYST   = "#C084FC"; // Ultra Rare
 const TOPAZ      = "#FCD34D"; // Secret Rare
 const FIRE_OPAL  = "#FB923C"; // Ultimate / Ghost / Collector's
 const DIAMOND    = "#E879F9"; // Starlight / Prismatic
+const QCSR_GOLD  = "#FFB800"; // Quarter Century Secret Rare
 
 const YGO_RARITY_COLORS: Record<string, string> = {
   // Tier 1 — Common
@@ -42,6 +43,9 @@ const YGO_RARITY_COLORS: Record<string, string> = {
   // Tier 7 — Starlight / Prismatic
   "Starlight Rare":               DIAMOND,
   "Platinum Secret Rare":         DIAMOND,
+
+  // Tier 8 — Quarter Century Secret Rare
+  "Quarter Century Secret Rare":  QCSR_GOLD,
 };
 
 const PKM_RARITY_COLORS: Record<string, string> = {

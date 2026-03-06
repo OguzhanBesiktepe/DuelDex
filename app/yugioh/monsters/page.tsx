@@ -78,16 +78,23 @@ export default async function MonstersPage({
     selectedLevel ?? undefined,
   );
 
-  const mapped = cards.map((c) => ({
-    id: String(c.id),
-    name: c.name,
-    imageUrl:
-      c.card_images[0]?.image_url_small ?? c.card_images[0]?.image_url ?? "",
-    type: c.race,
-    rarity: c.card_sets?.[0]?.set_rarity,
-    price: c.card_prices?.[0]?.tcgplayer_price,
-    ebayPrice: c.card_prices?.[0]?.ebay_price,
-  }));
+  const mapped = cards.map((c) => {
+    const setPrices = (c.card_sets ?? [])
+      .map((s) => parseFloat(s.set_price))
+      .filter((p) => !isNaN(p) && p > 0);
+    return {
+      id: String(c.id),
+      name: c.name,
+      imageUrl:
+        c.card_images[0]?.image_url_small ?? c.card_images[0]?.image_url ?? "",
+      type: c.race,
+      rarity: c.card_sets?.[0]?.set_rarity,
+      price: c.card_prices?.[0]?.tcgplayer_price,
+      ebayPrice: c.card_prices?.[0]?.ebay_price,
+      minPrice: setPrices.length > 0 ? Math.min(...setPrices) : undefined,
+      maxPrice: setPrices.length > 0 ? Math.max(...setPrices) : undefined,
+    };
+  });
 
   const typeQuery = selectedTypes
     .map((t) => `&type=${encodeURIComponent(t)}`)

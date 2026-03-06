@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { getRarityColor } from "@/lib/rarityColors";
 
 type CardSet = {
   set_name: string;
@@ -66,14 +67,17 @@ export default function PrintingsPanel({ sets, price, cardName }: PrintingsPanel
             >
               Market Prices
             </p>
-            {tcgIsPerPrinting && (
-              <span
-                className="text-xs px-2 py-0.5 rounded-full"
-                style={{ background: "#FF7A0022", color: "#FF7A00", border: "1px solid #FF7A0044" }}
-              >
-                {selectedSet!.set_rarity} · {selectedSet!.set_code}
-              </span>
-            )}
+            {selectedSet && (() => {
+              const rc = getRarityColor(selectedSet.set_rarity, "yugioh");
+              return (
+                <span
+                  className="text-xs px-2 py-0.5 rounded-full"
+                  style={{ background: `${rc}22`, color: rc, border: `1px solid ${rc}44` }}
+                >
+                  {selectedSet.set_rarity} · {selectedSet.set_code}
+                </span>
+              );
+            })()}
           </div>
 
           <div className="flex flex-wrap gap-6">
@@ -81,10 +85,7 @@ export default function PrintingsPanel({ sets, price, cardName }: PrintingsPanel
               <div>
                 <div className="flex items-center gap-1.5 mb-0.5">
                   <p className="text-xs" style={{ color: "#7A8BA8" }}>TCGPlayer</p>
-                  {tcgIsPerPrinting && (
-                    <span className="text-xs" style={{ color: "#FF7A00" }}>this printing</span>
-                  )}
-                </div>
+                  </div>
                 <p className="text-xl font-bold" style={{ color: "#3ecf6a" }}>
                   ${displayTCG.toFixed(2)}
                 </p>
@@ -167,30 +168,29 @@ export default function PrintingsPanel({ sets, price, cardName }: PrintingsPanel
             {sorted.map((s, i) => {
               const rowPrice = parseFloat(s.set_price);
               const isSelected = selected === i;
+              const rc = getRarityColor(s.set_rarity, "yugioh");
               return (
                 <button
                   key={i}
                   onClick={() => setSelected(isSelected ? null : i)}
                   className="flex items-center justify-between text-xs md:text-sm px-3 md:px-4 py-2 md:py-3 rounded md:rounded-lg w-full text-left transition-colors"
                   style={{
-                    background: isSelected ? "#FF7A0012" : "#0E1220",
-                    border: `1px solid ${isSelected ? "#FF7A0055" : "#1A2035"}`,
+                    background: isSelected ? `${rc}15` : "#0E1220",
+                    border: `1px solid ${isSelected ? `${rc}60` : "#1A2035"}`,
                   }}
                 >
                   <span style={{ color: "#F0F2FF" }} className="truncate">
                     {s.set_name}
                   </span>
                   <div className="flex gap-3 md:gap-4 shrink-0 ml-2 items-center">
-                    <span style={{ color: "#7A8BA8" }}>{s.set_rarity}</span>
-                    {rowPrice > 0 ? (
+                    <span style={{ color: isSelected ? rc : "#7A8BA8" }}>{s.set_rarity}</span>
+                    {rowPrice > 0 && (
                       <span
                         className="font-semibold"
-                        style={{ color: isSelected ? "#FF7A00" : "#3ecf6a" }}
+                        style={{ color: isSelected ? rc : "#3ecf6a" }}
                       >
                         ${rowPrice.toFixed(2)}
                       </span>
-                    ) : (
-                      <span style={{ color: "#3A4A60" }}>—</span>
                     )}
                   </div>
                 </button>
