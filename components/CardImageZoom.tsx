@@ -11,7 +11,7 @@ interface CardImageZoomProps {
 export default function CardImageZoom({
   images,
   alt,
-  width = 240,
+  width = 320,
 }: CardImageZoomProps) {
   const [index, setIndex] = useState(0);
   const [open, setOpen] = useState(false);
