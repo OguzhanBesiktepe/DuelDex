@@ -332,6 +332,73 @@ export default function Navbar() {
           className="border-t px-4 pb-4 md:hidden"
           style={{ borderColor: "#1A2035" }}
         >
+          {/* Mobile search */}
+          <div ref={searchRef} className="relative mt-3 mb-1">
+            <form
+              className="flex items-center rounded-md border px-3 py-2"
+              style={{
+                borderColor: dropdownOpen && suggestions.length > 0 ? "#FF7A00" : "#1A2035",
+                background: "#080B14",
+              }}
+              onSubmit={(e) => {
+                e.preventDefault();
+                const q = searchQuery.trim();
+                if (q) {
+                  router.push(`/search?q=${encodeURIComponent(q)}`);
+                  setSearchQuery("");
+                  setDropdownOpen(false);
+                  setMenuOpen(false);
+                }
+              }}
+            >
+              <span className="mr-2 text-gray-500">🔍</span>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Escape") setDropdownOpen(false); }}
+                placeholder="Search cards..."
+                className="flex-1 bg-transparent text-sm text-gray-300 outline-none placeholder:text-gray-600"
+                autoComplete="off"
+              />
+              {loading && (
+                <span className="ml-2 text-xs animate-pulse" style={{ color: "#7A8BA8" }}>...</span>
+              )}
+            </form>
+            {dropdownOpen && suggestions.length > 0 && (
+              <div
+                className="absolute left-0 right-0 top-full mt-1 rounded-xl overflow-hidden z-50"
+                style={{ background: "#0E1220", border: "1px solid #1A2035", boxShadow: "0 16px 48px rgba(0,0,0,0.6)" }}
+              >
+                {suggestions.map((s) => (
+                  <Link
+                    key={`mobile-${s.game}-${s.id}`}
+                    href={s.href}
+                    onClick={() => { setDropdownOpen(false); setSearchQuery(""); setMenuOpen(false); }}
+                    className="flex items-center gap-3 px-3 py-2 transition-colors hover:bg-white/5"
+                  >
+                    {s.image && (
+                      <img src={s.image} alt={s.name} width={28} height={39} className="rounded shrink-0 object-contain" style={{ width: 28, height: 39 }} />
+                    )}
+                    <span className="flex-1 text-sm truncate" style={{ color: "#F0F2FF" }}>{s.name}</span>
+                  </Link>
+                ))}
+                <button
+                  onClick={() => {
+                    router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+                    setDropdownOpen(false);
+                    setSearchQuery("");
+                    setMenuOpen(false);
+                  }}
+                  className="w-full px-4 py-2 text-xs text-left transition-colors hover:bg-white/5"
+                  style={{ color: "#7A8BA8", borderTop: "1px solid #1A2035" }}
+                >
+                  See all results for &quot;{searchQuery}&quot; →
+                </button>
+              </div>
+            )}
+          </div>
+
           <p className="pb-1 pt-3 text-xs font-semibold uppercase tracking-widest text-gray-500">
             Yu-Gi-Oh!
           </p>

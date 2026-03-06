@@ -17,8 +17,8 @@ export default function HeroSection({ featured }: { featured: FeaturedSet }) {
 
   return (
     <section
-      className="relative w-full overflow-hidden"
-      style={{ minHeight: 580, background: "#080B14" }}
+      className="relative w-full overflow-hidden min-h-[500px] sm:min-h-[580px]"
+      style={{ background: "#080B14" }}
     >
       {/* Subtle radial bloom — background only */}
       <div
@@ -29,12 +29,9 @@ export default function HeroSection({ featured }: { featured: FeaturedSet }) {
       />
 
       {/* Content row */}
-      <div
-        className="relative mx-auto flex max-w-7xl items-center gap-16 px-8"
-        style={{ minHeight: 580 }}
-      >
+      <div className="relative mx-auto flex max-w-7xl flex-col items-center px-4 py-10 text-center md:flex-row md:gap-16 md:px-8 md:py-0 md:text-left" style={{ minHeight: 580 }}>
         {/* Left — text */}
-        <div className="flex-1">
+        <div className="flex-1 md:items-start">
           <p
             className="mb-3 text-xs font-bold uppercase tracking-[0.25em]"
             style={{ color: featured.accentColor }}
@@ -43,14 +40,14 @@ export default function HeroSection({ featured }: { featured: FeaturedSet }) {
           </p>
 
           <h1
-            className="mb-3 text-5xl font-bold leading-tight"
+            className="mb-3 text-3xl font-bold leading-tight sm:text-4xl md:text-5xl"
             style={{ color: "#F0F2FF", fontFamily: "Cinzel, serif" }}
           >
             {featured.setName}
           </h1>
 
           <p
-            className="mb-10 text-xs font-semibold uppercase tracking-widest"
+            className="mb-8 text-xs font-semibold uppercase tracking-widest"
             style={{ color: "#7A8BA8" }}
           >
             Featured Set
@@ -65,8 +62,25 @@ export default function HeroSection({ featured }: { featured: FeaturedSet }) {
           </Link>
         </div>
 
-        {/* Right — three staggered floating cards */}
-        <div className="relative shrink-0" style={{ width: 560, height: 500 }}>
+        {/* Mobile — single centered card */}
+        {centerImg && (
+          <div className="mt-10 flex justify-center md:hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={centerImg}
+              alt={featured.setName}
+              className={styles.card}
+              style={{
+                width: 180,
+                height: "auto",
+                boxShadow: "0 24px 48px rgba(0,0,0,0.7)",
+              }}
+            />
+          </div>
+        )}
+
+        {/* Desktop — three staggered floating cards */}
+        <div className="relative hidden shrink-0 md:block" style={{ width: 560, height: 500 }}>
           {/* Left card */}
           {leftImg && (
             <div className={styles.hwLeft}>

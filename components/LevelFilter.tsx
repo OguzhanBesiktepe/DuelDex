@@ -110,7 +110,8 @@ export default function LevelFilter({ selected }: { selected: number | null }) {
         style={{
           color: "#FFD700",
           minWidth: 16,
-          visibility: hovered !== null || selected !== null ? "visible" : "hidden",
+          visibility:
+            hovered !== null || selected !== null ? "visible" : "hidden",
         }}
       >
         {hovered ?? selected ?? ""}
