@@ -173,7 +173,7 @@ export default async function YGOCardPage({
                       className="text-lg font-bold"
                       style={{ color: "#F0F2FF" }}
                     >
-                      {card.atk}
+                      {card.atk === -1 ? "?" : card.atk}
                     </p>
                   </div>
                 )}
@@ -186,7 +186,7 @@ export default async function YGOCardPage({
                       className="text-lg font-bold"
                       style={{ color: "#F0F2FF" }}
                     >
-                      {card.def}
+                      {card.def === -1 ? "?" : card.def}
                     </p>
                   </div>
                 )}
