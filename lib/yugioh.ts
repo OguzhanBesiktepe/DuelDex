@@ -107,6 +107,20 @@ export async function fetchYGOCardAltArts(name: string): Promise<YGOCard[]> {
   return json?.data ?? [];
 }
 
+export interface YGOSet {
+  set_name: string;
+  set_code: string;
+  num_of_cards: number;
+  tcg_date: string;
+  set_image: string;
+}
+
+export async function fetchYGOSets(): Promise<YGOSet[]> {
+  const res = await fetch(`${YGO_BASE}/cardsets.php`, { next: { revalidate: 86400 } });
+  if (!res.ok) return [];
+  return res.json();
+}
+
 // Maps nav route segments to YGOPRODeck type strings
 export const YGO_TYPE_MAP: Record<string, string[]> = {
   monsters: [

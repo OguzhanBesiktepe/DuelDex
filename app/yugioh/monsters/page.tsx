@@ -3,8 +3,19 @@ import CardGrid from "@/components/CardGrid";
 import MonsterFilter from "@/components/MonsterFilter";
 import AttributeFilter from "@/components/AttributeFilter";
 import LevelFilter from "@/components/LevelFilter";
+import CategoryHero from "@/components/CategoryHero";
 import { MONSTER_TYPES } from "@/lib/monsterTypes";
 import { fetchYGOCards } from "@/lib/yugioh";
+
+const MONSTER_HERO_IMAGES: [
+  { src: string; alt: string },
+  { src: string; alt: string },
+  { src: string; alt: string },
+] = [
+  { src: "https://images.ygoprodeck.com/images/cards/46986414.jpg", alt: "Dark Magician" },
+  { src: "https://images.ygoprodeck.com/images/cards/89631139.jpg", alt: "Blue-Eyes White Dragon" },
+  { src: "https://images.ygoprodeck.com/images/cards/74677422.jpg", alt: "Red-Eyes Black Dragon" },
+];
 
 const ALL_MONSTER_TYPES = MONSTER_TYPES.map((t) => t.value);
 
@@ -109,16 +120,19 @@ export default async function MonstersPage({
   return (
     <div style={{ background: "#080B14", minHeight: "100vh" }}>
       <div className="max-w-screen-xl mx-auto px-4 py-8">
-        <div className="mb-4">
-          <h1
-            className="text-2xl font-bold"
-            style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
-          >
-            Monster Cards
-          </h1>
-          <p className="text-sm mt-1" style={{ color: "#7A8BA8" }}>
-            Yu-Gi-Oh! &mdash; {total.toLocaleString()} cards
-          </p>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1
+              className="text-2xl font-bold"
+              style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+            >
+              Monster Cards
+            </h1>
+            <p className="text-sm mt-1" style={{ color: "#7A8BA8" }}>
+              Yu-Gi-Oh! &mdash; {total.toLocaleString()} cards
+            </p>
+          </div>
+          <CategoryHero images={MONSTER_HERO_IMAGES} />
         </div>
 
         <div className="flex flex-wrap gap-3 items-center justify-between mb-6">

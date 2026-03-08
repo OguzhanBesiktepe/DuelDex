@@ -1,8 +1,19 @@
 import { Suspense } from "react";
 import CardGrid from "@/components/CardGrid";
 import TypeFilter from "@/components/TypeFilter";
+import CategoryHero from "@/components/CategoryHero";
 import { SPELL_TYPES } from "@/lib/cardTypes";
 import { fetchYGOCards } from "@/lib/yugioh";
+
+const SPELL_HERO_IMAGES: [
+  { src: string; alt: string },
+  { src: string; alt: string },
+  { src: string; alt: string },
+] = [
+  { src: "https://images.ygoprodeck.com/images/cards/83764718.jpg", alt: "Monster Reborn" },
+  { src: "https://images.ygoprodeck.com/images/cards/55144522.jpg", alt: "Pot of Greed" },
+  { src: "https://images.ygoprodeck.com/images/cards/12580477.jpg", alt: "Raigeki" },
+];
 
 export default async function SpellsPage({
   searchParams,
@@ -68,16 +79,19 @@ export default async function SpellsPage({
   return (
     <div style={{ background: "#080B14", minHeight: "100vh" }}>
       <div className="max-w-screen-xl mx-auto px-4 py-8">
-        <div className="mb-4">
-          <h1
-            className="text-2xl font-bold"
-            style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
-          >
-            Spell Cards
-          </h1>
-          <p className="text-sm mt-1" style={{ color: "#7A8BA8" }}>
-            Yu-Gi-Oh! &mdash; {total.toLocaleString()} cards
-          </p>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1
+              className="text-2xl font-bold"
+              style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+            >
+              Spell Cards
+            </h1>
+            <p className="text-sm mt-1" style={{ color: "#7A8BA8" }}>
+              Yu-Gi-Oh! &mdash; {total.toLocaleString()} cards
+            </p>
+          </div>
+          <CategoryHero images={SPELL_HERO_IMAGES} />
         </div>
 
         <Suspense fallback={null}>

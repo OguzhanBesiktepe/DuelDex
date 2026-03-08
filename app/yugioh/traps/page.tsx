@@ -1,8 +1,19 @@
 import { Suspense } from "react";
 import CardGrid from "@/components/CardGrid";
 import TypeFilter from "@/components/TypeFilter";
+import CategoryHero from "@/components/CategoryHero";
 import { TRAP_TYPES } from "@/lib/cardTypes";
 import { fetchYGOCards } from "@/lib/yugioh";
+
+const TRAP_HERO_IMAGES: [
+  { src: string; alt: string },
+  { src: string; alt: string },
+  { src: string; alt: string },
+] = [
+  { src: "https://images.ygoprodeck.com/images/cards/44095762.jpg", alt: "Mirror Force" },
+  { src: "https://images.ygoprodeck.com/images/cards/41420027.jpg", alt: "Solemn Judgment" },
+  { src: "https://images.ygoprodeck.com/images/cards/62279055.jpg", alt: "Magical Cylinder" },
+];
 
 export default async function TrapsPage({
   searchParams,
@@ -56,7 +67,7 @@ export default async function TrapsPage({
       name: c.name,
       imageUrl:
         c.card_images[0]?.image_url_small ?? c.card_images[0]?.image_url ?? "",
-      type: c.race,
+      type: c.race === "Normal" ? undefined : c.race,
       rarity: c.card_sets?.[0]?.set_rarity,
       price: c.card_prices?.[0]?.tcgplayer_price,
       ebayPrice: c.card_prices?.[0]?.ebay_price,
@@ -68,16 +79,19 @@ export default async function TrapsPage({
   return (
     <div style={{ background: "#080B14", minHeight: "100vh" }}>
       <div className="max-w-screen-xl mx-auto px-4 py-8">
-        <div className="mb-4">
-          <h1
-            className="text-2xl font-bold"
-            style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
-          >
-            Trap Cards
-          </h1>
-          <p className="text-sm mt-1" style={{ color: "#7A8BA8" }}>
-            Yu-Gi-Oh! &mdash; {total.toLocaleString()} cards
-          </p>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1
+              className="text-2xl font-bold"
+              style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+            >
+              Trap Cards
+            </h1>
+            <p className="text-sm mt-1" style={{ color: "#7A8BA8" }}>
+              Yu-Gi-Oh! &mdash; {total.toLocaleString()} cards
+            </p>
+          </div>
+          <CategoryHero images={TRAP_HERO_IMAGES} />
         </div>
 
         <Suspense fallback={null}>

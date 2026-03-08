@@ -51,7 +51,7 @@ async function fetchFeaturedYGO(): Promise<FeaturedSet | null> {
     );
     if (!setsRes.ok) return null;
 
-    const sets: { set_name: string; num_of_cards: number; tcg_date: string }[] =
+    const sets: { set_name: string; set_code: string; num_of_cards: number; tcg_date: string }[] =
       await setsRes.json();
 
     const mainSets = sets.filter((s) => s.num_of_cards >= 60 && s.tcg_date);
@@ -98,7 +98,7 @@ async function fetchFeaturedYGO(): Promise<FeaturedSet | null> {
       gameLabel: "Yu-Gi-Oh!",
       setName: set.set_name,
       cardImages,
-      setHref: "/yugioh/sets",
+      setHref: `/yugioh/sets/${encodeURIComponent(set.set_code)}`,
       accentColor: rgbStringToHex(accentRgb),
       accentRgb,
     };
