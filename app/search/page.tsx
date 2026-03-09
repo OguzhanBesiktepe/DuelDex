@@ -74,7 +74,7 @@ export default async function SearchPage({
             >
               Yu-Gi-Oh! &mdash; {ygoCards.length} card{ygoCards.length !== 1 ? "s" : ""}
             </h2>
-            <CardGrid cards={ygoCards} game="yugioh" />
+            <CardGrid cards={ygoCards} game="yugioh" from={`/search?q=${encodeURIComponent(query)}`} />
           </section>
         )}
 
@@ -90,7 +90,7 @@ export default async function SearchPage({
             >
               Pokémon &mdash; {pkmnCards.length} card{pkmnCards.length !== 1 ? "s" : ""}
             </h2>
-            <CardGrid cards={pkmnCards} game="pokemon" />
+            <CardGrid cards={pkmnCards} game="pokemon" from={`/search?q=${encodeURIComponent(query)}`} />
           </section>
         )}
 

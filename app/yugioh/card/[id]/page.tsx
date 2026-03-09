@@ -7,10 +7,13 @@ import { getYGOTypeColor, getYGORaceColor } from "@/lib/typeColors";
 
 export default async function YGOCardPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ from?: string }>;
 }) {
   const { id } = await params;
+  const { from } = await searchParams;
   const card = await fetchYGOCardById(id);
   if (!card) notFound();
 
@@ -60,8 +63,8 @@ export default async function YGOCardPage({
       <div className="max-w-screen-lg mx-auto px-4 py-8">
         {/* Back */}
         <BackButton
-          label={card.type.includes("Spell") ? "Back to Spell Cards" : card.type.includes("Trap") ? "Back to Trap Cards" : "Back to Monster Cards"}
-          href={card.type.includes("Spell") ? "/yugioh/spells" : card.type.includes("Trap") ? "/yugioh/traps" : "/yugioh/monsters"}
+          label={from?.startsWith("/search") ? "Back to Search Results" : card.type.includes("Spell") ? "Back to Spell Cards" : card.type.includes("Trap") ? "Back to Trap Cards" : "Back to Monster Cards"}
+          href={from ? decodeURIComponent(from) : card.type.includes("Spell") ? "/yugioh/spells" : card.type.includes("Trap") ? "/yugioh/traps" : "/yugioh/monsters"}
         />
 
         <div className="flex flex-col md:flex-row gap-8">

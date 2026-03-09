@@ -15,9 +15,10 @@ interface CardData {
 interface CardGridProps {
   cards: CardData[];
   game: "yugioh" | "pokemon";
+  from?: string;
 }
 
-export default function CardGrid({ cards, game }: CardGridProps) {
+export default function CardGrid({ cards, game, from }: CardGridProps) {
   if (cards.length === 0) {
     return (
       <div
@@ -32,7 +33,7 @@ export default function CardGrid({ cards, game }: CardGridProps) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
       {cards.map((card) => (
-        <CardItem key={card.id} {...card} game={game} />
+        <CardItem key={card.id} {...card} game={game} from={from} />
       ))}
     </div>
   );

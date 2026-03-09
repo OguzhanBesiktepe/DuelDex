@@ -16,6 +16,7 @@ interface CardItemProps {
   minPrice?: number;
   maxPrice?: number;
   game: "yugioh" | "pokemon";
+  from?: string;
 }
 
 export default function CardItem({
@@ -29,8 +30,9 @@ export default function CardItem({
   minPrice,
   maxPrice,
   game,
+  from,
 }: CardItemProps) {
-  const href = `/${game}/card/${id}`;
+  const href = `/${game}/card/${id}${from ? `?from=${encodeURIComponent(from)}` : ""}`;
   const rarityColor = getRarityColor(rarity, game);
 
   const tcg = price && parseFloat(price) > 0 ? parseFloat(price) : null;
