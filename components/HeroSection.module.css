@@ -22,6 +22,7 @@
   left: 0;
   top: 70px;
   z-index: 10;
+  transform: rotate(-8deg);
   animation: float-left 3.4s ease-in-out infinite;
 }
 
@@ -30,6 +31,7 @@
   left: 50%;
   top: 10px;
   z-index: 20;
+  transform: translateX(-50%);
   animation: float-center 3.8s ease-in-out infinite 0.5s;
 }
 
@@ -38,6 +40,7 @@
   right: 0;
   top: 70px;
   z-index: 10;
+  transform: rotate(8deg);
   animation: float-right 3.2s ease-in-out infinite 1s;
 }
 
