@@ -165,7 +165,7 @@ export default function Navbar() {
             alt="DuelDex"
             width={160}
             height={52}
-            className="object-contain"
+            className="object-contain transition-all duration-200 hover:scale-105 hover:drop-shadow-[0_0_10px_rgba(255,122,0,0.5)]"
             priority
             unoptimized
           />
