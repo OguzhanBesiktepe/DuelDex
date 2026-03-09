@@ -35,6 +35,10 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
 ];
 
 function getPrice(card: SetCard): number {
+  // Match what CardItem displays: prefer maxPrice (set-specific high end),
+  // then minPrice, then generic TCGPlayer price
+  if (card.maxPrice != null && card.maxPrice > 0) return card.maxPrice;
+  if (card.minPrice != null && card.minPrice > 0) return card.minPrice;
   const p = parseFloat(card.price ?? "0");
   return isNaN(p) ? 0 : p;
 }
