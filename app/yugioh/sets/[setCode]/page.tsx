@@ -1,30 +1,20 @@
-import { fetchYGOSets, fetchYGOCardsBySet } from "@/lib/yugioh";
-import CardGrid from "@/components/CardGrid";
+import { fetchYGOSets, fetchAllYGOCardsBySet } from "@/lib/yugioh";
 import BackButton from "@/components/BackButton";
+import SetDetailClient from "@/components/SetDetailClient";
 import { notFound } from "next/navigation";
 
 export default async function YGOSetDetailPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ setCode: string }>;
-  searchParams: Promise<{ page?: string }>;
 }) {
   const { setCode } = await params;
-  const { page: pageParam } = await searchParams;
-  const page = Math.max(1, parseInt(pageParam ?? "1", 10));
-  const perPage = 24;
 
   const allSets = await fetchYGOSets();
   const set = allSets.find((s) => s.set_code === decodeURIComponent(setCode));
   if (!set) notFound();
 
-  const { cards, total } = await fetchYGOCardsBySet(
-    set.set_name,
-    perPage,
-    (page - 1) * perPage,
-  );
-  const totalPages = Math.ceil(total / perPage);
+  const cards = await fetchAllYGOCardsBySet(set.set_name);
 
   const mapped = cards.map((c) => {
     const setPrices = (c.card_sets ?? [])
@@ -34,9 +24,9 @@ export default async function YGOSetDetailPage({
     return {
       id: String(c.id),
       name: c.name,
-      imageUrl:
-        c.card_images[0]?.image_url ?? c.card_images[0]?.image_url_small ?? "",
+      imageUrl: c.card_images[0]?.image_url ?? c.card_images[0]?.image_url_small ?? "",
       type: c.race,
+      cardType: c.type,
       rarity: c.card_sets?.find((s) => s.set_name === set.set_name)?.set_rarity,
       price: c.card_prices?.[0]?.tcgplayer_price,
       ebayPrice: c.card_prices?.[0]?.ebay_price,
@@ -115,41 +105,7 @@ export default async function YGOSetDetailPage({
           </div>
         </div>
 
-        <CardGrid cards={mapped} game="yugioh" />
-
-        {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-8">
-            {page > 1 && (
-              <a
-                href={`?page=${page - 1}`}
-                className="px-3 py-1.5 rounded text-sm"
-                style={{
-                  background: "#0E1220",
-                  color: "#F0F2FF",
-                  border: "1px solid #1A2035",
-                }}
-              >
-                Previous
-              </a>
-            )}
-            <span className="text-sm" style={{ color: "#7A8BA8" }}>
-              Page {page} of {totalPages}
-            </span>
-            {page < totalPages && (
-              <a
-                href={`?page=${page + 1}`}
-                className="px-3 py-1.5 rounded text-sm"
-                style={{
-                  background: "#0E1220",
-                  color: "#F0F2FF",
-                  border: "1px solid #1A2035",
-                }}
-              >
-                Next
-              </a>
-            )}
-          </div>
-        )}
+        <SetDetailClient cards={mapped} />
       </div>
     </div>
   );

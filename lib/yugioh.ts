@@ -64,6 +64,14 @@ export async function fetchYGOCardsBySet(
   };
 }
 
+export async function fetchAllYGOCardsBySet(setName: string): Promise<YGOCard[]> {
+  const url = `${YGO_BASE}/cardinfo.php?cardset=${encodeURIComponent(setName)}`;
+  const res = await fetch(url, { next: { revalidate: 3600 } });
+  if (!res.ok) return [];
+  const json = await res.json();
+  return json.data ?? [];
+}
+
 export async function searchYGOCards(query: string): Promise<YGOCard[]> {
   // Normalize: strip non-alphanumeric so "Blue Eyes" matches "Blue-Eyes"
   const normalize = (s: string) =>
