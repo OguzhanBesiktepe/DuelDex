@@ -59,7 +59,10 @@ export default async function YGOCardPage({
     <div style={{ background: "#080B14", minHeight: "100vh" }}>
       <div className="max-w-screen-lg mx-auto px-4 py-8">
         {/* Back */}
-        <BackButton label="Back to Monster Cards" />
+        <BackButton
+          label={card.type.includes("Spell") ? "Back to Spell Cards" : card.type.includes("Trap") ? "Back to Trap Cards" : "Back to Monster Cards"}
+          href={card.type.includes("Spell") ? "/yugioh/spells" : card.type.includes("Trap") ? "/yugioh/traps" : "/yugioh/monsters"}
+        />
 
         <div className="flex flex-col md:flex-row gap-8">
           {/* Card image */}
