@@ -38,8 +38,9 @@ const ygoLinks = [
   {
     href: "/yugioh/sets",
     label: "Browse All Sets",
-    image: "https://images.ygoprodeck.com/images/cards_small/89631139.jpg", // Blue-Eyes White Dragon
-    hint: "Blue-Eyes White Dragon",
+    image: "/LOB.png",
+    hint: "Legend of Blue Eyes White Dragon",
+    crop: true,
   },
 ];
 
@@ -193,14 +194,24 @@ export default function Navbar() {
                     href={link.href}
                     className="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 transition hover:bg-white/5 hover:text-white"
                   >
-                    <img
-                      src={link.image}
-                      alt={link.hint}
-                      width={32}
-                      height={45}
-                      className="rounded object-cover shadow-md"
-                      style={{ minWidth: 32 }}
-                    />
+                    {link.crop ? (
+                      <div style={{ width: 32, height: 45, borderRadius: 4, overflow: "hidden", flexShrink: 0 }}>
+                        <img
+                          src={link.image}
+                          alt={link.hint}
+                          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }}
+                        />
+                      </div>
+                    ) : (
+                      <img
+                        src={link.image}
+                        alt={link.hint}
+                        width={32}
+                        height={45}
+                        className="rounded object-cover shadow-md"
+                        style={{ minWidth: 32 }}
+                      />
+                    )}
                     {link.label}
                   </Link>
                 ))}
@@ -459,14 +470,24 @@ export default function Navbar() {
               onClick={() => setMenuOpen(false)}
               className="flex items-center gap-3 py-2 text-sm text-gray-300"
             >
-              <img
-                src={link.image}
-                alt={link.hint}
-                width={28}
-                height={39}
-                className="rounded object-cover shadow-md"
-                style={{ minWidth: 28 }}
-              />
+              {link.crop ? (
+                <div style={{ width: 28, height: 39, borderRadius: 4, overflow: "hidden", flexShrink: 0 }}>
+                  <img
+                    src={link.image}
+                    alt={link.hint}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }}
+                  />
+                </div>
+              ) : (
+                <img
+                  src={link.image}
+                  alt={link.hint}
+                  width={28}
+                  height={39}
+                  className="rounded object-cover shadow-md"
+                  style={{ minWidth: 28 }}
+                />
+              )}
               {link.label}
             </Link>
           ))}
