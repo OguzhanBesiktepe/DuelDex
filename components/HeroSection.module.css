@@ -1,26 +1,3 @@
-/* ── Responsive visibility: show on tablets (768px+ wide AND 600px+ tall) ── */
-/* This hides on iPhone landscape (wide but short) while showing on tablets   */
-
-.heroBlock {
-  display: none;
-}
-
-@media (min-width: 768px) and (min-height: 600px) {
-  .heroBlock {
-    display: block;
-  }
-}
-
-.heroFlex {
-  display: none;
-}
-
-@media (min-width: 768px) and (min-height: 600px) {
-  .heroFlex {
-    display: flex;
-  }
-}
-
 /* ── Float keyframes ─────────────────────────────────────────────────────── */
 
 @keyframes float-left {

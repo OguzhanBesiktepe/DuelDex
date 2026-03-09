@@ -35,7 +35,7 @@ export default function CategoryHero({
 
   if (variant === "packs") {
     return (
-      <div className={`${styles.heroFlex} items-end gap-4 shrink-0`}>
+      <div className="hidden md:flex items-end gap-4 shrink-0">
         {/* Left */}
         <div
           className={styles.hwPackSide}
@@ -116,7 +116,7 @@ export default function CategoryHero({
 
   return (
     <div
-      className={`relative shrink-0 ${styles.heroBlock}`}
+      className="relative hidden shrink-0 md:block"
       style={{ width: containerWidth, height: containerHeight }}
     >
       {/* Left */}
