@@ -54,6 +54,7 @@ export default async function SpellsPage({
   }
 
   const totalPages = Math.ceil(total / perPage);
+  const effectivePage = Math.min(page, Math.max(1, totalPages));
   const subtypeQuery = selectedSubtypes
     .map((s) => `&subtype=${encodeURIComponent(s)}`)
     .join("");
@@ -102,9 +103,9 @@ export default async function SpellsPage({
 
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-2 mt-8">
-            {page > 1 && (
+            {effectivePage > 1 && (
               <a
-                href={`?page=${page - 1}${subtypeQuery}`}
+                href={`?page=${effectivePage - 1}${subtypeQuery}`}
                 className="px-3 py-1.5 rounded text-sm"
                 style={{
                   background: "#0E1220",
@@ -116,11 +117,11 @@ export default async function SpellsPage({
               </a>
             )}
             <span className="text-sm" style={{ color: "#7A8BA8" }}>
-              Page {page} of {totalPages}
+              Page {effectivePage} of {totalPages}
             </span>
-            {page < totalPages && (
+            {effectivePage < totalPages && (
               <a
-                href={`?page=${page + 1}${subtypeQuery}`}
+                href={`?page=${effectivePage + 1}${subtypeQuery}`}
                 className="px-3 py-1.5 rounded text-sm"
                 style={{
                   background: "#0E1220",

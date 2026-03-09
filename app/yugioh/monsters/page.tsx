@@ -88,6 +88,7 @@ export default async function MonstersPage({
     selectedAttribute || undefined,
     selectedLevel ?? undefined,
   );
+  const effectivePage = Math.min(page, Math.max(1, totalPages));
 
   const mapped = cards.map((c) => {
     const setPrices = (c.card_sets ?? [])
@@ -153,9 +154,9 @@ export default async function MonstersPage({
 
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-2 mt-8">
-            {page > 1 && (
+            {effectivePage > 1 && (
               <a
-                href={`?page=${page - 1}${filterQuery}`}
+                href={`?page=${effectivePage - 1}${filterQuery}`}
                 className="px-3 py-1.5 rounded text-sm"
                 style={{
                   background: "#0E1220",
@@ -167,11 +168,11 @@ export default async function MonstersPage({
               </a>
             )}
             <span className="text-sm" style={{ color: "#7A8BA8" }}>
-              Page {page} of {totalPages}
+              Page {effectivePage} of {totalPages}
             </span>
-            {page < totalPages && (
+            {effectivePage < totalPages && (
               <a
-                href={`?page=${page + 1}${filterQuery}`}
+                href={`?page=${effectivePage + 1}${filterQuery}`}
                 className="px-3 py-1.5 rounded text-sm"
                 style={{
                   background: "#0E1220",
