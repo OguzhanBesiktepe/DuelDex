@@ -16,9 +16,7 @@ export default async function YGOSetDetailPage({
   const perPage = 24;
 
   const allSets = await fetchYGOSets();
-  const set = allSets.find(
-    (s) => s.set_code === decodeURIComponent(setCode),
-  );
+  const set = allSets.find((s) => s.set_code === decodeURIComponent(setCode));
   if (!set) notFound();
 
   const { cards, total } = await fetchYGOCardsBySet(
@@ -39,8 +37,7 @@ export default async function YGOSetDetailPage({
       imageUrl:
         c.card_images[0]?.image_url ?? c.card_images[0]?.image_url_small ?? "",
       type: c.race,
-      rarity: c.card_sets?.find((s) => s.set_name === set.set_name)
-        ?.set_rarity,
+      rarity: c.card_sets?.find((s) => s.set_name === set.set_name)?.set_rarity,
       price: c.card_prices?.[0]?.tcgplayer_price,
       ebayPrice: c.card_prices?.[0]?.ebay_price,
       minPrice: setPrices.length > 0 ? Math.min(...setPrices) : undefined,
@@ -59,13 +56,23 @@ export default async function YGOSetDetailPage({
           style={{ background: "#0E1220", border: "1px solid #1A2035" }}
         >
           {set.set_image && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={set.set_image}
-              alt={set.set_name}
-              className="w-28 h-28 object-contain rounded-lg shrink-0 self-center sm:self-start"
-              style={{ background: "#080B14" }}
-            />
+            <div
+              className="shrink-0 self-center sm:self-start rounded-lg overflow-hidden"
+              style={{ width: 60, height: 112 }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={set.set_image}
+                alt={set.set_name}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  objectPosition: "top",
+                  display: "block",
+                }}
+              />
+            </div>
           )}
           <div className="flex flex-col justify-center min-w-0">
             <p
