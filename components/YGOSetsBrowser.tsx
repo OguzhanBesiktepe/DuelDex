@@ -40,8 +40,9 @@ export default function YGOSetsBrowser({ sets }: { sets: YGOSet[] }) {
     return list;
   }, [sets, query, sort]);
 
+  const effectivePage = Math.min(page, Math.max(1, Math.ceil(filtered.length / PER_PAGE)));
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
-  const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+  const paginated = filtered.slice((effectivePage - 1) * PER_PAGE, effectivePage * PER_PAGE);
 
   function handleQueryChange(q: string) {
     setQuery(q);
@@ -113,7 +114,6 @@ export default function YGOSetsBrowser({ sets }: { sets: YGOSet[] }) {
               (e.currentTarget as HTMLElement).style.background = "#0E1220";
             }}
           >
-            {/* Set name */}
             <span
               className="text-sm font-semibold leading-tight"
               style={{ color: "#F0F2FF", flex: 1, minWidth: 0 }}
@@ -121,7 +121,6 @@ export default function YGOSetsBrowser({ sets }: { sets: YGOSet[] }) {
               {set.set_name}
             </span>
 
-            {/* Meta */}
             <div className="flex items-center gap-3 shrink-0">
               {set.tcg_date && (
                 <span className="text-xs hidden sm:block" style={{ color: "#7A8BA8" }}>
@@ -131,10 +130,7 @@ export default function YGOSetsBrowser({ sets }: { sets: YGOSet[] }) {
               <span className="text-xs" style={{ color: "#7A8BA8" }}>
                 {set.num_of_cards} cards
               </span>
-              <span
-                className="text-xs font-mono"
-                style={{ color: "#4A5568" }}
-              >
+              <span className="text-xs font-mono" style={{ color: "#4A5568" }}>
                 {set.set_code}
               </span>
               <span style={{ color: "#FF7A0060" }} className="group-hover:text-[#FF7A00] transition-colors text-xs">
@@ -150,7 +146,7 @@ export default function YGOSetsBrowser({ sets }: { sets: YGOSet[] }) {
         <div className="flex items-center justify-center gap-2 mt-8 flex-wrap">
           <button
             onClick={() => { setPage(1); window.scrollTo(0, 0); }}
-            disabled={page === 1}
+            disabled={effectivePage === 1}
             className="px-3 py-1.5 rounded text-sm disabled:opacity-30"
             style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
           >
@@ -158,7 +154,7 @@ export default function YGOSetsBrowser({ sets }: { sets: YGOSet[] }) {
           </button>
           <button
             onClick={() => { setPage((p) => p - 1); window.scrollTo(0, 0); }}
-            disabled={page === 1}
+            disabled={effectivePage === 1}
             className="px-3 py-1.5 rounded text-sm disabled:opacity-30"
             style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
           >
@@ -166,7 +162,7 @@ export default function YGOSetsBrowser({ sets }: { sets: YGOSet[] }) {
           </button>
 
           {Array.from({ length: totalPages }, (_, i) => i + 1)
-            .filter((p) => p === 1 || p === totalPages || Math.abs(p - page) <= 2)
+            .filter((p) => p === 1 || p === totalPages || Math.abs(p - effectivePage) <= 2)
             .reduce<(number | "…")[]>((acc, p, idx, arr) => {
               if (idx > 0 && p - (arr[idx - 1] as number) > 1) acc.push("…");
               acc.push(p);
@@ -181,10 +177,10 @@ export default function YGOSetsBrowser({ sets }: { sets: YGOSet[] }) {
                   onClick={() => { setPage(p as number); window.scrollTo(0, 0); }}
                   className="px-3 py-1.5 rounded text-sm min-w-[36px]"
                   style={{
-                    background: page === p ? "#FF7A0022" : "#0E1220",
-                    color: page === p ? "#FF7A00" : "#F0F2FF",
-                    border: `1px solid ${page === p ? "#FF7A0044" : "#1A2035"}`,
-                    fontWeight: page === p ? 600 : 400,
+                    background: effectivePage === p ? "#FF7A0022" : "#0E1220",
+                    color: effectivePage === p ? "#FF7A00" : "#F0F2FF",
+                    border: `1px solid ${effectivePage === p ? "#FF7A0044" : "#1A2035"}`,
+                    fontWeight: effectivePage === p ? 600 : 400,
                   }}
                 >
                   {p}
@@ -194,7 +190,7 @@ export default function YGOSetsBrowser({ sets }: { sets: YGOSet[] }) {
 
           <button
             onClick={() => { setPage((p) => p + 1); window.scrollTo(0, 0); }}
-            disabled={page === totalPages}
+            disabled={effectivePage === totalPages}
             className="px-3 py-1.5 rounded text-sm disabled:opacity-30"
             style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
           >
@@ -202,7 +198,7 @@ export default function YGOSetsBrowser({ sets }: { sets: YGOSet[] }) {
           </button>
           <button
             onClick={() => { setPage(totalPages); window.scrollTo(0, 0); }}
-            disabled={page === totalPages}
+            disabled={effectivePage === totalPages}
             className="px-3 py-1.5 rounded text-sm disabled:opacity-30"
             style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
           >
@@ -210,7 +206,7 @@ export default function YGOSetsBrowser({ sets }: { sets: YGOSet[] }) {
           </button>
 
           <span className="text-sm w-full text-center mt-1" style={{ color: "#7A8BA8" }}>
-            Page {page} of {totalPages} · {filtered.length} sets
+            Page {effectivePage} of {totalPages} · {filtered.length} sets
           </span>
         </div>
       )}

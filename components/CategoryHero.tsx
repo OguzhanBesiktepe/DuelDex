@@ -6,13 +6,80 @@ interface CategoryHeroProps {
     { src: string; alt: string },
     { src: string; alt: string },
   ];
+  /** "cards" uses the original absolute-positioned layout sized by width.
+   *  "packs" uses a flex row sized by height so it hugs the images naturally. */
+  variant?: "cards" | "packs";
+  centerWidth?: number;
+  sideWidth?: number;
+  containerWidth?: number;
+  containerHeight?: number;
+  /** Pack variant: height to constrain images to */
+  packHeight?: number;
 }
 
-export default function CategoryHero({ images }: CategoryHeroProps) {
+export default function CategoryHero({
+  images,
+  variant = "cards",
+  centerWidth = 270,
+  sideWidth = 230,
+  containerWidth = 560,
+  containerHeight = 500,
+  packHeight = 280,
+}: CategoryHeroProps) {
   const [left, center, right] = images;
 
+  // Pack images are 550x550 square canvases but the art is portrait — crop to portrait via overflow:hidden
+  const packW = Math.round(packHeight * 0.72);       // ~portrait crop ratio for booster packs
+  const sideH = Math.round(packHeight * 0.85);
+  const sideW = Math.round(sideH * 0.72);
+
+  if (variant === "packs") {
+    return (
+      <div className="hidden md:flex items-end gap-4 shrink-0">
+        {/* Left */}
+        <div
+          className={styles.hwPackSide}
+          style={{ width: sideW, height: sideH, overflow: "hidden", borderRadius: 12, boxShadow: "0 24px 48px rgba(0,0,0,0.65)" }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={left.src}
+            alt={left.alt}
+            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }}
+          />
+        </div>
+
+        {/* Center */}
+        <div
+          className={styles.hwPackCenter}
+          style={{ width: packW, height: packHeight, overflow: "hidden", borderRadius: 12, boxShadow: "0 36px 64px rgba(0,0,0,0.72)" }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={center.src}
+            alt={center.alt}
+            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }}
+          />
+        </div>
+
+        {/* Right */}
+        <div
+          className={styles.hwPackSide}
+          style={{ width: sideW, height: sideH, overflow: "hidden", borderRadius: 12, boxShadow: "0 24px 48px rgba(0,0,0,0.65)" }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={right.src}
+            alt={right.alt}
+            style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="relative hidden shrink-0 md:block" style={{ width: 560, height: 500 }}>
+    <div className="relative hidden shrink-0 md:block" style={{ width: containerWidth, height: containerHeight }}>
       {/* Left */}
       <div className={styles.hwLeft}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -20,7 +87,7 @@ export default function CategoryHero({ images }: CategoryHeroProps) {
           src={left.src}
           alt={left.alt}
           className={`${styles.card} ${styles.cardSide}`}
-          style={{ width: 230, height: "auto", boxShadow: "0 24px 48px rgba(0,0,0,0.65)" }}
+          style={{ width: sideWidth, height: "auto", boxShadow: "0 24px 48px rgba(0,0,0,0.65)" }}
         />
       </div>
 
@@ -31,7 +98,7 @@ export default function CategoryHero({ images }: CategoryHeroProps) {
           src={center.src}
           alt={center.alt}
           className={`${styles.card} ${styles.cardCenter}`}
-          style={{ width: 270, height: "auto", boxShadow: "0 36px 64px rgba(0,0,0,0.72)" }}
+          style={{ width: centerWidth, height: "auto", boxShadow: "0 36px 64px rgba(0,0,0,0.72)" }}
         />
       </div>
 
@@ -42,7 +109,7 @@ export default function CategoryHero({ images }: CategoryHeroProps) {
           src={right.src}
           alt={right.alt}
           className={`${styles.card} ${styles.cardSide}`}
-          style={{ width: 230, height: "auto", boxShadow: "0 24px 48px rgba(0,0,0,0.65)" }}
+          style={{ width: sideWidth, height: "auto", boxShadow: "0 24px 48px rgba(0,0,0,0.65)" }}
         />
       </div>
     </div>
