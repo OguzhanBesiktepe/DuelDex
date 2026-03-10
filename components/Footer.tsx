@@ -43,9 +43,8 @@ export default function Footer() {
                 unoptimized
               />
             </Link>
-            <p className="text-sm leading-relaxed" style={{ color: "#7A8BA8" }}>
-              Browse and track TCG card prices for Yu-Gi-Oh! and Pokémon. Live
-              market data powered by TCGPlayer.
+            <p className="text-sm leading-relaxed italic" style={{ color: "#7A8BA8" }}>
+              Search, Track & Collect.
             </p>
             <div className="flex items-center gap-3 mt-1">
               <a
