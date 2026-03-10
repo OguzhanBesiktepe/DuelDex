@@ -105,7 +105,7 @@ export default async function YGOSetDetailPage({
           </div>
         </div>
 
-        <SetDetailClient cards={mapped} />
+        <SetDetailClient cards={mapped} setCode={setCode} />
       </div>
     </div>
   );

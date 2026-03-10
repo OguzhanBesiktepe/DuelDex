@@ -43,7 +43,7 @@ function getPrice(card: SetCard): number {
   return isNaN(p) ? 0 : p;
 }
 
-export default function SetDetailClient({ cards }: { cards: SetCard[] }) {
+export default function SetDetailClient({ cards, setCode }: { cards: SetCard[]; setCode: string }) {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
   const [sort, setSort] = useState<SortOption>("default");
   const [page, setPage] = useState(1);
@@ -133,7 +133,7 @@ export default function SetDetailClient({ cards }: { cards: SetCard[] }) {
         </span>
       </div>
 
-      <CardGrid cards={gridCards} game="yugioh" />
+      <CardGrid cards={gridCards} game="yugioh" from={`/yugioh/sets/${encodeURIComponent(setCode)}`} />
 
       {/* Pagination */}
       {totalPages > 1 && (

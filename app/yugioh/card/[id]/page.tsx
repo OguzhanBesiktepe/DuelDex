@@ -63,7 +63,7 @@ export default async function YGOCardPage({
       <div className="max-w-screen-lg mx-auto px-4 py-8">
         {/* Back */}
         <BackButton
-          label={from?.startsWith("/search") ? "Back to Search Results" : card.type.includes("Spell") ? "Back to Spell Cards" : card.type.includes("Trap") ? "Back to Trap Cards" : "Back to Monster Cards"}
+          label={from?.startsWith("/search") ? "Back to Search Results" : from?.startsWith("/yugioh/sets/") ? "Back to Set" : card.type.includes("Spell") ? "Back to Spell Cards" : card.type.includes("Trap") ? "Back to Trap Cards" : "Back to Monster Cards"}
           href={from ? decodeURIComponent(from) : card.type.includes("Spell") ? "/yugioh/spells" : card.type.includes("Trap") ? "/yugioh/traps" : "/yugioh/monsters"}
         />
 
