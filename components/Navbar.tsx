@@ -74,7 +74,7 @@ const pokemonLinks = [
 
 export default function Navbar() {
   const router = useRouter();
-  const { user, signInWithGoogle, signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [ygoOpen, setYgoOpen] = useState(false);
   const [pkmnOpen, setPkmnOpen] = useState(false);
@@ -427,13 +427,13 @@ export default function Navbar() {
               )}
             </div>
           ) : (
-            <button
-              onClick={signInWithGoogle}
+            <Link
+              href="/signin"
               className="ml-2 shrink-0 rounded-md px-4 py-2 text-sm font-semibold transition hover:opacity-90"
               style={{ background: "#FF7A00", color: "#080B14" }}
             >
               Sign In
-            </button>
+            </Link>
           )}
         </div>
 
@@ -603,13 +603,14 @@ export default function Navbar() {
               </button>
             </div>
           ) : (
-            <button
-              onClick={() => { signInWithGoogle(); setMenuOpen(false); }}
-              className="mt-4 w-full rounded-md py-2 text-sm font-semibold"
+            <Link
+              href="/signin"
+              onClick={() => setMenuOpen(false)}
+              className="mt-4 block w-full rounded-md py-2 text-center text-sm font-semibold"
               style={{ background: "#FF7A00", color: "#080B14" }}
             >
-              Sign In with Google
-            </button>
+              Sign In
+            </Link>
           )}
         </div>
       )}

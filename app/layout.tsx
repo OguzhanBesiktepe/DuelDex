@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Cinzel, Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import ClientLayout from "@/components/ClientLayout";
 import { AuthProvider } from "@/lib/auth-context";
 
 const cinzel = Cinzel({
@@ -31,9 +30,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${cinzel.variable} ${inter.variable} antialiased flex flex-col min-h-screen`}>
         <AuthProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <ClientLayout>{children}</ClientLayout>
         </AuthProvider>
       </body>
     </html>
