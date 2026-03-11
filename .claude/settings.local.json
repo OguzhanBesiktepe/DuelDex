@@ -3,7 +3,9 @@
     "allow": [
       "WebFetch(domain:github.com)",
       "WebFetch(domain:tcgdex.dev)",
-      "WebFetch(domain:www.tcgplayer.com)"
+      "WebFetch(domain:www.tcgplayer.com)",
+      "Bash(cd \"C:\\\\Users\\\\satis\\\\OneDrive\\\\Desktop\\\\DuelDex\" && npm uninstall @supabase/supabase-js @supabase/auth-helpers-nextjs 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\satis\\\\OneDrive\\\\Desktop\\\\DuelDex\" && npm install firebase 2>&1)"
     ]
   }
 }

@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth-context";
 
 interface Suggestion {
   id: string;
@@ -73,15 +74,29 @@ const pokemonLinks = [
 
 export default function Navbar() {
   const router = useRouter();
+  const { user, signInWithGoogle, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [ygoOpen, setYgoOpen] = useState(false);
   const [pkmnOpen, setPkmnOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const searchRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close user menu on click outside
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -359,13 +374,67 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Sign In */}
-          <button
-            className="ml-2 shrink-0 rounded-md px-4 py-2 text-sm font-semibold transition hover:opacity-90"
-            style={{ background: "#FF7A00", color: "#080B14" }}
-          >
-            Sign In
-          </button>
+          {/* Auth button */}
+          {user ? (
+            <div ref={userMenuRef} className="relative ml-2 shrink-0">
+              <button
+                onClick={() => setUserMenuOpen((o) => !o)}
+                className="flex items-center gap-2 rounded-full border-2 p-0.5 transition hover:opacity-90"
+                style={{ borderColor: "#FF7A00" }}
+              >
+                {user.photoURL ? (
+                  <img
+                    src={user.photoURL}
+                    alt="Avatar"
+                    width={32}
+                    height={32}
+                    referrerPolicy="no-referrer"
+                    className="rounded-full object-cover"
+                    style={{ width: 32, height: 32 }}
+                  />
+                ) : (
+                  <div
+                    className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold"
+                    style={{ background: "#FF7A00", color: "#080B14" }}
+                  >
+                    {(user.displayName ?? user.email ?? "?")[0].toUpperCase()}
+                  </div>
+                )}
+              </button>
+              {userMenuOpen && (
+                <div
+                  className="absolute right-0 top-full mt-2 w-48 rounded-lg border py-1 shadow-xl z-50"
+                  style={{ background: "#0E1220", borderColor: "#1A2035" }}
+                >
+                  <p className="truncate px-4 py-2 text-xs" style={{ color: "#7A8BA8" }}>
+                    {user.displayName ?? user.email}
+                  </p>
+                  <hr style={{ borderColor: "#1A2035" }} />
+                  <Link
+                    href="/favorites"
+                    onClick={() => setUserMenuOpen(false)}
+                    className="block px-4 py-2 text-sm text-gray-300 transition hover:bg-white/5 hover:text-white"
+                  >
+                    ♥ My Favorites
+                  </Link>
+                  <button
+                    onClick={() => { signOut(); setUserMenuOpen(false); }}
+                    className="w-full px-4 py-2 text-left text-sm text-gray-300 transition hover:bg-white/5 hover:text-white"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={signInWithGoogle}
+              className="ml-2 shrink-0 rounded-md px-4 py-2 text-sm font-semibold transition hover:opacity-90"
+              style={{ background: "#FF7A00", color: "#080B14" }}
+            >
+              Sign In
+            </button>
+          )}
         </div>
 
         {/* Mobile hamburger */}
@@ -512,12 +581,36 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          <button
-            className="mt-4 w-full rounded-md py-2 text-sm font-semibold"
-            style={{ background: "#FF7A00", color: "#080B14" }}
-          >
-            Sign In
-          </button>
+          {user ? (
+            <div className="mt-4 space-y-1">
+              <p className="truncate text-xs" style={{ color: "#7A8BA8" }}>
+                Signed in as {user.displayName ?? user.email}
+              </p>
+              <Link
+                href="/favorites"
+                onClick={() => setMenuOpen(false)}
+                className="block rounded-md py-2 text-center text-sm font-semibold"
+                style={{ background: "#1A2035", color: "#F0F2FF" }}
+              >
+                ♥ My Favorites
+              </Link>
+              <button
+                onClick={() => { signOut(); setMenuOpen(false); }}
+                className="w-full rounded-md py-2 text-sm font-semibold"
+                style={{ background: "#FF7A00", color: "#080B14" }}
+              >
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => { signInWithGoogle(); setMenuOpen(false); }}
+              className="mt-4 w-full rounded-md py-2 text-sm font-semibold"
+              style={{ background: "#FF7A00", color: "#080B14" }}
+            >
+              Sign In with Google
+            </button>
+          )}
         </div>
       )}
     </nav>
