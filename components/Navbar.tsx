@@ -59,12 +59,6 @@ const pokemonLinks = [
     hint: "Professor Oak",
   },
   {
-    href: "/pokemon/energy",
-    label: "Energy Cards",
-    image: "https://assets.tcgdex.net/en/base/base1/98/low.webp", // Fire Energy
-    hint: "Fire Energy",
-  },
-  {
     href: "/pokemon/sets",
     label: "Browse All Sets",
     image: "https://assets.tcgdex.net/en/base/base1/58/low.webp", // Pikachu
