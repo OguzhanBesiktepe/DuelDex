@@ -1,5 +1,9 @@
 "use client";
 
+// Sign-in page — three-view form (signin / signup / forgot password) rendered as a
+// single component with shared state. Google OAuth and email/password are both supported.
+// The page hides the Navbar and Footer (see ClientLayout) for a distraction-free experience.
+
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,18 +14,42 @@ type View = "signin" | "signup" | "forgot";
 
 function GoogleIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
-      <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"/>
-      <path d="M3.964 10.707A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/>
-      <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z" fill="#EA4335"/>
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"
+        fill="#4285F4"
+      />
+      <path
+        d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z"
+        fill="#34A853"
+      />
+      <path
+        d="M3.964 10.707A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"
+        fill="#FBBC05"
+      />
+      <path
+        d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z"
+        fill="#EA4335"
+      />
     </svg>
   );
 }
 
 export default function SignInPage() {
   const router = useRouter();
-  const { user, signInWithGoogle, signInWithEmail, signUpWithEmail, sendPasswordReset } = useAuth();
+  const {
+    user,
+    signInWithGoogle,
+    signInWithEmail,
+    signUpWithEmail,
+    sendPasswordReset,
+  } = useAuth();
 
   const [view, setView] = useState<View>("signin");
   const [email, setEmail] = useState("");
@@ -49,6 +77,7 @@ export default function SignInPage() {
     setView(v);
   };
 
+  // Converts Firebase error codes into user-readable messages
   const friendlyError = (code: string) => {
     switch (code) {
       case "auth/user-not-found":
@@ -76,6 +105,7 @@ export default function SignInPage() {
       router.replace("/");
     } catch (e: unknown) {
       const code = (e as { code?: string }).code ?? "";
+      // Ignore the error when the user simply closes the Google popup
       if (code !== "auth/popup-closed-by-user") setError(friendlyError(code));
     } finally {
       setSubmitting(false);
@@ -108,7 +138,9 @@ export default function SignInPage() {
       const code = (e as { code?: string }).code ?? "";
       // For invalid credentials, hint that they may have signed up with Google
       if (view === "signin" && code === "auth/invalid-credential") {
-        setError("Invalid email or password. If you signed up with Google, use the \"Continue with Google\" button above.");
+        setError(
+          'Invalid email or password. If you signed up with Google, use the "Continue with Google" button above.',
+        );
         setSubmitting(false);
         return;
       }
@@ -125,7 +157,10 @@ export default function SignInPage() {
       style={{ background: "#080B14" }}
     >
       {/* Logo */}
-      <Link href="/" className="mb-8 block transition-transform hover:scale-105 hover:drop-shadow-[0_0_20px_rgba(255,122,0,0.6)]">
+      <Link
+        href="/"
+        className="mb-8 block transition-transform hover:scale-105 hover:drop-shadow-[0_0_20px_rgba(255,122,0,0.6)]"
+      >
         <Image
           src="/Logo.png"
           alt="DuelDex"
@@ -152,7 +187,7 @@ export default function SignInPage() {
           {view === "forgot" && "Reset Password"}
         </h1>
         <p className="mb-6 text-center text-sm" style={{ color: "#7A8BA8" }}>
-          {view === "signin" && "Sign in to save favorites and build lists."}
+          {view === "signin" && "Search, Track & Collect."}
           {view === "signup" && "Join DuelDex and start tracking cards."}
           {view === "forgot" && "Enter your email and we'll send a reset link."}
         </p>
@@ -164,9 +199,17 @@ export default function SignInPage() {
               onClick={handleGoogleSignIn}
               disabled={submitting}
               className="flex w-full items-center justify-center gap-3 rounded-lg border px-4 py-3 text-sm font-semibold transition disabled:opacity-50"
-              style={{ borderColor: "#00AAFF", color: "#F0F2FF", background: "rgba(0,170,255,0.05)" }}
-              onMouseEnter={e => (e.currentTarget.style.background = "rgba(0,170,255,0.12)")}
-              onMouseLeave={e => (e.currentTarget.style.background = "rgba(0,170,255,0.05)")}
+              style={{
+                borderColor: "#00AAFF",
+                color: "#F0F2FF",
+                background: "rgba(0,170,255,0.05)",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.background = "rgba(0,170,255,0.12)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.background = "rgba(0,170,255,0.05)")
+              }
             >
               <GoogleIcon />
               Continue with Google
@@ -174,7 +217,9 @@ export default function SignInPage() {
 
             <div className="my-5 flex items-center gap-3">
               <hr className="flex-1" style={{ borderColor: "#1A2035" }} />
-              <span className="text-xs" style={{ color: "#7A8BA8" }}>or</span>
+              <span className="text-xs" style={{ color: "#7A8BA8" }}>
+                or
+              </span>
               <hr className="flex-1" style={{ borderColor: "#1A2035" }} />
             </div>
           </>
@@ -184,7 +229,10 @@ export default function SignInPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email */}
           <div>
-            <label className="mb-1 block text-xs font-semibold uppercase tracking-widest" style={{ color: "#7A8BA8" }}>
+            <label
+              className="mb-1 block text-xs font-semibold uppercase tracking-widest"
+              style={{ color: "#7A8BA8" }}
+            >
               Email
             </label>
             <input
@@ -194,14 +242,21 @@ export default function SignInPage() {
               required
               placeholder="you@example.com"
               className="w-full rounded-lg border px-4 py-3 text-sm outline-none transition focus:border-[#00AAFF]"
-              style={{ background: "#080B14", borderColor: "#1A2035", color: "#F0F2FF" }}
+              style={{
+                background: "#080B14",
+                borderColor: "#1A2035",
+                color: "#F0F2FF",
+              }}
             />
           </div>
 
           {/* Password — not shown on forgot */}
           {view !== "forgot" && (
             <div>
-              <label className="mb-1 block text-xs font-semibold uppercase tracking-widest" style={{ color: "#7A8BA8" }}>
+              <label
+                className="mb-1 block text-xs font-semibold uppercase tracking-widest"
+                style={{ color: "#7A8BA8" }}
+              >
                 Password
               </label>
               <input
@@ -211,7 +266,11 @@ export default function SignInPage() {
                 required
                 placeholder="••••••••"
                 className="w-full rounded-lg border px-4 py-3 text-sm outline-none transition focus:border-[#00AAFF]"
-                style={{ background: "#080B14", borderColor: "#1A2035", color: "#F0F2FF" }}
+                style={{
+                  background: "#080B14",
+                  borderColor: "#1A2035",
+                  color: "#F0F2FF",
+                }}
               />
             </div>
           )}
@@ -219,7 +278,10 @@ export default function SignInPage() {
           {/* Confirm password — only on signup */}
           {view === "signup" && (
             <div>
-              <label className="mb-1 block text-xs font-semibold uppercase tracking-widest" style={{ color: "#7A8BA8" }}>
+              <label
+                className="mb-1 block text-xs font-semibold uppercase tracking-widest"
+                style={{ color: "#7A8BA8" }}
+              >
                 Confirm Password
               </label>
               <input
@@ -229,7 +291,11 @@ export default function SignInPage() {
                 required
                 placeholder="••••••••"
                 className="w-full rounded-lg border px-4 py-3 text-sm outline-none transition focus:border-[#00AAFF]"
-                style={{ background: "#080B14", borderColor: "#1A2035", color: "#F0F2FF" }}
+                style={{
+                  background: "#080B14",
+                  borderColor: "#1A2035",
+                  color: "#F0F2FF",
+                }}
               />
             </div>
           )}
@@ -250,12 +316,26 @@ export default function SignInPage() {
 
           {/* Error / success */}
           {error && (
-            <p className="rounded-lg px-4 py-3 text-sm" style={{ background: "rgba(204,31,31,0.15)", color: "#ff6b6b", border: "1px solid rgba(204,31,31,0.3)" }}>
+            <p
+              className="rounded-lg px-4 py-3 text-sm"
+              style={{
+                background: "rgba(204,31,31,0.15)",
+                color: "#ff6b6b",
+                border: "1px solid rgba(204,31,31,0.3)",
+              }}
+            >
               {error}
             </p>
           )}
           {successMsg && (
-            <p className="rounded-lg px-4 py-3 text-sm" style={{ background: "rgba(62,207,106,0.15)", color: "#3ecf6a", border: "1px solid rgba(62,207,106,0.3)" }}>
+            <p
+              className="rounded-lg px-4 py-3 text-sm"
+              style={{
+                background: "rgba(62,207,106,0.15)",
+                color: "#3ecf6a",
+                border: "1px solid rgba(62,207,106,0.3)",
+              }}
+            >
               {successMsg}
             </p>
           )}
@@ -265,15 +345,18 @@ export default function SignInPage() {
             type="submit"
             disabled={submitting}
             className="w-full rounded-lg py-3 text-sm font-bold transition hover:opacity-90 disabled:opacity-50"
-            style={{ background: "linear-gradient(90deg, #FF7A00, #00AAFF)", color: "#080B14" }}
+            style={{
+              background: "linear-gradient(90deg, #FF7A00, #00AAFF)",
+              color: "#080B14",
+            }}
           >
             {submitting
               ? "Please wait…"
               : view === "signin"
-              ? "Sign In"
-              : view === "signup"
-              ? "Create Account"
-              : "Send Reset Email"}
+                ? "Sign In"
+                : view === "signup"
+                  ? "Create Account"
+                  : "Send Reset Email"}
           </button>
         </form>
 
@@ -282,7 +365,11 @@ export default function SignInPage() {
           {view === "signin" && (
             <>
               Don&apos;t have an account?{" "}
-              <button onClick={() => switchView("signup")} className="font-semibold transition hover:underline" style={{ color: "#00AAFF" }}>
+              <button
+                onClick={() => switchView("signup")}
+                className="font-semibold transition hover:underline"
+                style={{ color: "#00AAFF" }}
+              >
                 Sign Up
               </button>
             </>
@@ -290,13 +377,21 @@ export default function SignInPage() {
           {view === "signup" && (
             <>
               Already have an account?{" "}
-              <button onClick={() => switchView("signin")} className="font-semibold transition hover:underline" style={{ color: "#00AAFF" }}>
+              <button
+                onClick={() => switchView("signin")}
+                className="font-semibold transition hover:underline"
+                style={{ color: "#00AAFF" }}
+              >
                 Sign In
               </button>
             </>
           )}
           {view === "forgot" && (
-            <button onClick={() => switchView("signin")} className="font-semibold transition hover:underline" style={{ color: "#00AAFF" }}>
+            <button
+              onClick={() => switchView("signin")}
+              className="font-semibold transition hover:underline"
+              style={{ color: "#00AAFF" }}
+            >
               ← Back to Sign In
             </button>
           )}

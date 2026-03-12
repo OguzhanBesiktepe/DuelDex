@@ -1,3 +1,7 @@
+// Yu-Gi-Oh! Spells page — server component that fetches Spell Cards with optional sub-type
+// filtering (Normal, Quick-Play, Continuous, Equip, Field, Ritual).
+// Multiple sub-types are fetched in parallel and merged.
+
 import { Suspense } from "react";
 import CardGrid from "@/components/CardGrid";
 import TypeFilter from "@/components/TypeFilter";
@@ -34,8 +38,10 @@ export default async function SpellsPage({
 
   let cards, total: number;
   if (selectedSubtypes.length === 0) {
+    // No sub-type filter — fetch all Spell Cards
     ({ cards, total } = await fetchYGOCards("Spell Card", perPage, offset));
   } else if (selectedSubtypes.length === 1) {
+    // Single sub-type filter — pass it as the `race` param to the API
     ({ cards, total } = await fetchYGOCards(
       "Spell Card",
       perPage,
@@ -43,6 +49,7 @@ export default async function SpellsPage({
       selectedSubtypes[0],
     ));
   } else {
+    // Multiple sub-types — fetch each in parallel and merge
     const perSubtype = Math.ceil(perPage / selectedSubtypes.length);
     const results = await Promise.all(
       selectedSubtypes.map((s) =>

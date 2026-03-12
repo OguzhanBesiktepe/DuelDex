@@ -1,5 +1,9 @@
 "use client";
 
+// CardItem — individual card tile shown in the grid.
+// Displays card image, name, type badge, rarity badge, and price.
+// Border + glow color is driven by the card's rarity color for a gem-tier aesthetic.
+
 import Link from "next/link";
 import Image from "next/image";
 import { getRarityColor } from "@/lib/rarityColors";
@@ -32,16 +36,20 @@ export default function CardItem({
   game,
   from,
 }: CardItemProps) {
+  // Append ?from= so the detail page can show a contextual back-button label
   const href = `/${game}/card/${id}${from ? `?from=${encodeURIComponent(from)}` : ""}`;
   const rarityColor = getRarityColor(rarity, game);
 
+  // Prefer TCGPlayer price; fall back to eBay if TCGPlayer is missing/zero
   const tcg = price && parseFloat(price) > 0 ? parseFloat(price) : null;
   const ebay =
     ebayPrice && parseFloat(ebayPrice) > 0 ? parseFloat(ebayPrice) : null;
   const fallbackPrice = tcg ?? ebay;
   const fallbackLabel = fallbackPrice ? (tcg ? null : "eBay") : null;
 
+  // minPrice/maxPrice come from the card's set_price across all printings
   const hasRange = minPrice != null && minPrice > 0 && maxPrice != null && maxPrice > 0;
+  // Only show a range when the spread is at least $0.01 (avoid "$1.00 – $1.00")
   const isRange = hasRange && maxPrice - minPrice >= 0.01;
 
   return (
@@ -84,6 +92,7 @@ export default function CardItem({
                 {type}
               </span>
             )}
+            {/* Guard against rarity values that are pure numbers (some sets use numeric codes) */}
             {rarity && /[a-zA-Z]/.test(rarity) && (
               <span
                 className="text-[10px] px-1.5 py-0.5 rounded-full shrink-0 font-medium"

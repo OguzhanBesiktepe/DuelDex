@@ -1,5 +1,9 @@
 "use client";
 
+// TypeFilter — generic multi-select dropdown for Spell or Trap sub-types (Normal, Continuous, etc.).
+// Reused for both Spells and Traps pages; the `options` prop controls which types are listed.
+// Selections are stored in the `subtype` URL param.
+
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
 

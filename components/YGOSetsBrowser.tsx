@@ -1,5 +1,8 @@
 "use client";
 
+// YGOSetsBrowser — client-side search + sort + pagination for the full list of YGO sets.
+// All filtering is done in-memory since the full set list is loaded once server-side.
+
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import type { YGOSet } from "@/lib/yugioh";
@@ -23,6 +26,8 @@ export default function YGOSetsBrowser({ sets }: { sets: YGOSet[] }) {
 
     if (sort === "az") {
       list = list.sort((a, b) => {
+        // Push sets whose names start with a digit (e.g. "25th Anniversary Rarity Collection")
+        // to the bottom so they don't float above alphabetically sorted named sets.
         const aIsNum = /^\d/.test(a.set_name);
         const bIsNum = /^\d/.test(b.set_name);
         if (aIsNum && !bIsNum) return 1;
@@ -40,6 +45,7 @@ export default function YGOSetsBrowser({ sets }: { sets: YGOSet[] }) {
     return list;
   }, [sets, query, sort]);
 
+  // Clamp current page so it never exceeds the last valid page (e.g. after a search narrows results)
   const effectivePage = Math.min(page, Math.max(1, Math.ceil(filtered.length / PER_PAGE)));
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
   const paginated = filtered.slice((effectivePage - 1) * PER_PAGE, effectivePage * PER_PAGE);
@@ -163,7 +169,8 @@ export default function YGOSetsBrowser({ sets }: { sets: YGOSet[] }) {
 
           {Array.from({ length: totalPages }, (_, i) => i + 1)
             .filter((p) => p === 1 || p === totalPages || Math.abs(p - effectivePage) <= 2)
-            .reduce<(number | "…")[]>((acc, p, idx, arr) => {
+            // Insert "…" ellipsis between non-consecutive page numbers
+          .reduce<(number | "…")[]>((acc, p, idx, arr) => {
               if (idx > 0 && p - (arr[idx - 1] as number) > 1) acc.push("…");
               acc.push(p);
               return acc;

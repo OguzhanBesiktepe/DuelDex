@@ -1,4 +1,6 @@
-// Rarity filter groups — maps a display label to the actual rarity strings from the API
+// Rarity filter groups — maps a display label to the actual rarity strings from the API.
+// A single group covers equivalent tiers across both YGO and Pokémon so one filter
+// pill (e.g. "Ultra Rare") works for both games.
 
 export interface RarityGroup {
   label: string;

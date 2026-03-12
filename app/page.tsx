@@ -1,3 +1,7 @@
+// Homepage — fetches a random featured set from either game and renders the HeroSection.
+// `force-dynamic` ensures a fresh random set is picked on every request (not cached).
+// Colour extraction with node-vibrant adds a game-accurate accent to the hero gradient.
+
 import { Vibrant } from "node-vibrant/node";
 import HeroSection, { type FeaturedSet } from "@/components/HeroSection";
 
@@ -5,6 +9,7 @@ export const dynamic = "force-dynamic";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
+// Converts "255, 122, 0" (Vibrant output) to "#FF7A00" (needed by HeroSection)
 function rgbStringToHex(rgb: string): string {
   const [r, g, b] = rgb.split(",").map((s) => parseInt(s.trim(), 10));
   return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
@@ -54,6 +59,7 @@ async function fetchFeaturedYGO(): Promise<FeaturedSet | null> {
     const sets: { set_name: string; set_code: string; num_of_cards: number; tcg_date: string }[] =
       await setsRes.json();
 
+    // Only consider main sets with 60+ cards and a TCG release date (excludes promos/reprints)
     const mainSets = sets.filter((s) => s.num_of_cards >= 60 && s.tcg_date);
     const set = mainSets[Math.floor(Math.random() * mainSets.length)];
     if (!set) return null;
@@ -77,6 +83,7 @@ async function fetchFeaturedYGO(): Promise<FeaturedSet | null> {
       ),
     );
 
+    // Prefer rare cards for visual impact; fall back to all cards if none are found
     const pool = rareCards.length > 0 ? rareCards : cards;
     const shuffled = [...pool].sort(() => Math.random() - 0.5);
 
@@ -139,6 +146,7 @@ async function fetchFeaturedPokemon(): Promise<FeaturedSet | null> {
     const cards = setDetail.cards ?? [];
     const officialCount = setDetail.cardCount?.official ?? 0;
 
+    // Cards numbered above officialCount are secret/bonus rares (desirable for the hero)
     let pool = cards.filter((c) => {
       if (!c.localId) return false;
       const num = parseInt(c.localId, 10);
@@ -146,6 +154,7 @@ async function fetchFeaturedPokemon(): Promise<FeaturedSet | null> {
       return officialCount > 0 && num > officialCount;
     });
 
+    // Fallback: use the top 20% highest-numbered cards (likely secret/holo rares)
     if (pool.length === 0) {
       const numeric = cards
         .filter((c) => !isNaN(parseInt(c.localId ?? "", 10)))
@@ -190,6 +199,7 @@ async function fetchFeaturedPokemon(): Promise<FeaturedSet | null> {
   }
 }
 
+// Picks a random game each load; if that game's API fails, tries the other; last resort is hardcoded.
 async function getFeaturedSet(): Promise<FeaturedSet> {
   const pickYGO = Math.random() > 0.5;
   const primary = pickYGO
@@ -197,6 +207,7 @@ async function getFeaturedSet(): Promise<FeaturedSet> {
     : await fetchFeaturedPokemon();
   if (primary) return primary;
 
+  // Primary failed — try the other game
   const fallback = pickYGO
     ? await fetchFeaturedPokemon()
     : await fetchFeaturedYGO();

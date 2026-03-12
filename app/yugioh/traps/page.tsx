@@ -1,3 +1,6 @@
+// Yu-Gi-Oh! Traps page — server component that fetches Trap Cards with optional sub-type
+// filtering (Normal, Continuous, Counter). Mirrors the Spells page structure.
+
 import { Suspense } from "react";
 import CardGrid from "@/components/CardGrid";
 import TypeFilter from "@/components/TypeFilter";
@@ -68,6 +71,7 @@ export default async function TrapsPage({
       name: c.name,
       imageUrl:
         c.card_images[0]?.image_url_small ?? c.card_images[0]?.image_url ?? "",
+      // "Normal" Trap sub-type is not very descriptive so we omit it from the tile
       type: c.race === "Normal" ? undefined : c.race,
       rarity: c.card_sets?.[0]?.set_rarity,
       price: c.card_prices?.[0]?.tcgplayer_price,

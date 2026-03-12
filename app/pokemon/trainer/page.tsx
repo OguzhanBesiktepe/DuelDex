@@ -1,3 +1,5 @@
+// Pokémon Trainer cards page — mirrors the Pokémon cards page but filters for Trainer supertype.
+
 import CardGrid from "@/components/CardGrid";
 import { fetchPokemonCards } from "@/lib/pokemon";
 

@@ -1,3 +1,7 @@
+// YGOPRODeck API helpers — all Yu-Gi-Oh! data is sourced from the free YGOPRODeck REST API.
+// No API key is required. Responses are cached for 1 hour (revalidate: 3600) by Next.js
+// unless a shorter TTL makes sense (e.g. search results use 60 s).
+
 const YGO_BASE = "https://db.ygoprodeck.com/api/v7";
 
 export interface YGOCard {
@@ -20,6 +24,8 @@ export interface YGOCard {
   card_sets?: { set_name: string; set_code: string; set_rarity: string; set_price: string }[];
 }
 
+// Fetch a paginated list of cards of a given type with optional race/attribute/level filters.
+// `race` maps to the YGOPRODeck `race` param (e.g. "Dragon", "Spellcaster").
 export async function fetchYGOCards(
   type: string,
   num = 24,
@@ -37,6 +43,7 @@ export async function fetchYGOCards(
   const json = await res.json();
   return {
     cards: json.data ?? [],
+    // total_rows is the unpaginated count, used to calculate page totals
     total: json.meta?.total_rows ?? 0,
   };
 }
@@ -64,6 +71,7 @@ export async function fetchYGOCardsBySet(
   };
 }
 
+// Fetch ALL cards in a set in a single request (no pagination) — used for the set detail page.
 export async function fetchAllYGOCardsBySet(setName: string): Promise<YGOCard[]> {
   const url = `${YGO_BASE}/cardinfo.php?cardset=${encodeURIComponent(setName)}`;
   const res = await fetch(url, { next: { revalidate: 3600 } });
@@ -123,6 +131,7 @@ export interface YGOSet {
   set_image: string;
 }
 
+// Fetches the full list of sets; cached for 24 hours since sets are added infrequently.
 export async function fetchYGOSets(): Promise<YGOSet[]> {
   const res = await fetch(`${YGO_BASE}/cardsets.php`, { next: { revalidate: 86400 } });
   if (!res.ok) return [];

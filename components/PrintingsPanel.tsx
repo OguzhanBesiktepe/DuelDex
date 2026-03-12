@@ -1,5 +1,10 @@
 "use client";
 
+// PrintingsPanel — shown on the YGO card detail page.
+// Lists every printing of the card (set name, rarity, set-specific price).
+// Clicking a row filters the Market Prices section to show that printing's TCGPlayer price.
+// eBay and Cardmarket prices are always card-wide averages regardless of selection.
+
 import { useState, useMemo } from "react";
 import { getRarityColor } from "@/lib/rarityColors";
 
@@ -43,10 +48,12 @@ export default function PrintingsPanel({ sets, price, cardName }: PrintingsPanel
   const selectedSet = selected !== null ? sorted[selected] : null;
   const selectedPrice = selectedSet ? parseFloat(selectedSet.set_price) : null;
 
+  // Aggregate prices from the card_prices array (card-wide averages from YGOPRODeck)
   const aggTCG = price ? parseFloat(price.tcgplayer_price) : 0;
   const aggEbay = price ? parseFloat(price.ebay_price) : 0;
   const aggCardmarket = price ? parseFloat(price.cardmarket_price) : 0;
 
+  // If a specific printing is selected, show its price instead of the aggregate TCGPlayer price
   const displayTCG = selectedPrice && selectedPrice > 0 ? selectedPrice : aggTCG;
   const tcgIsPerPrinting = selectedPrice && selectedPrice > 0;
 

@@ -1,5 +1,9 @@
 "use client";
 
+// SetDetailClient — client-side filter + sort + pagination for a single YGO set's cards.
+// Receives the full card list server-side and handles All / Monsters / Spells / Traps tabs
+// plus price sorting, all without further network requests.
+
 import { useState, useMemo } from "react";
 import CardGrid from "./CardGrid";
 
@@ -34,6 +38,7 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "price-asc", label: "Price: Low → High" },
 ];
 
+// Helper used for price sorting — mirrors the display priority in CardItem.
 function getPrice(card: SetCard): number {
   // Match what CardItem displays: prefer maxPrice (set-specific high end),
   // then minPrice, then generic TCGPlayer price
@@ -82,7 +87,7 @@ export default function SetDetailClient({ cards, setCode }: { cards: SetCard[]; 
     setPage(1);
   }
 
-  // Strip cardType before passing to CardGrid
+  // cardType was only needed for filtering here; CardGrid doesn't need it
   const gridCards = paginated.map(({ cardType: _, ...rest }) => rest);
 
   return (

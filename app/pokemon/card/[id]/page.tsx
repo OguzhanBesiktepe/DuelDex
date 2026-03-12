@@ -1,7 +1,12 @@
+// Pokémon card detail page — fetches a single card by its TCGdex ID (e.g. "swsh1-1")
+// and displays full card info: image, HP, stage, attacks, weaknesses, and set details.
+// TCGdex has no TCGPlayer pricing so the only buy option shown is an eBay search link.
+
 import { fetchPokemonCardById } from "@/lib/pokemon";
 import { notFound } from "next/navigation";
 import CardImageZoom from "@/components/CardImageZoom";
 import BackButton from "@/components/BackButton";
+import CardActions from "@/components/CardActions";
 
 export default async function PokemonCardPage({
   params,
@@ -36,6 +41,14 @@ export default async function PokemonCardPage({
               >
                 Buy on eBay ↗
               </a>
+              {/* Favorite + Add to List buttons — only visible when signed in */}
+              <CardActions
+                cardId={card.id}
+                cardName={card.name}
+                cardImage={card.image ? `${card.image}/low.webp` : ""}
+                game="pokemon"
+                price={0}
+              />
             </div>
           )}
 

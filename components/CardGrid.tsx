@@ -1,3 +1,7 @@
+// CardGrid — renders a responsive grid of CardItem tiles.
+// Accepts normalized card data so it works for both YGO and Pokémon.
+// Shows an empty-state message when no cards match the current filters.
+
 import CardItem from "./CardItem";
 
 interface CardData {

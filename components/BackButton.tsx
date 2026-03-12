@@ -1,5 +1,9 @@
 "use client";
 
+// BackButton — renders either a Next.js Link (when an explicit href is given) or a
+// router.back() button. Using an href is preferred when we know the exact destination;
+// router.back() is used when the origin can vary (e.g. search results vs. a category page).
+
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 

@@ -1,3 +1,6 @@
+// YGO set detail page — resolves a set by its code (e.g. "LOB"), fetches all cards in that set,
+// then passes them to SetDetailClient for client-side filtering + sorting + pagination.
+
 import { fetchYGOSets, fetchAllYGOCardsBySet } from "@/lib/yugioh";
 import BackButton from "@/components/BackButton";
 import SetDetailClient from "@/components/SetDetailClient";
@@ -16,6 +19,7 @@ export default async function YGOSetDetailPage({
 
   const cards = await fetchAllYGOCardsBySet(set.set_name);
 
+  // Only consider set_prices from this specific set (a card can appear in multiple sets)
   const mapped = cards.map((c) => {
     const setPrices = (c.card_sets ?? [])
       .filter((s) => s.set_name === set.set_name)

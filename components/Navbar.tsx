@@ -1,5 +1,11 @@
 "use client";
 
+// Navbar — sticky top navigation bar with:
+//   • Yu-Gi-Oh! and Pokémon hover dropdowns (each with card-thumbnail links)
+//   • Debounced autocomplete search that queries /api/autocomplete
+//   • Avatar button that opens a slide-out profile panel when signed in
+//   • Responsive hamburger menu for mobile
+
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -79,18 +85,6 @@ export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const searchRef = useRef<HTMLDivElement>(null);
-  const userMenuRef = useRef<HTMLDivElement>(null);
-
-  // Close user menu on click outside
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
-        setUserMenuOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -370,56 +364,30 @@ export default function Navbar() {
 
           {/* Auth button */}
           {user ? (
-            <div ref={userMenuRef} className="relative ml-2 shrink-0">
-              <button
-                onClick={() => setUserMenuOpen((o) => !o)}
-                className="flex items-center gap-2 rounded-full border-2 p-0.5 transition hover:opacity-90"
-                style={{ borderColor: "#FF7A00" }}
-              >
-                {user.photoURL ? (
-                  <img
-                    src={user.photoURL}
-                    alt="Avatar"
-                    width={32}
-                    height={32}
-                    referrerPolicy="no-referrer"
-                    className="rounded-full object-cover"
-                    style={{ width: 32, height: 32 }}
-                  />
-                ) : (
-                  <div
-                    className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold"
-                    style={{ background: "#FF7A00", color: "#080B14" }}
-                  >
-                    {(user.displayName ?? user.email ?? "?")[0].toUpperCase()}
-                  </div>
-                )}
-              </button>
-              {userMenuOpen && (
+            <button
+              onClick={() => setUserMenuOpen(true)}
+              className="ml-2 shrink-0 flex items-center gap-2 rounded-full border-2 p-0.5 transition hover:opacity-90"
+              style={{ borderColor: "#FF7A00" }}
+            >
+              {user.photoURL ? (
+                <img
+                  src={user.photoURL}
+                  alt="Avatar"
+                  width={32}
+                  height={32}
+                  referrerPolicy="no-referrer"
+                  className="rounded-full object-cover"
+                  style={{ width: 32, height: 32 }}
+                />
+              ) : (
                 <div
-                  className="absolute right-0 top-full mt-2 w-48 rounded-lg border py-1 shadow-xl z-50"
-                  style={{ background: "#0E1220", borderColor: "#1A2035" }}
+                  className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold"
+                  style={{ background: "#FF7A00", color: "#080B14" }}
                 >
-                  <p className="truncate px-4 py-2 text-xs" style={{ color: "#7A8BA8" }}>
-                    {user.displayName ?? user.email}
-                  </p>
-                  <hr style={{ borderColor: "#1A2035" }} />
-                  <Link
-                    href="/favorites"
-                    onClick={() => setUserMenuOpen(false)}
-                    className="block px-4 py-2 text-sm text-gray-300 transition hover:bg-white/5 hover:text-white"
-                  >
-                    ♥ My Favorites
-                  </Link>
-                  <button
-                    onClick={() => { signOut(); setUserMenuOpen(false); }}
-                    className="w-full px-4 py-2 text-left text-sm text-gray-300 transition hover:bg-white/5 hover:text-white"
-                  >
-                    Sign Out
-                  </button>
+                  {(user.displayName ?? user.email ?? "?")[0].toUpperCase()}
                 </div>
               )}
-            </div>
+            </button>
           ) : (
             <Link
               href="/signin"
@@ -576,26 +544,13 @@ export default function Navbar() {
             </Link>
           ))}
           {user ? (
-            <div className="mt-4 space-y-1">
-              <p className="truncate text-xs" style={{ color: "#7A8BA8" }}>
-                Signed in as {user.displayName ?? user.email}
-              </p>
-              <Link
-                href="/favorites"
-                onClick={() => setMenuOpen(false)}
-                className="block rounded-md py-2 text-center text-sm font-semibold"
-                style={{ background: "#1A2035", color: "#F0F2FF" }}
-              >
-                ♥ My Favorites
-              </Link>
-              <button
-                onClick={() => { signOut(); setMenuOpen(false); }}
-                className="w-full rounded-md py-2 text-sm font-semibold"
-                style={{ background: "#FF7A00", color: "#080B14" }}
-              >
-                Sign Out
-              </button>
-            </div>
+            <button
+              onClick={() => { setUserMenuOpen(true); setMenuOpen(false); }}
+              className="mt-4 w-full rounded-md py-2 text-sm font-semibold"
+              style={{ background: "#1A2035", color: "#F0F2FF" }}
+            >
+              My Account →
+            </button>
           ) : (
             <Link
               href="/signin"
@@ -608,6 +563,115 @@ export default function Navbar() {
           )}
         </div>
       )}
+
+      {/* ── Profile slide-out panel ────────────────────────────────────────────
+           Rendered at the nav root so it overlays the full page.
+           Uses CSS transitions for smooth slide in/out from the right.      */}
+
+      {/* Backdrop — clicking it closes the panel */}
+      <div
+        onClick={() => setUserMenuOpen(false)}
+        className="fixed inset-0 z-40 transition-opacity duration-300"
+        style={{
+          background: "rgba(0,0,0,0.6)",
+          opacity: userMenuOpen ? 1 : 0,
+          pointerEvents: userMenuOpen ? "auto" : "none",
+        }}
+      />
+
+      {/* Slide panel */}
+      <div
+        className="fixed top-0 right-0 h-full z-50 flex flex-col"
+        style={{
+          width: "min(320px, 85vw)",
+          background: "#0E1220",
+          borderLeft: "1px solid #1A2035",
+          boxShadow: "-8px 0 32px rgba(0,0,0,0.5)",
+          transform: userMenuOpen ? "translateX(0)" : "translateX(100%)",
+          transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        }}
+      >
+        {/* Close button */}
+        <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: "1px solid #1A2035" }}>
+          <span className="text-sm font-semibold" style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}>
+            My Account
+          </span>
+          <button
+            onClick={() => setUserMenuOpen(false)}
+            className="text-lg transition hover:opacity-70"
+            style={{ color: "#7A8BA8" }}
+          >
+            ✕
+          </button>
+        </div>
+
+        {user && (
+          <>
+            {/* User info */}
+            <div className="flex items-center gap-3 px-5 py-5" style={{ borderBottom: "1px solid #1A2035" }}>
+              {user.photoURL ? (
+                <img
+                  src={user.photoURL}
+                  alt="Avatar"
+                  referrerPolicy="no-referrer"
+                  className="rounded-full object-cover shrink-0"
+                  style={{ width: 48, height: 48 }}
+                />
+              ) : (
+                <div
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-lg font-bold"
+                  style={{ background: "#FF7A00", color: "#080B14" }}
+                >
+                  {(user.displayName ?? user.email ?? "?")[0].toUpperCase()}
+                </div>
+              )}
+              <div className="min-w-0">
+                {user.displayName && (
+                  <p className="text-sm font-semibold truncate" style={{ color: "#F0F2FF" }}>
+                    {user.displayName}
+                  </p>
+                )}
+                <p className="text-xs truncate" style={{ color: "#7A8BA8" }}>
+                  {user.email}
+                </p>
+              </div>
+            </div>
+
+            {/* Navigation links */}
+            <nav className="flex flex-col py-2 flex-1">
+              <Link
+                href="/favorites"
+                onClick={() => setUserMenuOpen(false)}
+                className="flex items-center gap-3 px-5 py-4 text-sm font-semibold transition hover:bg-white/5"
+                style={{ color: "#F0F2FF" }}
+              >
+                <span className="text-lg" style={{ color: "#CC1F1F" }}>♥</span>
+                My Favorites
+              </Link>
+              <Link
+                href="/lists"
+                onClick={() => setUserMenuOpen(false)}
+                className="flex items-center gap-3 px-5 py-4 text-sm font-semibold transition hover:bg-white/5"
+                style={{ color: "#F0F2FF" }}
+              >
+                <span className="text-lg">📋</span>
+                My Lists
+              </Link>
+            </nav>
+
+            {/* Sign out at the bottom */}
+            <div className="px-5 py-5" style={{ borderTop: "1px solid #1A2035" }}>
+              <button
+                onClick={() => { signOut(); setUserMenuOpen(false); }}
+                className="w-full rounded-lg py-2.5 text-sm font-bold transition hover:opacity-90"
+                style={{ background: "#FF7A00", color: "#080B14" }}
+              >
+                Sign Out
+              </button>
+            </div>
+          </>
+        )}
+      </div>
     </nav>
   );
 }

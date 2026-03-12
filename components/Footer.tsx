@@ -1,3 +1,6 @@
+// Footer — four-column grid: brand/social · YGO links · Pokémon links · Where to Buy + data attribution.
+// Also includes a bottom bar with copyright and API credits.
+
 import Image from "next/image";
 import Link from "next/link";
 

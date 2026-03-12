@@ -1,8 +1,12 @@
+// YGO card detail page — fetches the card by numeric ID and builds an artwork list that
+// includes all alternate art images. Also renders pricing, printings, and user action buttons.
+
 import { fetchYGOCardById, fetchYGOCardAltArts } from "@/lib/yugioh";
 import BackButton from "@/components/BackButton";
 import { notFound } from "next/navigation";
 import CardImageZoom from "@/components/CardImageZoom";
 import PrintingsPanel from "@/components/PrintingsPanel";
+import CardActions from "@/components/CardActions";
 import { getYGOTypeColor, getYGORaceColor } from "@/lib/typeColors";
 
 export default async function YGOCardPage({
@@ -55,6 +59,7 @@ export default async function YGOCardPage({
   const sets = card.card_sets ?? [];
   const hasTCG = price && parseFloat(price.tcgplayer_price) > 0;
   const hasEbay = price && parseFloat(price.ebay_price) > 0;
+  // Buy links use search queries rather than direct product IDs so they always find results
   const tcgPlayerUrl = `https://www.tcgplayer.com/search/yugioh/product?q=${encodeURIComponent(card.name)}`;
   const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(card.name + " yugioh")}`;
 
@@ -62,6 +67,7 @@ export default async function YGOCardPage({
     <div style={{ background: "#080B14", minHeight: "100vh" }}>
       <div className="max-w-screen-lg mx-auto px-4 py-8">
         {/* Back */}
+        {/* Derive a context-aware back label from the `from` query param */}
         <BackButton
           label={from?.startsWith("/search") ? "Back to Search Results" : from?.startsWith("/yugioh/sets/") ? "Back to Set" : card.type.includes("Spell") ? "Back to Spell Cards" : card.type.includes("Trap") ? "Back to Trap Cards" : "Back to Monster Cards"}
           href={from ? decodeURIComponent(from) : card.type.includes("Spell") ? "/yugioh/spells" : card.type.includes("Trap") ? "/yugioh/traps" : "/yugioh/monsters"}
@@ -93,6 +99,14 @@ export default async function YGOCardPage({
                 Buy on eBay ↗
               </a>
             )}
+            {/* Favorite + Add to List buttons — only visible when signed in */}
+            <CardActions
+              cardId={String(card.id)}
+              cardName={card.name}
+              cardImage={card.card_images[0]?.image_url_small ?? ""}
+              game="yugioh"
+              price={parseFloat(price?.tcgplayer_price ?? "0")}
+            />
           </div>
 
           {/* Details */}
@@ -179,6 +193,7 @@ export default async function YGOCardPage({
                       className="text-lg font-bold"
                       style={{ color: "#F0F2FF" }}
                     >
+                      {/* YGOPRODeck returns -1 for Link Monsters that have no DEF */}
                       {card.atk === -1 ? "?" : card.atk}
                     </p>
                   </div>

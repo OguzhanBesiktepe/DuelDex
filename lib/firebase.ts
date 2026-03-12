@@ -1,7 +1,11 @@
+// Firebase initialization — sets up the app, Auth, and Firestore singletons.
+// All other modules import { auth, db, googleProvider } from here.
+
 import { initializeApp, getApps } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
+// Config values are injected via Next.js public env vars (must be prefixed NEXT_PUBLIC_)
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -17,5 +21,6 @@ const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const googleProvider = new GoogleAuthProvider();
+// Request profile + email so we can show the user's name and avatar after sign-in
 googleProvider.addScope("profile");
 googleProvider.addScope("email");

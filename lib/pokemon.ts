@@ -1,3 +1,6 @@
+// TCGdex API helpers — all Pokémon TCG data is sourced from the free, open-source TCGdex API.
+// No API key is required and hotlinking their CDN images is explicitly permitted.
+
 const PKM_BASE = "https://api.tcgdex.net/v2/en";
 
 export interface PokemonCard {
@@ -34,6 +37,8 @@ export interface PokemonCardSummary {
   image?: string;
 }
 
+// Fetch a paginated page of Pokémon cards filtered by supertype (Pokemon / Trainer / Energy).
+// Note: TCGdex does not return a total count — `total` reflects only the current page size.
 export async function fetchPokemonCards(
   supertype: "Pokemon" | "Trainer" | "Energy",
   page = 1,

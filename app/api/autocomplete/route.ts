@@ -1,3 +1,7 @@
+// GET /api/autocomplete?q=<query>
+// Returns up to 8 card suggestions (5 YGO + 3 Pokémon) for the navbar search dropdown.
+// Fetches both APIs in parallel and filters client-side so all words in the query appear in the card name.
+
 import { NextRequest, NextResponse } from "next/server";
 
 const YGO_BASE = "https://db.ygoprodeck.com/api/v7/cardinfo.php";
@@ -33,8 +37,9 @@ export async function GET(req: NextRequest) {
 
   const variants = queryVariants(q);
 
+  // Use allSettled so a failure in one API doesn't block the other
   const [ygoSettled, pkmnSettled] = await Promise.allSettled([
-    // Fetch all YGO variants in parallel, then merge + deduplicate by card id
+    // Fetch all YGO query variants in parallel, then merge + deduplicate by card id
     Promise.all(variants.map(fetchYGO)).then((responses) => {
       const seen = new Set<number>();
       const merged: { id: number; name: string; card_images: { image_url_small: string }[] }[] = [];
@@ -56,6 +61,7 @@ export async function GET(req: NextRequest) {
   const results = [];
 
   if (ygoSettled.status === "fulfilled") {
+    // Post-filter: every typed word must appear in the card name (API uses partial prefix matching)
     const ygoCards = ygoSettled.value
       .filter((c) => words.every((w) => normalize(c.name).includes(w)))
       .slice(0, 5)

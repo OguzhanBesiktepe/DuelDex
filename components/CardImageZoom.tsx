@@ -1,5 +1,9 @@
 "use client";
 
+// CardImageZoom — shows a card image with click-to-open lightbox.
+// When a card has multiple artworks (YGO alt arts) it renders ‹ dot indicators › arrows
+// so the user can cycle through them. Arrow-key and Escape keyboard shortcuts work in the lightbox.
+
 import { useState, useEffect, useCallback } from "react";
 
 interface CardImageZoomProps {

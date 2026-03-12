@@ -1,3 +1,6 @@
+// Root layout — wraps every page with fonts, AuthProvider, and ClientLayout.
+// Cinzel is used for headings; Inter is used for body text.
+
 import type { Metadata } from "next";
 import { Cinzel, Inter } from "next/font/google";
 import "./globals.css";

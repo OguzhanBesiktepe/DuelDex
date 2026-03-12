@@ -1,3 +1,7 @@
+// Pokémon cards page — fetches Pokémon-type cards (not Trainers or Energy) from TCGdex
+// and renders them in a paginated grid. `force-dynamic` is set because TCGdex doesn't
+// return a total count so we can't pre-compute the last page.
+
 import CardGrid from "@/components/CardGrid";
 import { fetchPokemonCards } from "@/lib/pokemon";
 
@@ -49,6 +53,7 @@ export default async function PokemonPage({
           <span className="text-sm" style={{ color: "#7A8BA8" }}>
             Page {page}
           </span>
+          {/* Show "Next" only if a full page was returned — TCGdex has no total count */}
           {cards.length === 24 && (
             <a
               href={`?page=${page + 1}`}

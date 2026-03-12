@@ -1,3 +1,6 @@
+// Sub-type options used by TypeFilter for Spell and Trap card pages.
+// Values correspond to the `race` field returned by the YGOPRODeck API for non-monster cards.
+
 export const SPELL_TYPES = [
   { label: "Normal", value: "Normal" },
   { label: "Quick-Play", value: "Quick-Play" },

@@ -1,5 +1,9 @@
 "use client";
 
+// MonsterFilter — multi-select dropdown for YGO monster sub-types (Effect, Fusion, Synchro, etc.).
+// Multiple types can be active simultaneously; each selection is appended to the `type` URL param.
+// "All Types" clears all type params.
+
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
 import { MONSTER_TYPES } from "@/lib/monsterTypes";
@@ -14,6 +18,7 @@ export default function MonsterFilter({ selected }: { selected: string[] }) {
       const params = new URLSearchParams(searchParams.toString());
       const current = params.getAll("type");
       if (current.includes(value)) {
+        // URLSearchParams has no "delete one value" method, so we clear and re-append the rest
         params.delete("type");
         current
           .filter((t) => t !== value)

@@ -1,5 +1,9 @@
 "use client";
 
+// RarityFilter — horizontal chip row for filtering by rarity tier.
+// Uses the shared RARITY_GROUPS so both YGO and Pokémon pages can use the same component.
+// Multiple rarities can be active; each is appended to the `rarity` URL param.
+
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import { RARITY_GROUPS } from "@/lib/rarityGroups";

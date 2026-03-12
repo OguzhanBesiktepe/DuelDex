@@ -1,3 +1,8 @@
+// HeroSection — full-width hero banner shown on the homepage.
+// Displays a randomly selected featured set (alternating between YGO and Pokémon each load)
+// with its name, a "Browse This Set" CTA, and three staggered floating card images.
+// The accent colour is extracted from the card art using node-vibrant.
+
 import Link from "next/link";
 import styles from "./HeroSection.module.css";
 

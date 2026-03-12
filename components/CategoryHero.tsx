@@ -1,3 +1,8 @@
+// CategoryHero — decorative three-card (or three-pack) image cluster shown at the top of
+// each category page (Monsters, Spells, Traps, Sets) on tablet and larger screens.
+// Two variants: "cards" uses absolute positioning for a fanned-out look;
+// "packs" uses a flex row aligned to the bottom for a stacked-pack look.
+
 import styles from "./HeroSection.module.css";
 
 interface CategoryHeroProps {
@@ -28,7 +33,8 @@ export default function CategoryHero({
 }: CategoryHeroProps) {
   const [left, center, right] = images;
 
-  // Pack images are 550x550 square canvases but the art is portrait — crop to portrait via overflow:hidden
+  // Pack art is stored as a 550×550 square; we crop it to portrait proportions via overflow:hidden.
+  // packW is the center column width; side images are 80% of the center height.
   const packW = Math.round(packHeight * 0.5);
   const sideH = Math.round(packHeight * 0.8);
   const sideW = Math.round(sideH * 0.5);

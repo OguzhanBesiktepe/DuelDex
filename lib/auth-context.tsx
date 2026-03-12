@@ -1,5 +1,8 @@
 "use client";
 
+// Auth context — wraps Firebase Auth so any component can call useAuth() to get
+// the current user and sign-in/sign-out helpers without prop-drilling.
+
 import { createContext, useContext, useEffect, useState } from "react";
 import type { User } from "firebase/auth";
 import {
@@ -22,6 +25,7 @@ type AuthContextType = {
   signOut: () => Promise<void>;
 };
 
+// Default values are used when a component is rendered outside an AuthProvider
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
@@ -36,11 +40,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Subscribe to Firebase Auth state changes; fires immediately with the current user
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
       setLoading(false);
     });
+    // Unsubscribe listener when the provider unmounts
     return () => unsubscribe();
   }, []);
 

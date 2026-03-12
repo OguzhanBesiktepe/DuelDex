@@ -1,4 +1,7 @@
-// Colors derived from actual Yu-Gi-Oh card frame colors.
+// Type and race color utilities for Yu-Gi-Oh! cards.
+// getYGOTypeColor maps card frame types (Effect, Fusion, Spell, etc.) to their official frame colours.
+// getYGORaceColor maps the 25 monster races (Dragon, Spellcaster, etc.) to thematic colours.
+//
 // Priority for mixed types (e.g. "Pendulum Effect Fusion Monster"):
 // Fusion > Synchro > XYZ > Link > Ritual > Pendulum > Effect > Normal
 

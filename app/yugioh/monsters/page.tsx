@@ -1,3 +1,7 @@
+// Yu-Gi-Oh! Monsters page — server component that fetches and displays monster cards.
+// Supports filtering by monster type (Effect, Fusion, etc.), attribute (LIGHT, DARK, etc.),
+// and level. Multiple monster types are fetched in parallel and merged/shuffled for variety.
+
 import { Suspense } from "react";
 import CardGrid from "@/components/CardGrid";
 import MonsterFilter from "@/components/MonsterFilter";
@@ -17,6 +21,7 @@ const MONSTER_HERO_IMAGES: [
   { src: "https://images.ygoprodeck.com/images/cards/74677422.jpg", alt: "Red-Eyes Black Dragon" },
 ];
 
+// All API type strings — used when no specific type filter is active
 const ALL_MONSTER_TYPES = MONSTER_TYPES.map((t) => t.value);
 
 // Deterministic shuffle: same page always produces same card order
@@ -31,6 +36,8 @@ function seededShuffle<T>(arr: T[], seed: number): T[] {
   return a;
 }
 
+// Fetches monster cards for the given type(s). When multiple types are selected,
+// each is fetched in parallel and the results are merged/shuffled so no single type dominates.
 async function fetchMonsterCards(
   types: string[],
   page: number,
@@ -40,6 +47,7 @@ async function fetchMonsterCards(
   const isAll = types.length === 0;
   const typesToFetch = isAll ? ALL_MONSTER_TYPES : types;
   const perPage = 24;
+  // Distribute the page quota evenly across all types being fetched
   const perType = Math.ceil(perPage / typesToFetch.length);
   const offset = (page - 1) * perType;
 
@@ -90,6 +98,8 @@ export default async function MonstersPage({
   );
   const effectivePage = Math.min(page, Math.max(1, totalPages));
 
+  // Normalise the raw YGO API response into the shape CardGrid/CardItem expects.
+  // minPrice/maxPrice are computed from all set_price values for this card.
   const mapped = cards.map((c) => {
     const setPrices = (c.card_sets ?? [])
       .map((s) => parseFloat(s.set_price))

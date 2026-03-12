@@ -1,3 +1,6 @@
+// Yu-Gi-Oh! Sets browser page — fetches the full set list and filters out niche/promo products
+// before passing the curated list to the client-side YGOSetsBrowser for search + sort + pagination.
+
 import { fetchYGOSets } from "@/lib/yugioh";
 import YGOSetsBrowser from "@/components/YGOSetsBrowser";
 import CategoryHero from "@/components/CategoryHero";
@@ -34,6 +37,7 @@ const EXCLUDE_PATTERNS = [
 
 const MIN_CARDS = 24;
 
+// Returns true only for "main" sets: must have a pack image, 24+ cards, and not match any exclusion pattern.
 function isMajorSet(set: { set_name: string; num_of_cards: number; set_image: string }): boolean {
   return (
     !!set.set_image &&

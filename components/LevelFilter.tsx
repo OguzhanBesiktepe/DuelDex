@@ -1,8 +1,12 @@
 "use client";
 
+// LevelFilter — star-based level picker for filtering monster cards by YGO level (1–12).
+// Hovering previews the level; clicking sets it in the URL. Clicking the active level clears it.
+
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
 
+// Maximum monster level in the game
 const MAX = 12;
 
 // YGO-style 5-pointed star inside an orange circle
@@ -61,7 +65,7 @@ export default function LevelFilter({ selected }: { selected: number | null }) {
     [router, searchParams],
   );
 
-  // Preview level on hover, fall back to selected
+  // Show hovered level in the star row while hovering; fall back to the selected level
   const displayLevel = hovered ?? selected ?? 0;
 
   return (

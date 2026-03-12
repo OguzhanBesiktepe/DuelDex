@@ -1,3 +1,7 @@
+// Search results page — runs both YGO and Pokémon searches in parallel and renders
+// the combined results in two labelled sections. Each API has its own normalisation logic
+// to handle punctuation differences (see lib/yugioh.ts searchYGOCards).
+
 import CardGrid from "@/components/CardGrid";
 import { searchYGOCards } from "@/lib/yugioh";
 import { searchPokemonCards } from "@/lib/pokemon";

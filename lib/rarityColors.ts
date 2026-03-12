@@ -1,3 +1,6 @@
+// Rarity color maps for both YGO and Pokémon. Used by CardItem and PrintingsPanel
+// to colour-code rarity badges and borders. getRarityColor() is the single export.
+
 // Gem color palette — low to high rarity
 const GREY       = "#6B7280"; // Common
 const AQUA       = "#2DD4BF"; // Rare

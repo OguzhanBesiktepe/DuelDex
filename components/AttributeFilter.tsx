@@ -1,5 +1,9 @@
 "use client";
 
+// AttributeFilter — dropdown filter for the seven YGO monster attributes (LIGHT, DARK, etc.).
+// Selecting an attribute pushes it into the URL search params so the server re-fetches with
+// the attribute filter applied. Selecting the active attribute again clears it.
+
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
 
