@@ -222,7 +222,13 @@ export default async function YGOCardPage({
               {card.desc}
             </p>
 
-            <PrintingsPanel sets={sets} price={price ?? null} cardName={card.name} />
+            <PrintingsPanel
+              sets={sets}
+              price={price ?? null}
+              cardName={card.name}
+              cardId={String(card.id)}
+              cardImage={card.card_images[0]?.image_url_small ?? ""}
+            />
           </div>
         </div>
       </div>

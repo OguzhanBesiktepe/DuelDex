@@ -3,10 +3,16 @@
 // PrintingsPanel — shown on the YGO card detail page.
 // Lists every printing of the card (set name, rarity, set-specific price).
 // Clicking a row filters the Market Prices section to show that printing's TCGPlayer price.
-// eBay and Cardmarket prices are always card-wide averages regardless of selection.
+// When the user is signed in, each row also has a ♥ button to favorite that specific printing.
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { getRarityColor } from "@/lib/rarityColors";
+import { useAuth } from "@/lib/auth-context";
+import {
+  addFavorite,
+  removeFavorite,
+  getFavoritedSetCodesForCard,
+} from "@/lib/firestore";
 
 type CardSet = {
   set_name: string;
@@ -25,11 +31,68 @@ interface PrintingsPanelProps {
   sets: CardSet[];
   price: CardPrice | null;
   cardName: string;
+  // Optional — when provided, favorite buttons appear on each printing row
+  cardId?: string;
+  cardImage?: string;
 }
 
-export default function PrintingsPanel({ sets, price, cardName }: PrintingsPanelProps) {
+export default function PrintingsPanel({
+  sets,
+  price,
+  cardName,
+  cardId,
+  cardImage,
+}: PrintingsPanelProps) {
+  const { user } = useAuth();
+
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [selected, setSelected] = useState<number | null>(null);
+
+  // Set codes that the user has already favorited for this card
+  const [favoritedCodes, setFavoritedCodes] = useState<Set<string>>(new Set());
+  const [togglingCode, setTogglingCode] = useState<string | null>(null);
+
+  // Load which printings are already favorited
+  useEffect(() => {
+    if (!user || !cardId) return;
+    getFavoritedSetCodesForCard(user.uid, cardId).then((codes) => {
+      setFavoritedCodes(new Set(codes));
+    });
+  }, [user, cardId]);
+
+  const handlePrintingFavorite = async (
+    e: React.MouseEvent,
+    s: CardSet
+  ) => {
+    e.stopPropagation(); // don't also select/deselect the row
+    if (!user || !cardId || !cardImage) return;
+
+    const code = s.set_code;
+    setTogglingCode(code);
+
+    if (favoritedCodes.has(code)) {
+      await removeFavorite(user.uid, cardId, code);
+      setFavoritedCodes((prev) => {
+        const next = new Set(prev);
+        next.delete(code);
+        return next;
+      });
+    } else {
+      await addFavorite(user.uid, {
+        cardId,
+        cardName,
+        cardImage,
+        game: "yugioh",
+        priceWhenAdded: parseFloat(s.set_price) || 0,
+        setName: s.set_name,
+        setCode: s.set_code,
+        setRarity: s.set_rarity,
+      });
+      setFavoritedCodes((prev) => new Set([...prev, code]));
+    }
+
+    setTogglingCode(null);
+  };
 
   // Sort by set_price; $0 / unparseable prices always go to the bottom
   const sorted = useMemo(() => {
@@ -48,16 +111,16 @@ export default function PrintingsPanel({ sets, price, cardName }: PrintingsPanel
   const selectedSet = selected !== null ? sorted[selected] : null;
   const selectedPrice = selectedSet ? parseFloat(selectedSet.set_price) : null;
 
-  // Aggregate prices from the card_prices array (card-wide averages from YGOPRODeck)
   const aggTCG = price ? parseFloat(price.tcgplayer_price) : 0;
   const aggEbay = price ? parseFloat(price.ebay_price) : 0;
   const aggCardmarket = price ? parseFloat(price.cardmarket_price) : 0;
 
-  // If a specific printing is selected, show its price instead of the aggregate TCGPlayer price
   const displayTCG = selectedPrice && selectedPrice > 0 ? selectedPrice : aggTCG;
   const tcgIsPerPrinting = selectedPrice && selectedPrice > 0;
 
   const hasPrices = aggTCG > 0 || aggEbay > 0 || aggCardmarket > 0;
+
+  const showFavoriteButtons = Boolean(user && cardId && cardImage);
 
   return (
     <div className="flex flex-col gap-6">
@@ -92,7 +155,7 @@ export default function PrintingsPanel({ sets, price, cardName }: PrintingsPanel
               <div>
                 <div className="flex items-center gap-1.5 mb-0.5">
                   <p className="text-xs" style={{ color: "#7A8BA8" }}>TCGPlayer</p>
-                  </div>
+                </div>
                 <p className="text-xl font-bold" style={{ color: "#3ecf6a" }}>
                   ${displayTCG.toFixed(2)}
                 </p>
@@ -176,6 +239,9 @@ export default function PrintingsPanel({ sets, price, cardName }: PrintingsPanel
               const rowPrice = parseFloat(s.set_price);
               const isSelected = selected === i;
               const rc = getRarityColor(s.set_rarity, "yugioh");
+              const isFav = favoritedCodes.has(s.set_code);
+              const isToggling = togglingCode === s.set_code;
+
               return (
                 <button
                   key={i}
@@ -186,17 +252,40 @@ export default function PrintingsPanel({ sets, price, cardName }: PrintingsPanel
                     border: `1px solid ${isSelected ? `${rc}60` : "#1A2035"}`,
                   }}
                 >
-                  <span style={{ color: "#F0F2FF" }} className="truncate">
+                  {/* Set name */}
+                  <span style={{ color: "#F0F2FF" }} className="truncate flex-1">
                     {s.set_name}
                   </span>
+
+                  {/* Right side: rarity · price · favorite button */}
                   <div className="flex gap-3 md:gap-4 shrink-0 ml-2 items-center">
-                    <span style={{ color: isSelected ? rc : "#7A8BA8" }}>{s.set_rarity}</span>
+                    <span style={{ color: isSelected ? rc : "#7A8BA8" }}>
+                      {s.set_rarity}
+                    </span>
                     {rowPrice > 0 && (
                       <span
                         className="font-semibold"
                         style={{ color: isSelected ? rc : "#3ecf6a" }}
                       >
                         ${rowPrice.toFixed(2)}
+                      </span>
+                    )}
+
+                    {/* Printing-specific favorite button — only shown when signed in */}
+                    {showFavoriteButtons && (
+                      <span
+                        onClick={(e) => handlePrintingFavorite(e, s)}
+                        title={isFav ? "Remove from favorites" : "Favorite this printing"}
+                        className="transition-transform hover:scale-110"
+                        style={{
+                          color: isFav ? "#CC1F1F" : "#3A4A60",
+                          opacity: isToggling ? 0.4 : 1,
+                          cursor: "pointer",
+                          fontSize: "1rem",
+                          lineHeight: 1,
+                        }}
+                      >
+                        {isFav ? "♥" : "♡"}
                       </span>
                     )}
                   </div>

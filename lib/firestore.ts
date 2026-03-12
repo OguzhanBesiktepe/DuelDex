@@ -13,6 +13,7 @@ import {
   serverTimestamp,
   query,
   orderBy,
+  where,
   Timestamp,
 } from "firebase/firestore";
 import { db } from "./firebase";
@@ -28,6 +29,10 @@ export interface FavoriteCard {
   game: Game;
   priceWhenAdded: number; // 0 if no price available (e.g. Pokémon via TCGdex)
   dateAdded: Date;
+  // Printing-specific fields — only present when a specific set printing was favorited
+  setName?: string;
+  setCode?: string;   // e.g. "LDD-EN001" — also determines the Firestore doc ID
+  setRarity?: string; // e.g. "Secret Rare"
 }
 
 export interface ListMeta {
@@ -45,29 +50,48 @@ export interface ListItem {
   dateAdded: Date;
 }
 
+// ── Internal helpers ───────────────────────────────────────────────────────────
+
+/** Derives the Firestore document ID for a favorite.
+ *  Generic favorite → cardId
+ *  Printing-specific → "cardId__setCode" */
+function favoriteDocId(cardId: string, setCode?: string): string {
+  return setCode ? `${cardId}__${setCode}` : cardId;
+}
+
 // ── Favorites ─────────────────────────────────────────────────────────────────
 
-/** Save a card to the user's favorites. Uses cardId as the document ID
- *  so adding the same card twice is idempotent — no duplicates. */
+/** Save a card (or a specific printing) to the user's favorites.
+ *  Using a composite doc ID prevents duplicates for the same card+printing combo. */
 export async function addFavorite(
   userId: string,
   card: Omit<FavoriteCard, "dateAdded">
 ) {
-  const ref = doc(db, "users", userId, "favorites", card.cardId);
+  const docId = favoriteDocId(card.cardId, card.setCode);
+  const ref = doc(db, "users", userId, "favorites", docId);
   await setDoc(ref, { ...card, dateAdded: serverTimestamp() });
 }
 
-/** Remove a card from favorites by its card ID. */
-export async function removeFavorite(userId: string, cardId: string) {
-  await deleteDoc(doc(db, "users", userId, "favorites", cardId));
+/** Remove a favorite. Pass setCode to remove a printing-specific entry. */
+export async function removeFavorite(
+  userId: string,
+  cardId: string,
+  setCode?: string
+) {
+  await deleteDoc(
+    doc(db, "users", userId, "favorites", favoriteDocId(cardId, setCode))
+  );
 }
 
-/** Returns true if the given card is in the user's favorites. */
+/** Returns true if the given card (or specific printing) is in the user's favorites. */
 export async function isFavorited(
   userId: string,
-  cardId: string
+  cardId: string,
+  setCode?: string
 ): Promise<boolean> {
-  const snap = await getDoc(doc(db, "users", userId, "favorites", cardId));
+  const snap = await getDoc(
+    doc(db, "users", userId, "favorites", favoriteDocId(cardId, setCode))
+  );
   return snap.exists();
 }
 
@@ -83,10 +107,25 @@ export async function getFavorites(userId: string): Promise<FavoriteCard[]> {
       cardImage: data.cardImage,
       game: data.game,
       priceWhenAdded: data.priceWhenAdded ?? 0,
-      // Firestore Timestamps need to be converted to JS Dates
       dateAdded: (data.dateAdded as Timestamp)?.toDate() ?? new Date(),
+      setName: data.setName,
+      setCode: data.setCode,
+      setRarity: data.setRarity,
     };
   });
+}
+
+/** Returns the set codes of all printing-specific favorites for a given card.
+ *  Used by PrintingsPanel to know which printing rows to show as favorited. */
+export async function getFavoritedSetCodesForCard(
+  userId: string,
+  cardId: string
+): Promise<string[]> {
+  const ref = collection(db, "users", userId, "favorites");
+  const snap = await getDocs(query(ref, where("cardId", "==", cardId)));
+  return snap.docs
+    .map((d) => d.data().setCode as string | undefined)
+    .filter((code): code is string => Boolean(code));
 }
 
 // ── Lists ─────────────────────────────────────────────────────────────────────
