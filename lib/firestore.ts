@@ -128,6 +128,24 @@ export async function getFavoritedSetCodesForCard(
     .filter((code): code is string => Boolean(code));
 }
 
+// ── User Profile ──────────────────────────────────────────────────────────────
+
+/** Get the user's custom avatar value.
+ *  Returns null (no preference), "__initials__" (explicitly chose DiceBear),
+ *  or a data/https URL (custom uploaded photo). */
+export async function getUserAvatar(userId: string): Promise<string | null> {
+  const snap = await getDoc(doc(db, "users", userId));
+  if (!snap.exists()) return null;
+  const url = snap.data().avatarUrl as string | null | undefined;
+  if (!url) return null; // null, undefined, or "" → no preference
+  return url;            // "__initials__" or data URL passes through as-is
+}
+
+/** Save a custom avatar URL or base64 data URL for the user. */
+export async function setUserAvatar(userId: string, url: string) {
+  await setDoc(doc(db, "users", userId), { avatarUrl: url }, { merge: true });
+}
+
 // ── Lists ─────────────────────────────────────────────────────────────────────
 
 /** Create a new named list. Returns the new list's Firestore document ID. */

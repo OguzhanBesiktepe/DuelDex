@@ -11,6 +11,8 @@ import Image from "next/image";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { getUserAvatar } from "@/lib/firestore";
+import AvatarPicker from "@/components/AvatarPicker";
 
 interface Suggestion {
   id: string;
@@ -79,6 +81,25 @@ export default function Navbar() {
   const [ygoOpen, setYgoOpen] = useState(false);
   const [pkmnOpen, setPkmnOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [showAvatarPicker, setShowAvatarPicker] = useState(false);
+  const [customAvatar, setCustomAvatar] = useState<string | null>(null);
+
+  // Returns a DiceBear initials avatar URL for the current user.
+  // Used as the default when the user hasn't uploaded a custom photo
+  // and isn't signed in with Google (which provides its own photoURL).
+  const getDiceBearUrl = (seed: string) =>
+    `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(seed)}&backgroundColor=FF7A00&textColor=080B14&radius=50&size=200`;
+
+  // Priority: custom upload → Google/provider photo → DiceBear initials
+  // "__initials__" is a sentinel meaning the user explicitly chose DiceBear
+  // over their Google photo — it must be checked before user.photoURL.
+  const getAvatarSrc = () => {
+    if (!user) return "";
+    if (customAvatar === "__initials__") return getDiceBearUrl(user.displayName ?? user.email ?? user.uid);
+    if (customAvatar) return customAvatar;
+    if (user.photoURL) return user.photoURL;
+    return getDiceBearUrl(user.displayName ?? user.email ?? user.uid);
+  };
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(false);
@@ -96,6 +117,12 @@ export default function Navbar() {
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
+
+  // Load custom avatar from Firestore whenever the user changes
+  useEffect(() => {
+    if (!user) { setCustomAvatar(null); return; }
+    getUserAvatar(user.uid).then(setCustomAvatar);
+  }, [user]);
 
   // Debounced autocomplete
   useEffect(() => {
@@ -369,24 +396,13 @@ export default function Navbar() {
               className="ml-2 shrink-0 flex items-center gap-2 rounded-full border-2 p-0.5 transition hover:opacity-90"
               style={{ borderColor: "#FF7A00" }}
             >
-              {user.photoURL ? (
-                <img
-                  src={user.photoURL}
-                  alt="Avatar"
-                  width={32}
-                  height={32}
-                  referrerPolicy="no-referrer"
-                  className="rounded-full object-cover"
-                  style={{ width: 32, height: 32 }}
-                />
-              ) : (
-                <div
-                  className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold"
-                  style={{ background: "#FF7A00", color: "#080B14" }}
-                >
-                  {(user.displayName ?? user.email ?? "?")[0].toUpperCase()}
-                </div>
-              )}
+              <img
+                src={getAvatarSrc()}
+                alt="Avatar"
+                referrerPolicy="no-referrer"
+                className="rounded-full object-cover"
+                style={{ width: 32, height: 32 }}
+              />
             </button>
           ) : (
             <Link
@@ -570,7 +586,7 @@ export default function Navbar() {
 
       {/* Backdrop — clicking it closes the panel */}
       <div
-        onClick={() => setUserMenuOpen(false)}
+        onClick={() => { setUserMenuOpen(false); setShowAvatarPicker(false); }}
         className="fixed inset-0 z-40 transition-opacity duration-300"
         style={{
           background: "rgba(0,0,0,0.6)",
@@ -591,85 +607,115 @@ export default function Navbar() {
           transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
-        {/* Close button */}
-        <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: "1px solid #1A2035" }}>
-          <span className="text-sm font-semibold" style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}>
-            My Account
-          </span>
-          <button
-            onClick={() => setUserMenuOpen(false)}
-            className="text-lg transition hover:opacity-70"
-            style={{ color: "#7A8BA8" }}
-          >
-            ✕
-          </button>
-        </div>
+        {/* Close button — always visible */}
+        {!showAvatarPicker && (
+          <div className="flex items-center justify-between px-5 py-4 shrink-0" style={{ borderBottom: "1px solid #1A2035" }}>
+            <span className="text-sm font-semibold" style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}>
+              My Account
+            </span>
+            <button
+              onClick={() => setUserMenuOpen(false)}
+              className="text-lg transition hover:opacity-70"
+              style={{ color: "#7A8BA8" }}
+            >
+              ✕
+            </button>
+          </div>
+        )}
 
         {user && (
-          <>
-            {/* User info */}
-            <div className="flex items-center gap-3 px-5 py-5" style={{ borderBottom: "1px solid #1A2035" }}>
-              {user.photoURL ? (
-                <img
-                  src={user.photoURL}
-                  alt="Avatar"
-                  referrerPolicy="no-referrer"
-                  className="rounded-full object-cover shrink-0"
+          showAvatarPicker ? (
+            /* Avatar picker — replaces the panel body */
+            <AvatarPicker
+              userId={user.uid}
+              currentAvatar={customAvatar}
+              diceBearUrl={getDiceBearUrl(user.displayName ?? user.email ?? user.uid)}
+              googlePhotoUrl={user.photoURL ?? null}
+              onAvatarChange={(url) => {
+                setCustomAvatar(url);
+                setShowAvatarPicker(false);
+              }}
+              onClose={() => setShowAvatarPicker(false)}
+            />
+          ) : (
+            <>
+              {/* User info with clickable avatar */}
+              <div className="flex items-center gap-3 px-5 py-5 shrink-0" style={{ borderBottom: "1px solid #1A2035" }}>
+                {/* Avatar — click to open picker */}
+                <button
+                  onClick={() => setShowAvatarPicker(true)}
+                  className="relative group shrink-0 rounded-full overflow-hidden"
+                  title="Change avatar"
                   style={{ width: 48, height: 48 }}
-                />
-              ) : (
-                <div
-                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-lg font-bold"
+                >
+                  <img
+                    src={getAvatarSrc()}
+                    alt="Avatar"
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover"
+                  />
+                  {/* Edit overlay on hover */}
+                  <div
+                    className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    style={{ background: "rgba(0,0,0,0.55)" }}
+                  >
+                    <span className="text-white text-sm">✎</span>
+                  </div>
+                </button>
+
+                <div className="min-w-0 flex-1">
+                  {user.displayName && (
+                    <p className="text-sm font-semibold truncate" style={{ color: "#F0F2FF" }}>
+                      {user.displayName}
+                    </p>
+                  )}
+                  <p className="text-xs truncate" style={{ color: "#7A8BA8" }}>
+                    {user.email}
+                  </p>
+                  <button
+                    onClick={() => setShowAvatarPicker(true)}
+                    className="text-xs mt-0.5 transition hover:opacity-80"
+                    style={{ color: "#FF7A00" }}
+                  >
+                    Change avatar →
+                  </button>
+                </div>
+              </div>
+
+              {/* Navigation links */}
+              <nav className="flex flex-col py-2 flex-1">
+                <Link
+                  href="/favorites"
+                  onClick={() => setUserMenuOpen(false)}
+                  className="flex items-center gap-3 px-5 py-4 text-sm font-semibold transition hover:bg-white/5"
+                  style={{ color: "#F0F2FF" }}
+                >
+                  <span className="text-lg" style={{ color: "#CC1F1F" }}>♥</span>
+                  My Favorites
+                </Link>
+                <Link
+                  href="/lists"
+                  onClick={() => setUserMenuOpen(false)}
+                  className="flex items-center gap-3 px-5 py-4 text-sm font-semibold transition hover:bg-white/5"
+                  style={{ color: "#F0F2FF" }}
+                >
+                  <span className="text-lg">📋</span>
+                  My Lists
+                </Link>
+              </nav>
+
+              {/* Sign out at the bottom */}
+              <div className="px-5 py-5 shrink-0" style={{ borderTop: "1px solid #1A2035" }}>
+                <button
+                  onClick={() => { signOut(); setUserMenuOpen(false); }}
+                  className="w-full rounded-lg py-2.5 text-sm font-bold transition hover:opacity-90"
                   style={{ background: "#FF7A00", color: "#080B14" }}
                 >
-                  {(user.displayName ?? user.email ?? "?")[0].toUpperCase()}
-                </div>
-              )}
-              <div className="min-w-0">
-                {user.displayName && (
-                  <p className="text-sm font-semibold truncate" style={{ color: "#F0F2FF" }}>
-                    {user.displayName}
-                  </p>
-                )}
-                <p className="text-xs truncate" style={{ color: "#7A8BA8" }}>
-                  {user.email}
-                </p>
+                  Sign Out
+                </button>
               </div>
-            </div>
-
-            {/* Navigation links */}
-            <nav className="flex flex-col py-2 flex-1">
-              <Link
-                href="/favorites"
-                onClick={() => setUserMenuOpen(false)}
-                className="flex items-center gap-3 px-5 py-4 text-sm font-semibold transition hover:bg-white/5"
-                style={{ color: "#F0F2FF" }}
-              >
-                <span className="text-lg" style={{ color: "#CC1F1F" }}>♥</span>
-                My Favorites
-              </Link>
-              <Link
-                href="/lists"
-                onClick={() => setUserMenuOpen(false)}
-                className="flex items-center gap-3 px-5 py-4 text-sm font-semibold transition hover:bg-white/5"
-                style={{ color: "#F0F2FF" }}
-              >
-                <span className="text-lg">📋</span>
-                My Lists
-              </Link>
-            </nav>
-
-            {/* Sign out at the bottom */}
-            <div className="px-5 py-5" style={{ borderTop: "1px solid #1A2035" }}>
-              <button
-                onClick={() => { signOut(); setUserMenuOpen(false); }}
-                className="w-full rounded-lg py-2.5 text-sm font-bold transition hover:opacity-90"
-                style={{ background: "#FF7A00", color: "#080B14" }}
-              >
-                Sign Out
-              </button>
-            </div>
-          </>
+            </>
+          )
         )}
       </div>
     </nav>
