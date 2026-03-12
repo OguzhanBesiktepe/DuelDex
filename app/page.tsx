@@ -2,8 +2,10 @@
 // `force-dynamic` ensures a fresh random set is picked on every request (not cached).
 // Colour extraction with node-vibrant adds a game-accurate accent to the hero gradient.
 
+import { Suspense } from "react";
 import { Vibrant } from "node-vibrant/node";
 import HeroSection, { type FeaturedSet } from "@/components/HeroSection";
+import PriceMovers from "@/components/PriceMovers";
 
 export const dynamic = "force-dynamic";
 
@@ -231,6 +233,9 @@ export default async function HomePage() {
   return (
     <main style={{ background: "#080B14", minHeight: "100vh" }}>
       <HeroSection featured={featured} />
+      <Suspense fallback={null}>
+        <PriceMovers />
+      </Suspense>
     </main>
   );
 }

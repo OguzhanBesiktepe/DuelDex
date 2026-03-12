@@ -1,0 +1,40 @@
+/* ── Card tile ───────────────────────────────────────────────────────────── */
+
+.tile {
+  display: block;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* Image wrapper — no overflow:hidden so the card can lift above its bounds */
+.imageWrap {
+  position: relative;
+  border-radius: 10px;
+}
+
+.cardImg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  /* Spring easing matches the hero section cards */
+  transition:
+    transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s ease;
+}
+
+.tile:hover .cardImg {
+  transform: scale(1.07) translateY(-8px);
+  box-shadow: 0 28px 52px rgba(0, 0, 0, 0.72);
+}
+
+/* ── % change badge ──────────────────────────────────────────────────────── */
+
+.badge {
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
