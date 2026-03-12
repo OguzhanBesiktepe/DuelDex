@@ -48,6 +48,10 @@ export interface ListItem {
   game: Game;
   priceWhenAdded: number; // snapshot of price at time of adding
   dateAdded: Date;
+  // Printing-specific fields — only present when a specific set printing was added
+  setName?: string;
+  setCode?: string;
+  setRarity?: string;
 }
 
 // ── Internal helpers ───────────────────────────────────────────────────────────
@@ -201,24 +205,33 @@ export async function deleteList(userId: string, listId: string) {
   await deleteDoc(doc(db, "users", userId, "lists", listId));
 }
 
-/** Add a card to a list. Uses cardId as the document ID to prevent duplicates. */
+/** Derives the Firestore document ID for a list item.
+ *  Generic entry → cardId
+ *  Printing-specific → "cardId__setCode" */
+function listItemDocId(cardId: string, setCode?: string): string {
+  return setCode ? `${cardId}__${setCode}` : cardId;
+}
+
+/** Add a card (or specific printing) to a list. Composite doc ID prevents duplicates. */
 export async function addToList(
   userId: string,
   listId: string,
   card: Omit<ListItem, "dateAdded">
 ) {
-  const ref = doc(db, "users", userId, "lists", listId, "items", card.cardId);
+  const docId = listItemDocId(card.cardId, card.setCode);
+  const ref = doc(db, "users", userId, "lists", listId, "items", docId);
   await setDoc(ref, { ...card, dateAdded: serverTimestamp() });
 }
 
-/** Remove a card from a list by card ID. */
+/** Remove a card (or specific printing) from a list. */
 export async function removeFromList(
   userId: string,
   listId: string,
-  cardId: string
+  cardId: string,
+  setCode?: string
 ) {
   await deleteDoc(
-    doc(db, "users", userId, "lists", listId, "items", cardId)
+    doc(db, "users", userId, "lists", listId, "items", listItemDocId(cardId, setCode))
   );
 }
 
@@ -238,18 +251,22 @@ export async function getListItems(
       game: data.game,
       priceWhenAdded: data.priceWhenAdded ?? 0,
       dateAdded: (data.dateAdded as Timestamp)?.toDate() ?? new Date(),
+      setName: data.setName,
+      setCode: data.setCode,
+      setRarity: data.setRarity,
     };
   });
 }
 
-/** Check if a specific card is already in a given list. */
+/** Check if a specific card (or printing) is already in a given list. */
 export async function isCardInList(
   userId: string,
   listId: string,
-  cardId: string
+  cardId: string,
+  setCode?: string
 ): Promise<boolean> {
   const snap = await getDoc(
-    doc(db, "users", userId, "lists", listId, "items", cardId)
+    doc(db, "users", userId, "lists", listId, "items", listItemDocId(cardId, setCode))
   );
   return snap.exists();
 }
