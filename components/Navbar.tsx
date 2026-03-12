@@ -393,8 +393,11 @@ export default function Navbar() {
           {user ? (
             <button
               onClick={() => setUserMenuOpen(true)}
-              className="ml-2 shrink-0 flex items-center gap-2 rounded-full border-2 p-0.5 transition hover:opacity-90"
+              className="ml-2 shrink-0 flex items-center gap-1.5 rounded-full border-2 p-0.5 transition-all duration-200 hover:scale-105 cursor-pointer"
               style={{ borderColor: "#FF7A00" }}
+              onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "0 0 14px rgba(255,122,0,0.65)")}
+              onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
+              title="My Account"
             >
               <img
                 src={getAvatarSrc()}
@@ -403,6 +406,7 @@ export default function Navbar() {
                 className="rounded-full object-cover"
                 style={{ width: 32, height: 32 }}
               />
+              <span className="text-[10px] pr-1" style={{ color: "#FF7A00" }}>▾</span>
             </button>
           ) : (
             <Link
