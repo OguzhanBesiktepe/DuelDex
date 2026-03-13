@@ -26,10 +26,10 @@ export default async function PokemonCardPage({
   const tcgPlayerUrl = `https://www.tcgplayer.com/search/pokemon/product?q=${encodeURIComponent(card.name)}`;
   const tcg = card.pricing?.tcgplayer;
   const tcgPrice =
-    tcg?.holofoil?.market ??
-    tcg?.normal?.market ??
-    tcg?.reverseHolofoil?.market ??
-    tcg?.["1stEditionHolofoil"]?.market ??
+    tcg?.holofoil?.marketPrice ??
+    tcg?.normal?.marketPrice ??
+    tcg?.reverseHolofoil?.marketPrice ??
+    tcg?.["1stEditionHolofoil"]?.marketPrice ??
     null;
 
   return (

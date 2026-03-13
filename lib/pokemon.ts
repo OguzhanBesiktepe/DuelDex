@@ -25,10 +25,10 @@ export interface PokemonCard {
   };
   pricing?: {
     tcgplayer?: {
-      normal?: { market?: number; low?: number; mid?: number; high?: number };
-      holofoil?: { market?: number; low?: number; mid?: number; high?: number };
-      reverseHolofoil?: { market?: number; low?: number; mid?: number; high?: number };
-      "1stEditionHolofoil"?: { market?: number; low?: number; mid?: number; high?: number };
+      normal?: { marketPrice?: number; lowPrice?: number; midPrice?: number; highPrice?: number };
+      holofoil?: { marketPrice?: number; lowPrice?: number; midPrice?: number; highPrice?: number };
+      reverseHolofoil?: { marketPrice?: number; lowPrice?: number; midPrice?: number; highPrice?: number };
+      "1stEditionHolofoil"?: { marketPrice?: number; lowPrice?: number; midPrice?: number; highPrice?: number };
     };
   };
   set?: {
