@@ -29,7 +29,12 @@ function dateStringUTC(offsetDays = 0): string {
   return d.toISOString().slice(0, 10);
 }
 
-async function getMovers(game: "yugioh" | "pokemon"): Promise<Mover[]> {
+interface MoversResult {
+  movers: Mover[];
+  hasHistory: boolean;
+}
+
+async function getMovers(game: "yugioh" | "pokemon"): Promise<MoversResult> {
   try {
     const db = getAdminDb();
     const today = dateStringUTC(0);
@@ -40,7 +45,17 @@ async function getMovers(game: "yugioh" | "pokemon"): Promise<Mover[]> {
       db.collection("price_snapshots").doc(yesterday).collection(game).get(),
     ]);
 
-    if (todaySnap.empty || yestSnap.empty) return [];
+    if (todaySnap.empty) return { movers: [], hasHistory: false };
+
+    // No yesterday data yet — show top 6 by current price
+    if (yestSnap.empty) {
+      const top: Mover[] = todaySnap.docs
+        .map((d) => ({ ...(d.data() as CardSnapshot), prevPrice: 0, pct: 0 }))
+        .filter((c) => c.price > 0)
+        .sort((a, b) => b.price - a.price)
+        .slice(0, 6);
+      return { movers: top, hasHistory: false };
+    }
 
     // Build cardId → yesterday's price lookup
     const yestMap = new Map<string, number>();
@@ -60,15 +75,15 @@ async function getMovers(game: "yugioh" | "pokemon"): Promise<Mover[]> {
 
     // Biggest absolute movers first, show top 6
     movers.sort((a, b) => Math.abs(b.pct) - Math.abs(a.pct));
-    return movers.slice(0, 6);
+    return { movers: movers.slice(0, 6), hasHistory: true };
   } catch {
-    return [];
+    return { movers: [], hasHistory: false };
   }
 }
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
 
-function MoverTile({ mover }: { mover: Mover }) {
+function MoverTile({ mover, showPct }: { mover: Mover; showPct: boolean }) {
   const up = mover.pct >= 0;
   return (
     <Link href={mover.href} className={styles.tile}>
@@ -90,18 +105,20 @@ function MoverTile({ mover }: { mover: Mover }) {
           <span className="text-xs font-bold" style={{ color: "#3ecf6a" }}>
             ${mover.price.toFixed(2)}
           </span>
-          <span
-            className={styles.badge}
-            style={{
-              background: up
-                ? "rgba(62,207,106,0.15)"
-                : "rgba(204,31,31,0.15)",
-              color: up ? "#3ecf6a" : "#ff6b6b",
-              border: `1px solid ${up ? "rgba(62,207,106,0.35)" : "rgba(204,31,31,0.35)"}`,
-            }}
-          >
-            {up ? "▲" : "▼"} {Math.abs(mover.pct).toFixed(1)}%
-          </span>
+          {showPct && (
+            <span
+              className={styles.badge}
+              style={{
+                background: up
+                  ? "rgba(62,207,106,0.15)"
+                  : "rgba(204,31,31,0.15)",
+                color: up ? "#3ecf6a" : "#ff6b6b",
+                border: `1px solid ${up ? "rgba(62,207,106,0.35)" : "rgba(204,31,31,0.35)"}`,
+              }}
+            >
+              {up ? "▲" : "▼"} {Math.abs(mover.pct).toFixed(1)}%
+            </span>
+          )}
         </div>
       </div>
     </Link>
@@ -112,11 +129,13 @@ function MoverRow({
   label,
   accent,
   movers,
+  hasHistory,
   className,
 }: {
   label: string;
   accent: string;
   movers: Mover[];
+  hasHistory: boolean;
   className?: string;
 }) {
   if (movers.length === 0) return null;
@@ -130,7 +149,7 @@ function MoverRow({
       </p>
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-3 md:grid-cols-6">
         {movers.map((m) => (
-          <MoverTile key={`${m.cardId}-${m.href}`} mover={m} />
+          <MoverTile key={`${m.cardId}-${m.href}`} mover={m} showPct={hasHistory} />
         ))}
       </div>
     </div>
@@ -140,12 +159,19 @@ function MoverRow({
 // ── Page section ──────────────────────────────────────────────────────────────
 
 export default async function PriceMovers() {
-  const [ygoMovers, pkmnMovers] = await Promise.all([
+  const [ygoResult, pkmnResult] = await Promise.all([
     getMovers("yugioh"),
     getMovers("pokemon"),
   ]);
 
+  const { movers: ygoMovers, hasHistory: ygoHistory } = ygoResult;
+  const { movers: pkmnMovers, hasHistory: pkmnHistory } = pkmnResult;
+
   if (ygoMovers.length === 0 && pkmnMovers.length === 0) return null;
+
+  // If neither game has history yet, label as "Top Cards" instead of "Price Movers"
+  const hasAnyHistory = ygoHistory || pkmnHistory;
+  const heading = hasAnyHistory ? "🔥 Price Movers" : "🔥 Top Cards Today";
 
   return (
     <section
@@ -156,16 +182,17 @@ export default async function PriceMovers() {
         className="mb-8 text-lg font-bold uppercase tracking-widest"
         style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
       >
-        🔥 Price Movers
+        {heading}
       </h2>
 
       <MoverRow
         label="Yu-Gi-Oh!"
         accent="#FF7A00"
         movers={ygoMovers}
+        hasHistory={ygoHistory}
         className={pkmnMovers.length > 0 ? "mb-10" : undefined}
       />
-      <MoverRow label="Pokémon" accent="#00AAFF" movers={pkmnMovers} />
+      <MoverRow label="Pokémon" accent="#00AAFF" movers={pkmnMovers} hasHistory={pkmnHistory} />
     </section>
   );
 }
