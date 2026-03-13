@@ -75,6 +75,17 @@ async function getMovers(game: "yugioh" | "pokemon"): Promise<MoversResult> {
 
     // Biggest absolute movers first, show top 6
     movers.sort((a, b) => Math.abs(b.pct) - Math.abs(a.pct));
+
+    // If no cards moved enough, fall back to top 6 by current price
+    if (movers.length === 0) {
+      const top: Mover[] = todaySnap.docs
+        .map((d) => ({ ...(d.data() as CardSnapshot), prevPrice: 0, pct: 0 }))
+        .filter((c) => c.price > 0)
+        .sort((a, b) => b.price - a.price)
+        .slice(0, 6);
+      return { movers: top, hasHistory: false };
+    }
+
     return { movers: movers.slice(0, 6), hasHistory: true };
   } catch {
     return { movers: [], hasHistory: false };
