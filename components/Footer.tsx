@@ -14,7 +14,6 @@ const YGO_LINKS = [
 const POKEMON_LINKS = [
   { href: "/pokemon/pokemon", label: "Pokémon Cards" },
   { href: "/pokemon/trainer", label: "Trainer Cards" },
-  { href: "/pokemon/energy", label: "Energy Cards" },
   { href: "/pokemon/sets", label: "Browse Sets" },
 ];
 
