@@ -31,18 +31,27 @@ interface CardSnapshot {
 
 async function snapshotYGO(date: string): Promise<number> {
   const res = await fetch(
-    "https://db.ygoprodeck.com/api/v7/cardinfo.php?sort=price&num=100&tcgplayer_data=true",
+    "https://db.ygoprodeck.com/api/v7/cardinfo.php?num=100&offset=0&sort=new&tcgplayer_data=true",
     { cache: "no-store" },
   );
   if (!res.ok) return 0;
 
   const data = await res.json();
-  const cards: {
+  const rawCards: {
     id: number;
     name: string;
     card_images: { image_url_small: string }[];
     card_prices: { tcgplayer_price: string }[];
   }[] = data.data ?? [];
+
+  // Sort by TCGPlayer price descending so we store the most valuable cards
+  const cards = rawCards
+    .filter((c) => parseFloat(c.card_prices?.[0]?.tcgplayer_price ?? "0") > 0)
+    .sort(
+      (a, b) =>
+        parseFloat(b.card_prices?.[0]?.tcgplayer_price ?? "0") -
+        parseFloat(a.card_prices?.[0]?.tcgplayer_price ?? "0"),
+    );
 
   const db = getAdminDb();
   const batch = db.batch();
