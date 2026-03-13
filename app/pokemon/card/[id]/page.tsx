@@ -10,10 +10,13 @@ import CardActions from "@/components/CardActions";
 
 export default async function PokemonCardPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ from?: string }>;
 }) {
   const { id } = await params;
+  const { from } = await searchParams;
   const card = await fetchPokemonCardById(id);
   if (!card) notFound();
 
@@ -25,7 +28,10 @@ export default async function PokemonCardPage({
     <div style={{ background: "#080B14", minHeight: "100vh" }}>
       <div className="max-w-screen-lg mx-auto px-4 py-8">
         {/* Back */}
-        <BackButton label="Back to Pokémon" />
+        <BackButton
+          label={from === "/" ? "Back to Home" : "Back to Pokémon"}
+          href={from ? decodeURIComponent(from) : "/pokemon/pokemon"}
+        />
 
         <div className="flex flex-col md:flex-row gap-8">
           {/* Card image */}

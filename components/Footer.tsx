@@ -193,27 +193,7 @@ export default function Footer() {
           style={{ borderTop: "1px solid #1A2035", color: "#4A5568" }}
         >
           <p>© {year} DuelDex. All rights reserved.</p>
-          <p>
-            Card data provided by{" "}
-            <a
-              href="https://ygoprodeck.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition-colors"
-            >
-              YGOPRODeck
-            </a>{" "}
-            and{" "}
-            <a
-              href="https://tcgdex.dev"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition-colors"
-            >
-              TCGdex
-            </a>
-            . Not affiliated with Konami or The Pokémon Company.
-          </p>
+          <p>Not affiliated with Konami or The Pokémon Company.</p>
         </div>
       </div>
     </footer>

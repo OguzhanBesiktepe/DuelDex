@@ -97,7 +97,7 @@ async function getMovers(game: "yugioh" | "pokemon"): Promise<MoversResult> {
 function MoverTile({ mover, showPct }: { mover: Mover; showPct: boolean }) {
   const up = mover.pct >= 0;
   return (
-    <Link href={mover.href} className={styles.tile}>
+    <Link href={`${mover.href}?from=%2F`} className={styles.tile}>
       <div className={styles.imageWrap}>
         {mover.image && (
           // eslint-disable-next-line @next/next/no-img-element
