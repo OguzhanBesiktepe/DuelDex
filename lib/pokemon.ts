@@ -23,6 +23,14 @@ export interface PokemonCard {
     holo?: boolean;
     firstEdition?: boolean;
   };
+  pricing?: {
+    tcgplayer?: {
+      normal?: { market?: number; low?: number; mid?: number; high?: number };
+      holofoil?: { market?: number; low?: number; mid?: number; high?: number };
+      reverseHolofoil?: { market?: number; low?: number; mid?: number; high?: number };
+      "1stEditionHolofoil"?: { market?: number; low?: number; mid?: number; high?: number };
+    };
+  };
   set?: {
     id: string;
     name: string;

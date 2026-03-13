@@ -23,6 +23,14 @@ export default async function PokemonCardPage({
   const imageUrl = card.image ? `${card.image}/high.webp` : "";
   const images = imageUrl ? [{ url: imageUrl, id: 0 }] : [];
   const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(card.name + " pokemon card")}`;
+  const tcgPlayerUrl = `https://www.tcgplayer.com/search/pokemon/product?q=${encodeURIComponent(card.name)}`;
+  const tcg = card.pricing?.tcgplayer;
+  const tcgPrice =
+    tcg?.holofoil?.market ??
+    tcg?.normal?.market ??
+    tcg?.reverseHolofoil?.market ??
+    tcg?.["1stEditionHolofoil"]?.market ??
+    null;
 
   return (
     <div style={{ background: "#080B14", minHeight: "100vh" }}>
@@ -38,6 +46,20 @@ export default async function PokemonCardPage({
           {images.length > 0 && (
             <div className="shrink-0 mx-auto md:mx-0 flex flex-col items-center gap-4">
               <CardImageZoom images={images} alt={card.name} />
+              {tcgPrice && (
+                <p className="text-lg font-bold" style={{ color: "#3ecf6a" }}>
+                  ${tcgPrice.toFixed(2)} <span className="text-xs font-normal" style={{ color: "#7A8BA8" }}>TCGPlayer market</span>
+                </p>
+              )}
+              <a
+                href={tcgPlayerUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full text-center px-4 py-2.5 rounded-lg text-sm font-bold transition-opacity hover:opacity-85"
+                style={{ background: "#00AAFF", color: "#080B14" }}
+              >
+                Buy on TCGPlayer ↗
+              </a>
               <a
                 href={ebayUrl}
                 target="_blank"

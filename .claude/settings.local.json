@@ -8,7 +8,10 @@
       "Bash(cd \"C:\\\\Users\\\\satis\\\\OneDrive\\\\Desktop\\\\DuelDex\" && npm install firebase 2>&1)",
       "Bash(cd \"C:\\\\Users\\\\satis\\\\OneDrive\\\\Desktop\\\\DuelDex\" && npx tsc --noEmit 2>&1)",
       "Bash(cd \"C:\\\\Users\\\\satis\\\\OneDrive\\\\Desktop\\\\DuelDex\" && npm install firebase-admin)",
-      "Bash(cd \"C:\\\\Users\\\\satis\\\\OneDrive\\\\Desktop\\\\DuelDex\" && npm run build 2>&1 | tail -30)"
+      "Bash(cd \"C:\\\\Users\\\\satis\\\\OneDrive\\\\Desktop\\\\DuelDex\" && npm run build 2>&1 | tail -30)",
+      "WebFetch(domain:scrydex.com)",
+      "WebFetch(domain:www.pricecharting.com)",
+      "WebFetch(domain:api.tcgdex.net)"
     ]
   }
 }

@@ -141,8 +141,14 @@ async function snapshotPokemon(date: string): Promise<number> {
 
   for (const card of cardDetails) {
     if (!card?.id) continue;
-    // Prefer holofoil price; fall back to normal
-    const price = card.variants?.holofoil ?? card.variants?.normal ?? 0;
+    // Read TCGPlayer market price from the correct pricing path
+    const tcg = card.pricing?.tcgplayer;
+    const price =
+      tcg?.holofoil?.market ??
+      tcg?.normal?.market ??
+      tcg?.reverseHolofoil?.market ??
+      tcg?.["1stEditionHolofoil"]?.market ??
+      0;
     if (!price || Number(price) <= 0) continue;
 
     const ref = db
