@@ -94,14 +94,14 @@ async function snapshotPokemon(date: string): Promise<number> {
   const allSets: { id: string; cardCount?: { total: number } }[] =
     await setsRes.json();
 
-  // Only English TCG sets (Sword & Shield = swsh, Scarlet & Violet = sv)
-  // These are the sets with TCGPlayer pricing. Exclude Japanese/Pocket sets.
+  // TCGdex only has reliable TCGPlayer USD pricing for Sword & Shield (swsh) sets.
+  // Scarlet & Violet (sv) sets return tcgplayer: null. Use the 5 most recent swsh sets.
   const bigSets = allSets
     .filter((s) =>
       (s.cardCount?.total ?? 0) >= 80 &&
-      (s.id.startsWith("swsh") || s.id.startsWith("sv"))
+      s.id.startsWith("swsh")
     )
-    .slice(-5); // last 5 = most recently released English sets
+    .slice(-5);
 
   // Step 2 — for each set, grab the 15 highest-numbered cards (likely rarest)
   const cardIdBatches = await Promise.all(
@@ -150,8 +150,8 @@ async function snapshotPokemon(date: string): Promise<number> {
     const tcg = card.pricing?.tcgplayer;
     const price =
       tcg?.holofoil?.marketPrice ??
+      tcg?.["reverse-holofoil"]?.marketPrice ??
       tcg?.normal?.marketPrice ??
-      tcg?.reverseHolofoil?.marketPrice ??
       tcg?.["1stEditionHolofoil"]?.marketPrice ??
       0;
     if (!price || Number(price) <= 0) continue;

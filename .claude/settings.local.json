@@ -11,7 +11,16 @@
       "Bash(cd \"C:\\\\Users\\\\satis\\\\OneDrive\\\\Desktop\\\\DuelDex\" && npm run build 2>&1 | tail -30)",
       "WebFetch(domain:scrydex.com)",
       "WebFetch(domain:www.pricecharting.com)",
-      "WebFetch(domain:api.tcgdex.net)"
+      "WebFetch(domain:api.tcgdex.net)",
+      "Bash(curl -s -w \"\\\\nHTTP Status: %{http_code}\\\\n\" \"https://api.tcgdex.net/v2/en/cards?filters[supertype]=Pokemon&pagination[page]=1&pagination[itemsPerPage]=3\" | head -c 600)",
+      "Bash(curl -s \"https://api.tcgdex.net/v2/en/cards?filters[supertype]=Pokemon&pagination[page]=1&pagination[itemsPerPage]=3\" | head -c 600)",
+      "Bash(curl -s \"https://api.tcgdex.net/v2/en/cards?filters[category]=Pokemon&pagination[page]=1&pagination[itemsPerPage]=3\" | head -c 600)",
+      "Bash(curl -s \"https://api.tcgdex.net/v2/en/cards?pagination[page]=1&pagination[itemsPerPage]=3\" | head -c 600)",
+      "Bash(curl -s \"https://api.tcgdex.net/v2/en/cards?pagination[page]=1&pagination[itemsPerPage]=1\" | head -c 2000)",
+      "Bash(curl -v \"https://api.tcgdex.net/v2/en/cards\" 2>&1 | head -50)",
+      "Bash(curl -s \"https://api.tcgdex.net/v2/en/cards\" | jq 'length')",
+      "Bash(curl -s \"https://api.tcgdex.net/v2/en/cards\" 2>/dev/null | python3 -c \"import sys, json; data = json.load\\(sys.stdin\\); print\\('Total cards:', len\\(data\\)\\); print\\('First card:', json.dumps\\(data[0], indent=2\\)\\); print\\('\\\\\\\\nField names:', list\\(data[0].keys\\(\\)\\)\\)\")",
+      "Bash(curl -s \"https://api.tcgdex.net/v2/en/cards\" 2>/dev/null | head -c 1500 | tail -c 1000)"
     ]
   }
 }

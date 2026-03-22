@@ -27,8 +27,8 @@ export default async function PokemonCardPage({
   const tcg = card.pricing?.tcgplayer;
   const tcgPrice =
     tcg?.holofoil?.marketPrice ??
+    tcg?.["reverse-holofoil"]?.marketPrice ??
     tcg?.normal?.marketPrice ??
-    tcg?.reverseHolofoil?.marketPrice ??
     tcg?.["1stEditionHolofoil"]?.marketPrice ??
     null;
 

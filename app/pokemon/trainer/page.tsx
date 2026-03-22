@@ -1,66 +1,116 @@
-// Pokémon Trainer cards page — mirrors the Pokémon cards page but filters for Trainer supertype.
+// Pokémon Trainer cards page — fetches all Trainer-type cards from TCGdex (cached 1h),
+// paginates in JS, and supports filtering by trainer subtype (Item/Supporter/Stadium/Tool).
 
+import { Suspense } from "react";
 import CardGrid from "@/components/CardGrid";
-import { fetchPokemonCards } from "@/lib/pokemon";
+import CategoryHero from "@/components/CategoryHero";
+import TrainerSubtypeFilter from "@/components/TrainerSubtypeFilter";
+import { fetchAllPokemonCards } from "@/lib/pokemon";
+
+const PER_PAGE = 24;
+
+const TRAINER_HERO_IMAGES: [
+  { src: string; alt: string },
+  { src: string; alt: string },
+  { src: string; alt: string },
+] = [
+  { src: "https://assets.tcgdex.net/en/base/base1/88/high.webp", alt: "Professor Oak" },
+  { src: "https://assets.tcgdex.net/en/base/base1/71/high.webp", alt: "Computer Search" },
+  { src: "https://assets.tcgdex.net/en/base/base1/91/high.webp", alt: "Bill" },
+];
 
 export const dynamic = "force-dynamic";
 
 export default async function TrainerPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{
+    page?: string;
+    trainerType?: string;
+  }>;
 }) {
-  const { page: pageParam } = await searchParams;
-  const page = Math.max(1, parseInt(pageParam ?? "1", 10));
+  const params = await searchParams;
+  const page = Math.max(1, parseInt(params.page ?? "1", 10));
+  const selectedTrainerType = params.trainerType ?? "";
 
-  const { cards } = await fetchPokemonCards("Trainer", page, 24);
+  const allCards = await fetchAllPokemonCards("Trainer", {
+    trainerType: selectedTrainerType || undefined,
+  });
 
-  const mapped = cards.map((c) => ({
+  // Filter out cards with no image before paginating so page counts stay consistent
+  const withImages = allCards.filter((c) => !!c.image);
+  const total = withImages.length;
+  const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
+  const effectivePage = Math.min(page, totalPages);
+  const pageCards = withImages.slice((effectivePage - 1) * PER_PAGE, effectivePage * PER_PAGE);
+
+  const mapped = pageCards.map((c) => ({
     id: c.id,
     name: c.name,
-    imageUrl: c.image ? `${c.image}/low.webp` : "",
+    imageUrl: `${c.image}/low.webp`,
   }));
+
+  const filterQuery = selectedTrainerType
+    ? `&trainerType=${encodeURIComponent(selectedTrainerType)}`
+    : "";
 
   return (
     <div style={{ background: "#080B14", minHeight: "100vh" }}>
       <div className="max-w-screen-xl mx-auto px-4 py-8">
-        <div className="mb-6">
-          <h1
-            className="text-2xl font-bold"
-            style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
-          >
-            Trainer Cards
-          </h1>
-          <p className="text-sm mt-1" style={{ color: "#7A8BA8" }}>
-            Pokémon TCG &mdash; Page {page}
-          </p>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1
+              className="text-2xl font-bold"
+              style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+            >
+              Trainer Cards
+            </h1>
+            <p className="text-sm mt-1" style={{ color: "#7A8BA8" }}>
+              Pokémon TCG &mdash; {total.toLocaleString()} cards
+            </p>
+          </div>
+          <CategoryHero images={TRAINER_HERO_IMAGES} />
+        </div>
+
+        {/* Filters */}
+        <div
+          className="rounded-xl p-4 mb-6"
+          style={{ background: "#0E1220", border: "1px solid #1A2035" }}
+        >
+          <Suspense fallback={null}>
+            <TrainerSubtypeFilter selected={selectedTrainerType} />
+          </Suspense>
         </div>
 
         <CardGrid cards={mapped} game="pokemon" />
 
-        <div className="flex items-center justify-center gap-2 mt-8">
-          {page > 1 && (
-            <a
-              href={`?page=${page - 1}`}
-              className="px-3 py-1.5 rounded text-sm"
-              style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
-            >
-              Previous
-            </a>
-          )}
-          <span className="text-sm" style={{ color: "#7A8BA8" }}>
-            Page {page}
-          </span>
-          {cards.length === 24 && (
-            <a
-              href={`?page=${page + 1}`}
-              className="px-3 py-1.5 rounded text-sm"
-              style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
-            >
-              Next
-            </a>
-          )}
-        </div>
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-8">
+            {effectivePage > 1 && (
+              <a
+                href={`?page=${effectivePage - 1}${filterQuery}`}
+                className="px-3 py-1.5 rounded text-sm"
+                style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
+              >
+                Previous
+              </a>
+            )}
+            <span className="text-sm" style={{ color: "#7A8BA8" }}>
+              Page {effectivePage} of {totalPages} &middot; {total.toLocaleString()} cards
+            </span>
+            {effectivePage < totalPages && (
+              <a
+                href={`?page=${effectivePage + 1}${filterQuery}`}
+                className="px-3 py-1.5 rounded text-sm"
+                style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
+              >
+                Next
+              </a>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

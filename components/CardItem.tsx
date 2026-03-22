@@ -64,14 +64,20 @@ export default function CardItem({
       >
         {/* Card image */}
         <div className="relative w-full aspect-[3/4] bg-[#080B14]">
-          <Image
-            src={imageUrl}
-            alt={name}
-            fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-contain p-4 transition-transform duration-300 group-hover:scale-105"
-            unoptimized
-          />
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
+              alt={name}
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              className="object-contain p-4 transition-transform duration-300 group-hover:scale-105"
+              unoptimized
+            />
+          ) : (
+            <div className="flex items-center justify-center w-full h-full">
+              <span className="text-xs" style={{ color: "#3A4A60" }}>No Image</span>
+            </div>
+          )}
         </div>
 
         {/* Info */}
