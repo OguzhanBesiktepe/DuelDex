@@ -5,6 +5,7 @@
 import { Suspense } from "react";
 import { Vibrant } from "node-vibrant/node";
 import HeroSection, { type FeaturedSet } from "@/components/HeroSection";
+import { ygoImage } from "@/lib/yugioh";
 import PriceMovers from "@/components/PriceMovers";
 
 export const dynamic = "force-dynamic";
@@ -74,7 +75,7 @@ async function fetchFeaturedYGO(): Promise<FeaturedSet | null> {
 
     const cardsData = await cardsRes.json();
     const cards: {
-      card_images: { image_url: string }[];
+      card_images: { id: number; image_url: string }[];
       card_sets?: { set_name: string; set_rarity: string }[];
     }[] = cardsData.data ?? [];
 
@@ -91,9 +92,9 @@ async function fetchFeaturedYGO(): Promise<FeaturedSet | null> {
 
     const cardImages: string[] = [];
     for (const card of shuffled) {
-      const url = card.card_images?.[0]?.image_url;
-      if (url) {
-        cardImages.push(url);
+      const id = card.card_images?.[0]?.id;
+      if (id) {
+        cardImages.push(ygoImage(id));
         if (cardImages.length === 3) break;
       }
     }
@@ -218,7 +219,7 @@ async function getFeaturedSet(): Promise<FeaturedSet> {
   return {
     gameLabel: "Yu-Gi-Oh!",
     setName: "Legend of Blue Eyes White Dragon",
-    cardImages: ["https://images.ygoprodeck.com/images/cards/89631139.jpg"],
+    cardImages: [ygoImage(89631139)],
     setHref: "/yugioh/sets",
     accentColor: "#FF7A00",
     accentRgb: "255, 122, 0",

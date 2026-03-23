@@ -1,7 +1,7 @@
 // YGO set detail page — resolves a set by its code (e.g. "LOB"), fetches all cards in that set,
 // then passes them to SetDetailClient for client-side filtering + sorting + pagination.
 
-import { fetchYGOSets, fetchAllYGOCardsBySet } from "@/lib/yugioh";
+import { fetchYGOSets, fetchAllYGOCardsBySet, ygoImage } from "@/lib/yugioh";
 import BackButton from "@/components/BackButton";
 import SetDetailClient from "@/components/SetDetailClient";
 import { notFound } from "next/navigation";
@@ -28,7 +28,7 @@ export default async function YGOSetDetailPage({
     return {
       id: String(c.id),
       name: c.name,
-      imageUrl: c.card_images[0]?.image_url ?? c.card_images[0]?.image_url_small ?? "",
+      imageUrl: c.card_images[0]?.id ? ygoImage(c.card_images[0].id) : "",
       type: c.race,
       cardType: c.type,
       rarity: c.card_sets?.find((s) => s.set_name === set.set_name)?.set_rarity,

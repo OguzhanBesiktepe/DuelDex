@@ -4,9 +4,9 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        // YGOPRODeck card images (self-host on R2 before going to production)
+        // YGO card images served from Cloudflare R2
         protocol: "https",
-        hostname: "images.ygoprodeck.com",
+        hostname: "pub-8f7749aaa39e4c799999b63d69153e39.r2.dev",
       },
       {
         // TCGdex Pokémon card images (hotlinking allowed)

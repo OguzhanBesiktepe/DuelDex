@@ -3,6 +3,12 @@
 // unless a shorter TTL makes sense (e.g. search results use 60 s).
 
 const YGO_BASE = "https://db.ygoprodeck.com/api/v7";
+const R2 = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
+
+/** Returns the R2-hosted URL for a YGO card image. Pass small=true for the thumbnail. */
+export function ygoImage(id: number | string, small = false): string {
+  return `${R2}/ygo/${id}${small ? "_small" : ""}.jpg`;
+}
 
 export interface YGOCard {
   id: number;

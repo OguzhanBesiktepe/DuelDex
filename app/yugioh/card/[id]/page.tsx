@@ -1,7 +1,7 @@
 // YGO card detail page — fetches the card by numeric ID and builds an artwork list that
 // includes all alternate art images. Also renders pricing, printings, and user action buttons.
 
-import { fetchYGOCardById, fetchYGOCardAltArts } from "@/lib/yugioh";
+import { fetchYGOCardById, fetchYGOCardAltArts, ygoImage } from "@/lib/yugioh";
 import BackButton from "@/components/BackButton";
 import { notFound } from "next/navigation";
 import CardImageZoom from "@/components/CardImageZoom";
@@ -30,12 +30,12 @@ export default async function YGOCardPage({
   const rawImages = [
     // Use name= version of this card if available — it has the full card_images list
     ...(selfInAltArts ?? card).card_images.map((img) => ({
-      url: img.image_url,
+      url: ygoImage(img.id),
       id: img.id,
     })),
     // Also include images from any separate alt-art card records
     ...otherAltArts.flatMap((c) =>
-      c.card_images.map((img) => ({ url: img.image_url, id: img.id })),
+      c.card_images.map((img) => ({ url: ygoImage(img.id), id: img.id })),
     ),
   ];
   // Deduplicate by image id and remove empty URLs
@@ -103,7 +103,7 @@ export default async function YGOCardPage({
             <CardActions
               cardId={String(card.id)}
               cardName={card.name}
-              cardImage={card.card_images[0]?.image_url_small ?? ""}
+              cardImage={card.card_images[0]?.id ? ygoImage(card.card_images[0].id, true) : ""}
               game="yugioh"
               price={parseFloat(price?.tcgplayer_price ?? "0")}
             />
@@ -227,7 +227,7 @@ export default async function YGOCardPage({
               price={price ?? null}
               cardName={card.name}
               cardId={String(card.id)}
-              cardImage={card.card_images[0]?.image_url_small ?? ""}
+              cardImage={card.card_images[0]?.id ? ygoImage(card.card_images[0].id, true) : ""}
             />
           </div>
         </div>

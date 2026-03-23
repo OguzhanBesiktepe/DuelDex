@@ -25,11 +25,11 @@ Users can:
 | Framework | **Next.js 14** (App Router) | Free | SSR + file-based routing |
 | Styling | **Tailwind CSS** | Free | Utility-first, fast to build |
 | Hosting | **Vercel** | Free | Auto-deploys from GitHub |
-| Auth | **Supabase Auth** | Free | Google OAuth built-in |
-| Database | **Supabase PostgreSQL** | Free | Stores user favorites |
+| Auth | **Firebase Auth** | Free | Google OAuth built-in |
+| Database | **Firestore** (Firebase) | Free | Stores favorites, lists, user profiles |
 | YGO Cards | **YGOPRODeck API** | Free | No API key needed |
 | Pokémon Cards | **TCGdex API** | Free | No API key needed, open source |
-| YGO Images | **Cloudflare R2** | Free (10GB) | One-time bulk download |
+| YGO Images | **Cloudflare R2** | Free (10GB) | Self-hosted — do NOT hotlink YGOPRODeck |
 | Pokémon Images | **TCGdex CDN** | Free | Hotlinking is fine for PKMN |
 
 ---

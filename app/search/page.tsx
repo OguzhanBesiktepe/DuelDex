@@ -3,7 +3,7 @@
 // to handle punctuation differences (see lib/yugioh.ts searchYGOCards).
 
 import CardGrid from "@/components/CardGrid";
-import { searchYGOCards } from "@/lib/yugioh";
+import { searchYGOCards, ygoImage } from "@/lib/yugioh";
 import { searchPokemonCards } from "@/lib/pokemon";
 
 export default async function SearchPage({
@@ -34,7 +34,7 @@ export default async function SearchPage({
   const ygoCards = ygoResults.map((c) => ({
     id: String(c.id),
     name: c.name,
-    imageUrl: c.card_images[0]?.image_url_small ?? c.card_images[0]?.image_url ?? "",
+    imageUrl: c.card_images[0]?.id ? ygoImage(c.card_images[0].id, true) : "",
     type: c.race,
     rarity: c.card_sets?.[0]?.set_rarity,
     price: c.card_prices?.[0]?.tcgplayer_price,

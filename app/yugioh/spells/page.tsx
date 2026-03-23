@@ -7,16 +7,16 @@ import CardGrid from "@/components/CardGrid";
 import TypeFilter from "@/components/TypeFilter";
 import CategoryHero from "@/components/CategoryHero";
 import { SPELL_TYPES } from "@/lib/cardTypes";
-import { fetchYGOCards } from "@/lib/yugioh";
+import { fetchYGOCards, ygoImage } from "@/lib/yugioh";
 
 const SPELL_HERO_IMAGES: [
   { src: string; alt: string },
   { src: string; alt: string },
   { src: string; alt: string },
 ] = [
-  { src: "https://images.ygoprodeck.com/images/cards/83764718.jpg", alt: "Monster Reborn" },
-  { src: "https://images.ygoprodeck.com/images/cards/55144522.jpg", alt: "Pot of Greed" },
-  { src: "https://images.ygoprodeck.com/images/cards/12580477.jpg", alt: "Raigeki" },
+  { src: ygoImage(83764718), alt: "Monster Reborn" },
+  { src: ygoImage(55144522), alt: "Pot of Greed" },
+  { src: ygoImage(12580477), alt: "Raigeki" },
 ];
 
 export default async function SpellsPage({
@@ -73,8 +73,7 @@ export default async function SpellsPage({
     return {
       id: String(c.id),
       name: c.name,
-      imageUrl:
-        c.card_images[0]?.image_url_small ?? c.card_images[0]?.image_url ?? "",
+      imageUrl: c.card_images[0]?.id ? ygoImage(c.card_images[0].id, true) : "",
       type: c.race,
       rarity: c.card_sets?.[0]?.set_rarity,
       price: c.card_prices?.[0]?.tcgplayer_price,

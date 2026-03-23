@@ -9,16 +9,16 @@ import AttributeFilter from "@/components/AttributeFilter";
 import LevelFilter from "@/components/LevelFilter";
 import CategoryHero from "@/components/CategoryHero";
 import { MONSTER_TYPES } from "@/lib/monsterTypes";
-import { fetchYGOCards } from "@/lib/yugioh";
+import { fetchYGOCards, ygoImage } from "@/lib/yugioh";
 
 const MONSTER_HERO_IMAGES: [
   { src: string; alt: string },
   { src: string; alt: string },
   { src: string; alt: string },
 ] = [
-  { src: "https://images.ygoprodeck.com/images/cards/46986414.jpg", alt: "Dark Magician" },
-  { src: "https://images.ygoprodeck.com/images/cards/89631139.jpg", alt: "Blue-Eyes White Dragon" },
-  { src: "https://images.ygoprodeck.com/images/cards/74677422.jpg", alt: "Red-Eyes Black Dragon" },
+  { src: ygoImage(46986414), alt: "Dark Magician" },
+  { src: ygoImage(89631139), alt: "Blue-Eyes White Dragon" },
+  { src: ygoImage(74677422), alt: "Red-Eyes Black Dragon" },
 ];
 
 // All API type strings — used when no specific type filter is active
@@ -107,8 +107,7 @@ export default async function MonstersPage({
     return {
       id: String(c.id),
       name: c.name,
-      imageUrl:
-        c.card_images[0]?.image_url_small ?? c.card_images[0]?.image_url ?? "",
+      imageUrl: c.card_images[0]?.id ? ygoImage(c.card_images[0].id, true) : "",
       type: c.race,
       rarity: c.card_sets?.[0]?.set_rarity,
       price: c.card_prices?.[0]?.tcgplayer_price,

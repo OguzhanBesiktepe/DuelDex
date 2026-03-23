@@ -6,16 +6,16 @@ import CardGrid from "@/components/CardGrid";
 import TypeFilter from "@/components/TypeFilter";
 import CategoryHero from "@/components/CategoryHero";
 import { TRAP_TYPES } from "@/lib/cardTypes";
-import { fetchYGOCards } from "@/lib/yugioh";
+import { fetchYGOCards, ygoImage } from "@/lib/yugioh";
 
 const TRAP_HERO_IMAGES: [
   { src: string; alt: string },
   { src: string; alt: string },
   { src: string; alt: string },
 ] = [
-  { src: "https://images.ygoprodeck.com/images/cards/44095762.jpg", alt: "Mirror Force" },
-  { src: "https://images.ygoprodeck.com/images/cards/41420027.jpg", alt: "Solemn Judgment" },
-  { src: "https://images.ygoprodeck.com/images/cards/62279055.jpg", alt: "Magical Cylinder" },
+  { src: ygoImage(44095762), alt: "Mirror Force" },
+  { src: ygoImage(41420027), alt: "Solemn Judgment" },
+  { src: ygoImage(62279055), alt: "Magical Cylinder" },
 ];
 
 export default async function TrapsPage({
@@ -69,8 +69,7 @@ export default async function TrapsPage({
     return {
       id: String(c.id),
       name: c.name,
-      imageUrl:
-        c.card_images[0]?.image_url_small ?? c.card_images[0]?.image_url ?? "",
+      imageUrl: c.card_images[0]?.id ? ygoImage(c.card_images[0].id, true) : "",
       // "Normal" Trap sub-type is not very descriptive so we omit it from the tile
       type: c.race === "Normal" ? undefined : c.race,
       rarity: c.card_sets?.[0]?.set_rarity,
