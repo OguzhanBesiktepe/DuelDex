@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
     // Fetch all YGO query variants in parallel, then merge + deduplicate by card id
     Promise.all(variants.map(fetchYGO)).then((responses) => {
       const seen = new Set<number>();
-      const merged: { id: number; name: string; card_images: { image_url_small: string }[] }[] = [];
+      const merged: { id: number; name: string; card_images: { image_url_small: string }[]; card_prices?: { tcgplayer_price: string }[] }[] = [];
       for (const res of responses) {
         for (const card of res?.data ?? []) {
           if (!seen.has(card.id)) {
