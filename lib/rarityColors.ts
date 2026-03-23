@@ -92,3 +92,40 @@ export function getRarityColor(rarity: string | undefined, game: "yugioh" | "pok
   const map = game === "yugioh" ? YGO_RARITY_COLORS : PKM_RARITY_COLORS;
   return map[rarity] ?? GREY;
 }
+
+// Numeric tier for sorting Pokémon rarities common → rare.
+// Unknown rarities land at tier 99 (end of list).
+const PKM_RARITY_TIER: Record<string, number> = {
+  // Tier 1
+  "Common":                         1,
+  "None":                           1,
+  // Tier 2
+  "Uncommon":                       2,
+  "Rare":                           3,
+  // Tier 3 — Holo
+  "Rare Holo":                      4,
+  "Rare Holo EX":                   4,
+  "Rare Holo GX":                   4,
+  "Rare Holo V":                    4,
+  "Rare Holo VMAX":                 4,
+  "Rare Holo VSTAR":                4,
+  // Tier 4 — Ultra
+  "Double Rare":                    5,
+  "Rare Ultra":                     5,
+  "Rare Rainbow":                   5,
+  "Rare ACE":                       5,
+  // Tier 5 — Secret / Hyper
+  "Amazing Rare":                   6,
+  "Rare Shining":                   6,
+  "Rare Secret":                    6,
+  "Hyper Rare":                     6,
+  // Tier 6 — Illustration / Special
+  "Radiant Rare":                   7,
+  "Trainer Gallery Rare Holo":      7,
+  "Illustration Rare":              7,
+  "Special Illustration Rare":      8,
+};
+
+export function getPokemonRarityTier(rarity: string): number {
+  return PKM_RARITY_TIER[rarity] ?? 99;
+}

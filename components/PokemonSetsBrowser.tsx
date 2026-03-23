@@ -15,6 +15,10 @@ export default function PokemonSetsBrowser({ sets }: { sets: PokemonSet[] }) {
   const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
+    // TCGdex's /sets list endpoint omits releaseDate; the API returns sets oldest→newest,
+    // so we use the original index as a chronological fallback.
+    const originalIdx = new Map(sets.map((s, i) => [s.id, i]));
+
     const q = query.toLowerCase().trim();
     let list = q
       ? sets.filter((s) => s.name.toLowerCase().includes(q))
@@ -24,9 +28,11 @@ export default function PokemonSetsBrowser({ sets }: { sets: PokemonSet[] }) {
       list = list.sort((a, b) => a.name.localeCompare(b.name));
     } else {
       list = list.sort((a, b) => {
-        if (!a.releaseDate) return 1;
-        if (!b.releaseDate) return -1;
-        return new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
+        if (a.releaseDate && b.releaseDate) {
+          return new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime();
+        }
+        // Fall back to reversed API order (higher original index = newer set)
+        return (originalIdx.get(b.id) ?? 0) - (originalIdx.get(a.id) ?? 0);
       });
     }
 

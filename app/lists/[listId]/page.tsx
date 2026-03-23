@@ -25,8 +25,20 @@ async function fetchCurrentPrice(
   cardId: string,
   setCode?: string
 ): Promise<number> {
-  if (game === "pokemon") return 0;
   try {
+    if (game === "pokemon") {
+      const res = await fetch(`https://api.tcgdex.net/v2/en/cards/${cardId}`);
+      if (!res.ok) return 0;
+      const card = await res.json();
+      const tcg = card?.pricing?.tcgplayer;
+      return (
+        tcg?.holofoil?.marketPrice ??
+        tcg?.["reverse-holofoil"]?.marketPrice ??
+        tcg?.normal?.marketPrice ??
+        tcg?.["1stEditionHolofoil"]?.marketPrice ??
+        0
+      );
+    }
     const res = await fetch(`https://db.ygoprodeck.com/api/v7/cardinfo.php?id=${cardId}`);
     if (!res.ok) return 0;
     const data = await res.json();

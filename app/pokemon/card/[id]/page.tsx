@@ -75,7 +75,7 @@ export default async function PokemonCardPage({
                 cardName={card.name}
                 cardImage={card.image ? `${card.image}/low.webp` : ""}
                 game="pokemon"
-                price={0}
+                price={tcgPrice ?? 0}
               />
             </div>
           )}

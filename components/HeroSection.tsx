@@ -67,22 +67,42 @@ export default function HeroSection({ featured }: { featured: FeaturedSet }) {
           </Link>
         </div>
 
-        {/* Mobile — single centered card */}
-        {centerImg && (
-          <div className="mt-10 flex justify-center md:hidden">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={centerImg}
-              alt={featured.setName}
-              className={styles.card}
-              style={{
-                width: 180,
-                height: "auto",
-                boxShadow: "0 24px 48px rgba(0,0,0,0.7)",
-              }}
-            />
-          </div>
-        )}
+        {/* Mobile — three-card fan */}
+        <div className="relative md:hidden" style={{ height: 200, marginTop: "2rem", width: "100%" }}>
+          {leftImg && (
+            <div className={styles.mobileFanLeft}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={leftImg}
+                alt={featured.setName}
+                className={`${styles.card} ${styles.cardSide}`}
+                style={{ width: 110, height: "auto", boxShadow: "0 16px 32px rgba(0,0,0,0.65)" }}
+              />
+            </div>
+          )}
+          {centerImg && (
+            <div className={styles.mobileFanCenter}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={centerImg}
+                alt={featured.setName}
+                className={`${styles.card} ${styles.cardCenter}`}
+                style={{ width: 140, height: "auto", boxShadow: "0 24px 48px rgba(0,0,0,0.72)" }}
+              />
+            </div>
+          )}
+          {rightImg && (
+            <div className={styles.mobileFanRight}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={rightImg}
+                alt={featured.setName}
+                className={`${styles.card} ${styles.cardSide}`}
+                style={{ width: 110, height: "auto", boxShadow: "0 16px 32px rgba(0,0,0,0.65)" }}
+              />
+            </div>
+          )}
+        </div>
 
         {/* Desktop — three staggered floating cards */}
         <div className="relative hidden shrink-0 md:block" style={{ width: 560, height: 500 }}>

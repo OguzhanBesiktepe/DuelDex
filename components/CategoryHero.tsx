@@ -41,7 +41,10 @@ export default function CategoryHero({
 
   if (variant === "packs") {
     return (
-      <div className="hidden md:flex items-end gap-4 shrink-0">
+      // On mobile: scale the whole cluster to ~62% and anchor to the right edge
+      // so it sits neatly beside the page heading without overflowing.
+      <div className="shrink-0 scale-[0.62] origin-right md:scale-100">
+      <div className="flex items-end gap-4 shrink-0">
         {/* Left */}
         <div
           className={styles.hwPackSide}
@@ -116,6 +119,7 @@ export default function CategoryHero({
             }}
           />
         </div>
+      </div>
       </div>
     );
   }

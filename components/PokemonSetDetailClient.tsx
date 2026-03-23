@@ -8,7 +8,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { POKEMON_ENERGY_TYPES } from "@/lib/pokemonTypes";
-import { getRarityColor } from "@/lib/rarityColors";
+import { getRarityColor, getPokemonRarityTier } from "@/lib/rarityColors";
 
 const PER_PAGE = 24;
 
@@ -33,8 +33,9 @@ export default function PokemonSetDetailClient({ cards }: { cards: SetCard[] }) 
     for (const c of cards) {
       if (c.rarity && /[a-zA-Z]/.test(c.rarity)) seen.add(c.rarity);
     }
-    // Sort by rarity tier (Common → Secret) using the color map as a proxy
-    return Array.from(seen).sort();
+    return Array.from(seen).sort(
+      (a, b) => getPokemonRarityTier(a) - getPokemonRarityTier(b),
+    );
   }, [cards]);
 
   const filtered = useMemo(() => {

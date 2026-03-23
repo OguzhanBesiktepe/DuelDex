@@ -70,7 +70,7 @@ export default function CardItem({
               alt={name}
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              className="object-contain p-4 transition-transform duration-300 group-hover:scale-105"
+              className="object-contain p-4 transition-transform duration-300 group-hover:scale-105 group-active:scale-105"
               unoptimized
             />
           ) : (
@@ -137,7 +137,7 @@ export default function CardItem({
 
         {/* Hover: brighten the rarity border + glow */}
         <div
-          className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+          className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-300 pointer-events-none"
           style={{
             boxShadow: `inset 0 0 0 2px ${rarityColor}, 0 0 32px ${rarityColor}45`,
           }}

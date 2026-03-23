@@ -31,7 +31,7 @@ interface CardSnapshot {
 
 async function snapshotYGO(date: string): Promise<number> {
   const res = await fetch(
-    "https://db.ygoprodeck.com/api/v7/cardinfo.php?num=100&offset=0&sort=new&tcgplayer_data=true",
+    "https://db.ygoprodeck.com/api/v7/cardinfo.php?num=200&offset=0&tcgplayer_data=true",
     { cache: "no-store" },
   );
   if (!res.ok) return 0;

@@ -138,12 +138,14 @@ function MoverTile({ mover, showPct }: { mover: Mover; showPct: boolean }) {
 
 function MoverRow({
   label,
+  sublabel,
   accent,
   movers,
   hasHistory,
   className,
 }: {
   label: string;
+  sublabel: string;
   accent: string;
   movers: Mover[];
   hasHistory: boolean;
@@ -152,12 +154,20 @@ function MoverRow({
   if (movers.length === 0) return null;
   return (
     <div className={className}>
-      <p
-        className="mb-4 text-xs font-bold uppercase tracking-[0.2em]"
-        style={{ color: accent }}
-      >
-        {label}
-      </p>
+      <div className="mb-4 flex items-baseline gap-3">
+        <p
+          className="text-xs font-bold uppercase tracking-[0.2em]"
+          style={{ color: accent }}
+        >
+          {label}
+        </p>
+        <span
+          className="text-xs uppercase tracking-[0.15em]"
+          style={{ color: "#7A8BA8" }}
+        >
+          {sublabel}
+        </span>
+      </div>
       <div className="grid grid-cols-3 gap-3 sm:grid-cols-3 md:grid-cols-6">
         {movers.map((m) => (
           <MoverTile key={`${m.cardId}-${m.href}`} mover={m} showPct={hasHistory} />
@@ -180,10 +190,6 @@ export default async function PriceMovers() {
 
   if (ygoMovers.length === 0 && pkmnMovers.length === 0) return null;
 
-  // If neither game has history yet, label as "Top Cards" instead of "Price Movers"
-  const hasAnyHistory = ygoHistory || pkmnHistory;
-  const heading = hasAnyHistory ? "🔥 Price Movers" : "🔥 Top Cards Today";
-
   return (
     <section
       className="mx-auto max-w-7xl px-4 py-12"
@@ -193,17 +199,24 @@ export default async function PriceMovers() {
         className="mb-8 text-lg font-bold uppercase tracking-widest"
         style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
       >
-        {heading}
+        🔥 Market Today
       </h2>
 
       <MoverRow
         label="Yu-Gi-Oh!"
+        sublabel={ygoHistory ? "Price Movers" : "Top Cards"}
         accent="#FF7A00"
         movers={ygoMovers}
         hasHistory={ygoHistory}
         className={pkmnMovers.length > 0 ? "mb-10" : undefined}
       />
-      <MoverRow label="Pokémon" accent="#00AAFF" movers={pkmnMovers} hasHistory={pkmnHistory} />
+      <MoverRow
+        label="Pokémon"
+        sublabel="Top Cards"
+        accent="#00AAFF"
+        movers={pkmnMovers}
+        hasHistory={pkmnHistory}
+      />
     </section>
   );
 }
