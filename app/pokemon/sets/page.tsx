@@ -5,14 +5,19 @@ import { fetchPokemonSets } from "@/lib/pokemon";
 import PokemonSetsBrowser from "@/components/PokemonSetsBrowser";
 import CategoryHero from "@/components/CategoryHero";
 
+// Pack art images — swap these for real booster pack art once you have the files.
+// Recommended source: https://bulbapedia.bulbagarden.net (search "<Set Name> booster pack")
+// Download 3 pack images, save to /public (e.g. /pokemon-swsh-pack.png), then replace the srcs below.
+//
+// Current placeholder: TCGdex set logo art (stylised set name graphics, available via CDN).
 const SETS_HERO_IMAGES: [
   { src: string; alt: string },
   { src: string; alt: string },
   { src: string; alt: string },
 ] = [
-  { src: "https://assets.tcgdex.net/en/base/base1/4/high.webp", alt: "Charizard — Base Set" },
-  { src: "https://assets.tcgdex.net/en/base/base1/10/high.webp", alt: "Mewtwo — Base Set" },
-  { src: "https://assets.tcgdex.net/en/base/base1/58/high.webp", alt: "Pikachu — Base Set" },
+  { src: "/shiningfate.png", alt: "Shining Fates" },
+  { src: "/151.png",         alt: "Pokémon 151" },
+  { src: "/baseset.png",     alt: "Base Set" },
 ];
 
 export default async function PokemonSetsPage() {
@@ -33,7 +38,7 @@ export default async function PokemonSetsPage() {
               {sets.length} sets · Click any set to browse its cards
             </p>
           </div>
-          <CategoryHero images={SETS_HERO_IMAGES} />
+          <CategoryHero images={SETS_HERO_IMAGES} variant="packs" packHeight={300} />
         </div>
 
         <PokemonSetsBrowser sets={sets} />

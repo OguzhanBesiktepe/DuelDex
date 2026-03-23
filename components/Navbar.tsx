@@ -69,8 +69,10 @@ const pokemonLinks = [
   {
     href: "/pokemon/sets",
     label: "Browse All Sets",
-    image: "https://assets.tcgdex.net/en/base/base1/58/low.webp", // Pikachu
-    hint: "Pikachu",
+    // Swap for a real booster pack image once you have it (save to /public like the YGO ones)
+    image: "/151.png",
+    hint: "Pokémon 151",
+    crop: true,
   },
 ];
 
