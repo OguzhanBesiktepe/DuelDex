@@ -23,7 +23,7 @@ function queryVariants(q: string): string[] {
 }
 
 async function fetchYGO(q: string) {
-  return fetch(`${YGO_BASE}?fname=${encodeURIComponent(q)}&num=12&offset=0`).then((r) =>
+  return fetch(`${YGO_BASE}?fname=${encodeURIComponent(q)}&num=12&offset=0&tcgplayer_data=true`).then((r) =>
     r.ok ? r.json() : { data: [] },
   );
 }
@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
       return merged;
     }),
     fetch(
-      `${PKM_BASE}?filters[name]=${encodeURIComponent(q)}&pagination[page]=1&pagination[itemsPerPage]=5`,
+      `${PKM_BASE}?name=${encodeURIComponent(q)}`,
     ).then((r) => (r.ok ? r.json() : [])),
   ]);
 
@@ -65,13 +65,18 @@ export async function GET(req: NextRequest) {
     const ygoCards = ygoSettled.value
       .filter((c) => words.every((w) => normalize(c.name).includes(w)))
       .slice(0, 5)
-      .map((c) => ({
-        id: String(c.id),
-        name: c.name,
-        image: c.card_images?.[0]?.image_url_small ?? "",
-        game: "yugioh",
-        href: `/yugioh/card/${c.id}`,
-      }));
+      .map((c) => {
+        const rawPrice = c.card_prices?.[0]?.tcgplayer_price;
+        const price = rawPrice ? parseFloat(rawPrice) : undefined;
+        return {
+          id: String(c.id),
+          name: c.name,
+          image: c.card_images?.[0]?.image_url_small ?? "",
+          game: "yugioh",
+          href: `/yugioh/card/${c.id}`,
+          price: price && price > 0 ? price : undefined,
+        };
+      });
     results.push(...ygoCards);
   }
 

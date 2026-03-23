@@ -17,7 +17,7 @@ const SETS_HERO_IMAGES: [
 ] = [
   { src: "/shiningfate.png", alt: "Shining Fates" },
   { src: "/151.png",         alt: "Pokémon 151" },
-  { src: "/baseset.png",     alt: "Base Set" },
+  { src: "/baseset.png",     alt: "Shadowless" },
 ];
 
 export default async function PokemonSetsPage() {

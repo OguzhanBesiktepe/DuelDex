@@ -20,6 +20,7 @@ interface Suggestion {
   image: string;
   game: "yugioh" | "pokemon";
   href: string;
+  price?: number;
 }
 
 // Iconic card images used as category thumbnails in the dropdown
@@ -57,7 +58,7 @@ const pokemonLinks = [
   {
     href: "/pokemon/pokemon",
     label: "Pokémon",
-    image: "https://assets.tcgdex.net/en/base/base1/4/low.webp", // Charizard Base Set
+    image: "https://assets.tcgdex.net/en/base/base1/4/low.webp", // Charizard Shadowless
     hint: "Charizard",
   },
   {
@@ -367,6 +368,11 @@ export default function Navbar() {
                     >
                       {s.name}
                     </span>
+                    {s.price != null && (
+                      <span className="text-xs font-bold shrink-0" style={{ color: "#3ecf6a" }}>
+                        ${s.price.toFixed(2)}
+                      </span>
+                    )}
                   </Link>
                 ))}
                 <button
@@ -488,6 +494,11 @@ export default function Navbar() {
                       <img src={s.image} alt={s.name} width={28} height={39} className="rounded shrink-0 object-contain" style={{ width: 28, height: 39 }} />
                     )}
                     <span className="flex-1 text-sm truncate" style={{ color: "#F0F2FF" }}>{s.name}</span>
+                    {s.price != null && (
+                      <span className="text-xs font-bold shrink-0" style={{ color: "#3ecf6a" }}>
+                        ${s.price.toFixed(2)}
+                      </span>
+                    )}
                   </Link>
                 ))}
                 <button
