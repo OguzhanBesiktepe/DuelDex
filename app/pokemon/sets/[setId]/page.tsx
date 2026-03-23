@@ -1,37 +1,49 @@
-// Pokémon set detail page — fetches all cards in a specific set via TCGdex
-// and paginates them server-side using the `page` search param.
+// Pokémon set detail page — fetches all cards in the set with full metadata
+// (types, rarity, price) in parallel, then passes everything to PokemonSetDetailClient
+// for instant client-side filtering by energy type and rarity.
 
-import { fetchPokemonSetDetail } from "@/lib/pokemon";
-import CardGrid from "@/components/CardGrid";
+import { fetchPokemonSetDetail, fetchPokemonCardById } from "@/lib/pokemon";
+import PokemonSetDetailClient from "@/components/PokemonSetDetailClient";
 import BackButton from "@/components/BackButton";
 import { notFound } from "next/navigation";
-
-const PER_PAGE = 24;
+import type { SetCard } from "@/components/PokemonSetDetailClient";
 
 export default async function PokemonSetDetailPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ setId: string }>;
-  searchParams: Promise<{ page?: string }>;
 }) {
   const { setId } = await params;
-  const { page: pageParam } = await searchParams;
-  const page = Math.max(1, parseInt(pageParam ?? "1", 10));
 
   const set = await fetchPokemonSetDetail(decodeURIComponent(setId));
   if (!set) notFound();
 
-  const withImages = (set.cards ?? []).filter((c) => !!c.image);
-  const totalPages = Math.max(1, Math.ceil(withImages.length / PER_PAGE));
-  const effectivePage = Math.min(page, Math.max(1, totalPages));
-  const pageCards = withImages.slice((effectivePage - 1) * PER_PAGE, effectivePage * PER_PAGE);
+  // Filter to cards with images, then fetch full details for all of them in parallel.
+  // Each card detail is cached by Next.js for 1 hour, so subsequent loads are instant.
+  const summaries = (set.cards ?? []).filter((c) => !!c.image);
 
-  const mapped = pageCards.map((c) => ({
-    id: c.id,
-    name: c.name,
-    imageUrl: `${c.image}/low.webp`,
-  }));
+  const details = await Promise.all(summaries.map((c) => fetchPokemonCardById(c.id)));
+
+  const cards: SetCard[] = details
+    .filter((d) => d !== null && !!d!.image)
+    .map((d) => {
+      const tcg = d!.pricing?.tcgplayer;
+      const priceNum =
+        tcg?.holofoil?.marketPrice ??
+        tcg?.["reverse-holofoil"]?.marketPrice ??
+        tcg?.normal?.marketPrice ??
+        tcg?.["1stEditionHolofoil"]?.marketPrice ??
+        null;
+      return {
+        id: d!.id,
+        name: d!.name,
+        imageUrl: `${d!.image}/low.webp`,
+        types: d!.types,
+        rarity: d!.rarity,
+        stage: d!.stage,
+        price: priceNum != null ? String(priceNum) : undefined,
+      };
+    });
 
   return (
     <div style={{ background: "#080B14", minHeight: "100vh" }}>
@@ -68,7 +80,7 @@ export default async function PokemonSetDetailPage({
                 {set.id}
               </span>
               <span className="text-sm" style={{ color: "#7A8BA8" }}>
-                {withImages.length} cards
+                {cards.length} cards
               </span>
               {set.releaseDate && (
                 <span className="text-sm" style={{ color: "#7A8BA8" }}>
@@ -84,33 +96,7 @@ export default async function PokemonSetDetailPage({
           </div>
         </div>
 
-        <CardGrid cards={mapped} game="pokemon" />
-
-        {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-8">
-            {effectivePage > 1 && (
-              <a
-                href={`?page=${effectivePage - 1}`}
-                className="px-3 py-1.5 rounded text-sm"
-                style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
-              >
-                Previous
-              </a>
-            )}
-            <span className="text-sm" style={{ color: "#7A8BA8" }}>
-              Page {effectivePage} of {totalPages}
-            </span>
-            {effectivePage < totalPages && (
-              <a
-                href={`?page=${effectivePage + 1}`}
-                className="px-3 py-1.5 rounded text-sm"
-                style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
-              >
-                Next
-              </a>
-            )}
-          </div>
-        )}
+        <PokemonSetDetailClient cards={cards} />
       </div>
     </div>
   );

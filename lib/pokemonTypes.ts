@@ -9,7 +9,7 @@ export const POKEMON_ENERGY_TYPES = [
   { label: "Psychic",    value: "Psychic",    color: "#AB47BC", emoji: "🔮" },
   { label: "Fighting",   value: "Fighting",   color: "#A0522D", emoji: "👊" },
   { label: "Darkness",   value: "Darkness",   color: "#7E57C2", emoji: "🌑" },
-  { label: "Metal",      value: "Metal",      color: "#90A4AE", emoji: "⚙️" },
+  { label: "Steel",      value: "Metal",      color: "#90A4AE", emoji: "⚙️" }, // TCGdex stores this as "Metal" internally
   { label: "Dragon",     value: "Dragon",     color: "#5C6BC0", emoji: "🐉" },
   { label: "Fairy",      value: "Fairy",      color: "#EC407A", emoji: "✨" },
   { label: "Colorless",  value: "Colorless",  color: "#9E9E9E", emoji: "⭐" },

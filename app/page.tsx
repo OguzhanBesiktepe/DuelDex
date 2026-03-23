@@ -192,7 +192,7 @@ async function fetchFeaturedPokemon(): Promise<FeaturedSet | null> {
       gameLabel: "Pokémon",
       setName: set.name,
       cardImages,
-      setHref: "/pokemon/sets",
+      setHref: `/pokemon/sets/${encodeURIComponent(set.id)}`,
       accentColor: rgbStringToHex(accentRgb),
       accentRgb,
     };

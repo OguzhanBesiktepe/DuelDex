@@ -6,7 +6,7 @@ import CardGrid from "@/components/CardGrid";
 import CategoryHero from "@/components/CategoryHero";
 import PokemonTypeFilter from "@/components/PokemonTypeFilter";
 import PokemonStageFilter from "@/components/PokemonStageFilter";
-import { fetchAllPokemonCards } from "@/lib/pokemon";
+import { fetchAllPokemonCards, fetchPokemonCardById } from "@/lib/pokemon";
 import type { PokemonCardSummary } from "@/lib/pokemon";
 
 const PER_PAGE = 24;
@@ -68,11 +68,29 @@ export default async function PokemonPage({
   const effectivePage = Math.min(page, totalPages);
   const pageCards = withImages.slice((effectivePage - 1) * PER_PAGE, effectivePage * PER_PAGE);
 
-  const mapped = pageCards.map((c) => ({
-    id: c.id,
-    name: c.name,
-    imageUrl: `${c.image}/low.webp`,
-  }));
+  // Fetch full card details in parallel to get rarity + TCGPlayer price.
+  // Each result is independently cached by Next.js for 1 hour.
+  const details = await Promise.all(pageCards.map((c) => fetchPokemonCardById(c.id)));
+
+  const mapped = details
+    .filter((d) => d !== null)
+    .map((d) => {
+      const tcg = d!.pricing?.tcgplayer;
+      const priceNum =
+        tcg?.holofoil?.marketPrice ??
+        tcg?.["reverse-holofoil"]?.marketPrice ??
+        tcg?.normal?.marketPrice ??
+        tcg?.["1stEditionHolofoil"]?.marketPrice ??
+        null;
+      return {
+        id: d!.id,
+        name: d!.name,
+        imageUrl: d!.image ? `${d!.image}/low.webp` : "",
+        rarity: d!.rarity,
+        price: priceNum != null ? String(priceNum) : undefined,
+      };
+    })
+    .filter((c) => !!c.imageUrl);
 
   const typeQuery = selectedTypes.map((t) => `&poketype=${encodeURIComponent(t)}`).join("");
   const filterQuery = typeQuery + (selectedStage ? `&stage=${encodeURIComponent(selectedStage)}` : "");
