@@ -21,21 +21,55 @@ const TRAINER_HERO_IMAGES: [
 
 export const dynamic = "force-dynamic";
 
+// Full-art rarities for Trainer cards — covers modern and Sword & Shield era full arts
+const FULL_ART_RARITIES = [
+  "Illustration Rare",
+  "Special Illustration Rare",
+  "Hyper Rare",
+  "Rare Ultra",
+];
+
 export default async function TrainerPage({
   searchParams,
 }: {
   searchParams: Promise<{
     page?: string;
     trainerType?: string;
+    fullArt?: string;
   }>;
 }) {
   const params = await searchParams;
   const page = Math.max(1, parseInt(params.page ?? "1", 10));
   const selectedTrainerType = params.trainerType ?? "";
+  const fullArt = params.fullArt === "1";
 
-  const allCards = await fetchAllPokemonCards("Trainer", {
-    trainerType: selectedTrainerType || undefined,
-  });
+  let allCards: Awaited<ReturnType<typeof fetchAllPokemonCards>>;
+
+  if (fullArt) {
+    // Fetch each full-art rarity in parallel and merge, deduping by card id
+    const batches = await Promise.all(
+      FULL_ART_RARITIES.map((rarity) =>
+        fetchAllPokemonCards("Trainer", {
+          trainerType: selectedTrainerType || undefined,
+          rarity,
+        }),
+      ),
+    );
+    const seen = new Set<string>();
+    allCards = [];
+    for (const batch of batches) {
+      for (const card of batch) {
+        if (!seen.has(card.id)) {
+          seen.add(card.id);
+          allCards.push(card);
+        }
+      }
+    }
+  } else {
+    allCards = await fetchAllPokemonCards("Trainer", {
+      trainerType: selectedTrainerType || undefined,
+    });
+  }
 
   // Filter out cards with no image before paginating so page counts stay consistent
   const withImages = allCards.filter((c) => !!c.image);
@@ -67,9 +101,9 @@ export default async function TrainerPage({
     })
     .filter((c) => !!c.imageUrl);
 
-  const filterQuery = selectedTrainerType
-    ? `&trainerType=${encodeURIComponent(selectedTrainerType)}`
-    : "";
+  const filterQuery =
+    (selectedTrainerType ? `&trainerType=${encodeURIComponent(selectedTrainerType)}` : "") +
+    (fullArt ? "&fullArt=1" : "");
 
   return (
     <div style={{ background: "#080B14", minHeight: "100vh" }}>
@@ -96,7 +130,7 @@ export default async function TrainerPage({
           style={{ background: "#0E1220", border: "1px solid #1A2035" }}
         >
           <Suspense fallback={null}>
-            <TrainerSubtypeFilter selected={selectedTrainerType} />
+            <TrainerSubtypeFilter selected={selectedTrainerType} fullArt={fullArt} />
           </Suspense>
         </div>
 

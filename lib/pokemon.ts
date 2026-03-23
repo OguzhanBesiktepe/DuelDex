@@ -58,12 +58,14 @@ export async function fetchAllPokemonCards(
     types?: string;       // energy type: Fire, Water, Grass, etc.
     stage?: string;       // Basic, Stage1, Stage2, V, VMAX, VSTAR, GX, EX
     trainerType?: string; // Item, Supporter, Stadium, Tool
+    rarity?: string;      // e.g. "Illustration Rare", "Hyper Rare"
   },
 ): Promise<PokemonCardSummary[]> {
   let url = `${PKM_BASE}/cards?category=${encodeURIComponent(category)}`;
   if (filters?.types) url += `&types=${encodeURIComponent(filters.types)}`;
   if (filters?.stage) url += `&stage=${encodeURIComponent(filters.stage)}`;
   if (filters?.trainerType) url += `&trainerType=${encodeURIComponent(filters.trainerType)}`;
+  if (filters?.rarity) url += `&rarity=${encodeURIComponent(filters.rarity)}`;
 
   const res = await fetch(url, { next: { revalidate: 3600 } });
   if (!res.ok) return [];
