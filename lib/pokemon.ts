@@ -49,6 +49,7 @@ export interface PokemonCard {
       [key: string]: unknown;
     };
   };
+  suffix?: string; // "Legend" for LEGEND dual cards
   set?: {
     id: string;
     name: string;
@@ -78,6 +79,31 @@ export function getTcgPlayerProductId(card: Pick<PokemonCard, "pricing">): numbe
   for (const variant of Object.values(tcg)) {
     if (variant?.productId != null) return variant.productId;
   }
+  return null;
+}
+
+// Returns the Cardmarket trend price (EUR) as a fallback when TCGPlayer data is unavailable.
+// Legend cards and some older sets have tcgplayer: null but do have Cardmarket data.
+export function getCardMarketPrice(card: Pick<PokemonCard, "pricing">): number | null {
+  return card.pricing?.cardmarket?.trend ?? null;
+}
+
+// For LEGEND dual cards, determines whether this half is "Top" or "Bottom" by fetching
+// the adjacent card (same set, localId ± 1) and checking if the name matches.
+// Returns null for non-Legend cards or if the half cannot be determined.
+export async function getLegendHalf(card: PokemonCard): Promise<"Top" | "Bottom" | null> {
+  if (card.rarity !== "LEGEND" && card.suffix !== "Legend") return null;
+  const localId = parseInt(card.localId, 10);
+  if (isNaN(localId) || !card.set?.id) return null;
+
+  // If the next card shares the same name, this is the Top half
+  const next = await fetchPokemonCardById(`${card.set.id}-${localId + 1}`);
+  if (next?.name === card.name) return "Top";
+
+  // If the previous card shares the same name, this is the Bottom half
+  const prev = await fetchPokemonCardById(`${card.set.id}-${localId - 1}`);
+  if (prev?.name === card.name) return "Bottom";
+
   return null;
 }
 

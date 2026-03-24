@@ -82,7 +82,7 @@ export default async function TrainerPage({
   const details = await Promise.all(pageCards.map((c) => fetchPokemonCardById(c.id)));
 
   const mapped = details
-    .filter((d) => d !== null)
+    .filter((d) => d !== null && d.category === "Trainer") // guard against TCGdex miscategorized cards
     .map((d) => {
       const priceNum = getBestTcgPrice(d!);
       return {
@@ -129,7 +129,7 @@ export default async function TrainerPage({
           </Suspense>
         </div>
 
-        <CardGrid cards={mapped} game="pokemon" />
+        <CardGrid cards={mapped} game="pokemon" from="/pokemon/trainer" />
 
         {/* Pagination */}
         {totalPages > 1 && (

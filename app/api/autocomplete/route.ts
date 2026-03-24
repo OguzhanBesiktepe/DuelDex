@@ -81,15 +81,34 @@ export async function GET(req: NextRequest) {
   }
 
   if (pkmnSettled.status === "fulfilled" && Array.isArray(pkmnSettled.value)) {
-    const pkmnCards = pkmnSettled.value
-      .slice(0, 3)
-      .map((c: { id: string; name: string; image?: string }) => ({
+    const top3 = pkmnSettled.value.slice(0, 3) as { id: string; name: string; image?: string }[];
+    // Fetch full card details in parallel to get TCGPlayer pricing (cached by Next.js)
+    const details = await Promise.allSettled(
+      top3.map((c) =>
+        fetch(`https://api.tcgdex.net/v2/en/cards/${c.id}`, { next: { revalidate: 3600 } }).then((r) =>
+          r.ok ? r.json() : null,
+        ),
+      ),
+    );
+    const pkmnCards = top3.map((c, i) => {
+      const detail = details[i].status === "fulfilled" ? details[i].value : null;
+      const tcg = detail?.pricing?.tcgplayer;
+      let price: number | undefined;
+      if (tcg && typeof tcg === "object") {
+        for (const variant of Object.values(tcg)) {
+          const mp = (variant as { marketPrice?: number } | null)?.marketPrice;
+          if (mp != null && mp > 0 && (price == null || mp > price)) price = mp;
+        }
+      }
+      return {
         id: c.id,
         name: c.name,
         image: c.image ? `${c.image}/low.webp` : "",
         game: "pokemon",
         href: `/pokemon/card/${c.id}`,
-      }));
+        price: price ?? undefined,
+      };
+    });
     results.push(...pkmnCards);
   }
 

@@ -124,7 +124,7 @@ export default async function PokemonPage({
           </div>
         </div>
 
-        <CardGrid cards={mapped} game="pokemon" />
+        <CardGrid cards={mapped} game="pokemon" from="/pokemon/pokemon" />
 
         {/* Pagination */}
         {totalPages > 1 && (

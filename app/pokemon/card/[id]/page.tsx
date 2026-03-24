@@ -2,7 +2,7 @@
 // and displays full card info: image, HP, stage, attacks, weaknesses, and set details.
 // TCGdex has no TCGPlayer pricing so the only buy option shown is an eBay search link.
 
-import { fetchPokemonCardById, getBestTcgPrice, getTcgPlayerProductId } from "@/lib/pokemon";
+import { fetchPokemonCardById, getBestTcgPrice, getTcgPlayerProductId, getLegendHalf } from "@/lib/pokemon";
 import { notFound } from "next/navigation";
 import CardImageZoom from "@/components/CardImageZoom";
 import BackButton from "@/components/BackButton";
@@ -22,11 +22,13 @@ export default async function PokemonCardPage({
 
   const imageUrl = card.image ? `${card.image}/high.webp` : "";
   const images = imageUrl ? [{ url: imageUrl, id: 0 }] : [];
-  const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(card.name + " pokemon card")}`;
+  const legendHalf = await getLegendHalf(card);
+  const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(card.name + (legendHalf ? ` ${legendHalf}` : "") + " pokemon card")}`;
   const tcgProductId = getTcgPlayerProductId(card);
+  const tcgSearchName = legendHalf ? `${card.name} ${legendHalf}` : card.name;
   const tcgPlayerUrl = tcgProductId
     ? `https://www.tcgplayer.com/product/${tcgProductId}`
-    : `https://www.tcgplayer.com/search/pokemon/product?q=${encodeURIComponent(card.name)}`;
+    : `https://www.tcgplayer.com/search/pokemon/product?q=${encodeURIComponent(tcgSearchName)}`;
   const tcgPrice = getBestTcgPrice(card);
 
   return (
@@ -34,7 +36,15 @@ export default async function PokemonCardPage({
       <div className="max-w-screen-lg mx-auto px-4 py-8">
         {/* Back */}
         <BackButton
-          label={from === "/" ? "Back to Home" : "Back to Pokémon"}
+          label={
+            from === "/"
+              ? "Back to Home"
+              : from?.includes("/pokemon/trainer")
+                ? "Back to Trainers"
+                : from?.includes("/pokemon/energy")
+                  ? "Back to Energy Cards"
+                  : "Back to Pokémon"
+          }
           href={from ? decodeURIComponent(from) : "/pokemon/pokemon"}
         />
 
@@ -80,10 +90,18 @@ export default async function PokemonCardPage({
           {/* Details */}
           <div className="flex-1 min-w-0">
             <h1
-              className="text-3xl font-bold mb-1"
+              className="text-3xl font-bold mb-1 flex items-center gap-3 flex-wrap"
               style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
             >
               {card.name}
+              {legendHalf && (
+                <span
+                  className="text-sm font-bold px-2.5 py-1 rounded-full"
+                  style={{ background: "#FFD70022", color: "#FFD700", border: "1px solid #FFD70066" }}
+                >
+                  {legendHalf}
+                </span>
+              )}
             </h1>
 
             <div className="flex flex-wrap gap-2 mb-4">
@@ -216,6 +234,48 @@ export default async function PokemonCardPage({
                 <p className="text-sm" style={{ color: "#F0F2FF" }}>
                   {card.set.name}
                 </p>
+              </div>
+            )}
+
+            {/* TCGPlayer pricing breakdown */}
+            {card.pricing?.tcgplayer && Object.keys(card.pricing.tcgplayer).length > 0 && (
+              <div
+                className="rounded-xl p-4"
+                style={{ background: "#0E1220", border: "1px solid #1A2035" }}
+              >
+                <p
+                  className="text-xs font-semibold uppercase tracking-wide mb-3"
+                  style={{ color: "#7A8BA8" }}
+                >
+                  TCGPlayer Prices
+                </p>
+                <div className="flex flex-col gap-2">
+                  {Object.entries(card.pricing.tcgplayer).map(([variant, data]) => {
+                    if (!data) return null;
+                    const label = variant
+                      .replace(/-/g, " ")
+                      .replace(/\b\w/g, (c) => c.toUpperCase());
+                    return (
+                      <div key={variant} className="flex items-center justify-between">
+                        <span className="text-xs capitalize" style={{ color: "#7A8BA8" }}>
+                          {label}
+                        </span>
+                        <div className="flex items-center gap-3 text-xs">
+                          {data.lowPrice != null && (
+                            <span style={{ color: "#7A8BA8" }}>
+                              Low <span style={{ color: "#F0F2FF" }}>${data.lowPrice.toFixed(2)}</span>
+                            </span>
+                          )}
+                          {data.marketPrice != null && (
+                            <span style={{ color: "#7A8BA8" }}>
+                              Market <span className="font-bold" style={{ color: "#3ecf6a" }}>${data.marketPrice.toFixed(2)}</span>
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             )}
           </div>
