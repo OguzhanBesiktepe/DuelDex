@@ -49,6 +49,16 @@ export interface PokemonCardSummary {
   image?: string;
 }
 
+// Stages where TCGdex API `stage=` param returns empty/wrong results.
+// We skip the API param and match by card name suffix instead, which is reliable
+// because the TCG always puts the stage in the card name (e.g. "Charizard ex", "Charizard GX").
+const NAME_FILTERED_STAGES: Record<string, (name: string) => boolean> = {
+  ex: (name) => name.endsWith(" ex"),
+  EX: (name) => name.endsWith(" EX"),
+  GX: (name) => name.endsWith(" GX") || name.endsWith("-GX"),
+  // LV.X is not here — TCGdex stores these as stage="LEVEL-UP", which the API param handles correctly
+};
+
 // Fetches ALL cards for a category + optional filters with no pagination.
 // The full list is cached by Next.js for 1 hour, then sliced in JS.
 // category maps to the TCGdex `category` field (Pokemon / Trainer / Energy).
@@ -56,14 +66,17 @@ export async function fetchAllPokemonCards(
   category: "Pokemon" | "Trainer" | "Energy",
   filters?: {
     types?: string;       // energy type: Fire, Water, Grass, etc.
-    stage?: string;       // Basic, Stage1, Stage2, V, VMAX, VSTAR, GX, EX
+    stage?: string;       // Basic, Stage1, Stage2, V, VMAX, VSTAR, ex, GX, EX, LV.X
     trainerType?: string; // Item, Supporter, Stadium, Tool
     rarity?: string;      // e.g. "Illustration Rare", "Hyper Rare"
   },
 ): Promise<PokemonCardSummary[]> {
+  const nameFilter = filters?.stage ? NAME_FILTERED_STAGES[filters.stage] : undefined;
+
   let url = `${PKM_BASE}/cards?category=${encodeURIComponent(category)}`;
   if (filters?.types) url += `&types=${encodeURIComponent(filters.types)}`;
-  if (filters?.stage) url += `&stage=${encodeURIComponent(filters.stage)}`;
+  // Skip stage param for stages the API can't filter — we filter by name in JS instead
+  if (filters?.stage && !nameFilter) url += `&stage=${encodeURIComponent(filters.stage)}`;
   if (filters?.trainerType) url += `&trainerType=${encodeURIComponent(filters.trainerType)}`;
   if (filters?.rarity) url += `&rarity=${encodeURIComponent(filters.rarity)}`;
 
@@ -71,7 +84,13 @@ export async function fetchAllPokemonCards(
   if (!res.ok) return [];
   const data = await res.json();
   // TCGdex may return null or a non-array on unexpected inputs
-  return Array.isArray(data) ? data : [];
+  const cards: PokemonCardSummary[] = Array.isArray(data) ? data : [];
+
+  // For stages the API can't filter, apply name-based matching in JS
+  if (nameFilter) {
+    return cards.filter((c) => nameFilter(c.name));
+  }
+  return cards;
 }
 
 // Paginated wrapper around fetchAllPokemonCards.

@@ -20,7 +20,11 @@
       "Bash(curl -v \"https://api.tcgdex.net/v2/en/cards\" 2>&1 | head -50)",
       "Bash(curl -s \"https://api.tcgdex.net/v2/en/cards\" | jq 'length')",
       "Bash(curl -s \"https://api.tcgdex.net/v2/en/cards\" 2>/dev/null | python3 -c \"import sys, json; data = json.load\\(sys.stdin\\); print\\('Total cards:', len\\(data\\)\\); print\\('First card:', json.dumps\\(data[0], indent=2\\)\\); print\\('\\\\\\\\nField names:', list\\(data[0].keys\\(\\)\\)\\)\")",
-      "Bash(curl -s \"https://api.tcgdex.net/v2/en/cards\" 2>/dev/null | head -c 1500 | tail -c 1000)"
+      "Bash(curl -s \"https://api.tcgdex.net/v2/en/cards\" 2>/dev/null | head -c 1500 | tail -c 1000)",
+      "Bash(curl -s \"https://api.tcgdex.net/v2/en/cards?category=Pokemon&stage=LV.X\")",
+      "Bash(curl:*)",
+      "Bash(node -e \"const j=require\\(''/tmp/pl4-1.json''\\); console.log\\(''name:'', j.name, ''| stage:'', j.stage, ''| rarity:'', j.rarity\\)\")",
+      "Bash(node -e \"const j=require\\(''C:/Users/satis/AppData/Local/Temp/pl4-1.json''\\); console.log\\(''name:'', j.name, ''| stage:'', j.stage, ''| rarity:'', j.rarity\\)\")"
     ]
   }
 }

@@ -25,6 +25,7 @@ export const POKEMON_STAGES = [
   { label: "ex",      value: "ex" },
   { label: "GX",      value: "GX" },
   { label: "EX",      value: "EX" },
+  { label: "LV.X",    value: "LEVEL-UP" },
 ];
 
 export const TRAINER_SUBTYPES = [
