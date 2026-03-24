@@ -31,13 +31,15 @@ async function fetchCurrentPrice(
       if (!res.ok) return 0;
       const card = await res.json();
       const tcg = card?.pricing?.tcgplayer;
-      return (
-        tcg?.holofoil?.marketPrice ??
-        tcg?.["reverse-holofoil"]?.marketPrice ??
-        tcg?.normal?.marketPrice ??
-        tcg?.["1stEditionHolofoil"]?.marketPrice ??
-        0
-      );
+      if (!tcg) return 0;
+      // Iterate all variant keys — TCGdex uses dynamic kebab-case keys
+      // (e.g. "1st-edition-holofoil", "unlimited-holofoil") that vary by card
+      let best = 0;
+      for (const variant of Object.values(tcg)) {
+        const price = (variant as { marketPrice?: number } | undefined)?.marketPrice;
+        if (price != null && price > best) best = price;
+      }
+      return best;
     }
     const res = await fetch(`https://db.ygoprodeck.com/api/v7/cardinfo.php?id=${cardId}`);
     if (!res.ok) return 0;

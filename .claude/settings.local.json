@@ -24,7 +24,8 @@
       "Bash(curl -s \"https://api.tcgdex.net/v2/en/cards?category=Pokemon&stage=LV.X\")",
       "Bash(curl:*)",
       "Bash(node -e \"const j=require\\(''/tmp/pl4-1.json''\\); console.log\\(''name:'', j.name, ''| stage:'', j.stage, ''| rarity:'', j.rarity\\)\")",
-      "Bash(node -e \"const j=require\\(''C:/Users/satis/AppData/Local/Temp/pl4-1.json''\\); console.log\\(''name:'', j.name, ''| stage:'', j.stage, ''| rarity:'', j.rarity\\)\")"
+      "Bash(node -e \"const j=require\\(''C:/Users/satis/AppData/Local/Temp/pl4-1.json''\\); console.log\\(''name:'', j.name, ''| stage:'', j.stage, ''| rarity:'', j.rarity\\)\")",
+      "Bash(python3 -m json.tool)"
     ]
   }
 }

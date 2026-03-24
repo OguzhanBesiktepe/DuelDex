@@ -29,10 +29,24 @@ export interface PokemonCard {
   };
   pricing?: {
     tcgplayer?: {
-      normal?: { marketPrice?: number; lowPrice?: number; midPrice?: number; highPrice?: number };
-      holofoil?: { marketPrice?: number; lowPrice?: number; midPrice?: number; highPrice?: number };
-      "reverse-holofoil"?: { marketPrice?: number; lowPrice?: number; midPrice?: number; highPrice?: number };
-      "1stEditionHolofoil"?: { marketPrice?: number; lowPrice?: number; midPrice?: number; highPrice?: number };
+      // TCGdex uses kebab-case variant keys — actual keys seen in the wild:
+      // "normal", "holofoil", "reverse-holofoil", "1st-edition-holofoil",
+      // "unlimited-holofoil", "1st-edition-normal", "unlimited-normal"
+      [variant: string]: {
+        productId?: number;
+        marketPrice?: number;
+        lowPrice?: number;
+        midPrice?: number;
+        highPrice?: number;
+        directLowPrice?: number | null;
+      } | undefined;
+    };
+    cardmarket?: {
+      unit?: string;
+      avg?: number;
+      low?: number;
+      trend?: number;
+      [key: string]: unknown;
     };
   };
   set?: {
@@ -40,6 +54,20 @@ export interface PokemonCard {
     name: string;
     logo?: string;
   };
+}
+
+// Returns the best available TCGPlayer market price across all variant keys.
+// TCGdex uses dynamic kebab-case keys ("holofoil", "unlimited-holofoil",
+// "1st-edition-holofoil", "normal", etc.) so we iterate all of them.
+export function getBestTcgPrice(card: Pick<PokemonCard, "pricing">): number | null {
+  const tcg = card.pricing?.tcgplayer;
+  if (!tcg) return null;
+  let best: number | null = null;
+  for (const variant of Object.values(tcg)) {
+    const price = variant?.marketPrice;
+    if (price != null && (best === null || price > best)) best = price;
+  }
+  return best;
 }
 
 export interface PokemonCardSummary {

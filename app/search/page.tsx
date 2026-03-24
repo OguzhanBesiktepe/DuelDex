@@ -4,7 +4,7 @@
 
 import CardGrid from "@/components/CardGrid";
 import { searchYGOCards, ygoImage } from "@/lib/yugioh";
-import { searchPokemonCards } from "@/lib/pokemon";
+import { searchPokemonCards, fetchPokemonCardById, getBestTcgPrice } from "@/lib/pokemon";
 
 export default async function SearchPage({
   searchParams,
@@ -41,11 +41,19 @@ export default async function SearchPage({
     ebayPrice: c.card_prices?.[0]?.ebay_price,
   }));
 
-  const pkmnCards = pkmnResults.map((c) => ({
-    id: c.id,
-    name: c.name,
-    imageUrl: c.image ? `${c.image}/low.webp` : "",
-  }));
+  const pkmnDetails = await Promise.all(pkmnResults.map((c) => fetchPokemonCardById(c.id)));
+  const pkmnCards = pkmnDetails
+    .filter((d) => d !== null)
+    .map((d) => {
+      const priceNum = getBestTcgPrice(d!);
+      return {
+        id: d!.id,
+        name: d!.name,
+        imageUrl: d!.image ? `${d!.image}/low.webp` : "",
+        rarity: d!.rarity,
+        price: priceNum != null ? String(priceNum) : undefined,
+      };
+    });
 
   const totalResults = ygoCards.length + pkmnCards.length;
 

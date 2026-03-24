@@ -2,7 +2,7 @@
 // and displays full card info: image, HP, stage, attacks, weaknesses, and set details.
 // TCGdex has no TCGPlayer pricing so the only buy option shown is an eBay search link.
 
-import { fetchPokemonCardById } from "@/lib/pokemon";
+import { fetchPokemonCardById, getBestTcgPrice } from "@/lib/pokemon";
 import { notFound } from "next/navigation";
 import CardImageZoom from "@/components/CardImageZoom";
 import BackButton from "@/components/BackButton";
@@ -24,13 +24,7 @@ export default async function PokemonCardPage({
   const images = imageUrl ? [{ url: imageUrl, id: 0 }] : [];
   const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(card.name + " pokemon card")}`;
   const tcgPlayerUrl = `https://www.tcgplayer.com/search/pokemon/product?q=${encodeURIComponent(card.name)}`;
-  const tcg = card.pricing?.tcgplayer;
-  const tcgPrice =
-    tcg?.holofoil?.marketPrice ??
-    tcg?.["reverse-holofoil"]?.marketPrice ??
-    tcg?.normal?.marketPrice ??
-    tcg?.["1stEditionHolofoil"]?.marketPrice ??
-    null;
+  const tcgPrice = getBestTcgPrice(card);
 
   return (
     <div style={{ background: "#080B14", minHeight: "100vh" }}>

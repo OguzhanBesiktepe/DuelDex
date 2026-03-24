@@ -6,7 +6,7 @@ import CardGrid from "@/components/CardGrid";
 import CategoryHero from "@/components/CategoryHero";
 import PokemonTypeFilter from "@/components/PokemonTypeFilter";
 import PokemonStageFilter from "@/components/PokemonStageFilter";
-import { fetchAllPokemonCards, fetchPokemonCardById } from "@/lib/pokemon";
+import { fetchAllPokemonCards, fetchPokemonCardById, getBestTcgPrice } from "@/lib/pokemon";
 import type { PokemonCardSummary } from "@/lib/pokemon";
 
 const PER_PAGE = 24;
@@ -75,13 +75,7 @@ export default async function PokemonPage({
   const mapped = details
     .filter((d) => d !== null)
     .map((d) => {
-      const tcg = d!.pricing?.tcgplayer;
-      const priceNum =
-        tcg?.holofoil?.marketPrice ??
-        tcg?.["reverse-holofoil"]?.marketPrice ??
-        tcg?.normal?.marketPrice ??
-        tcg?.["1stEditionHolofoil"]?.marketPrice ??
-        null;
+      const priceNum = getBestTcgPrice(d!);
       return {
         id: d!.id,
         name: d!.name,

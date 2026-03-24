@@ -10,6 +10,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminDb } from "@/lib/firebase-admin";
+import { getBestTcgPrice } from "@/lib/pokemon";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -146,14 +147,7 @@ async function snapshotPokemon(date: string): Promise<number> {
 
   for (const card of cardDetails) {
     if (!card?.id) continue;
-    // Read TCGPlayer market price from the correct pricing path
-    const tcg = card.pricing?.tcgplayer;
-    const price =
-      tcg?.holofoil?.marketPrice ??
-      tcg?.["reverse-holofoil"]?.marketPrice ??
-      tcg?.normal?.marketPrice ??
-      tcg?.["1stEditionHolofoil"]?.marketPrice ??
-      0;
+    const price = getBestTcgPrice(card) ?? 0;
     if (!price || Number(price) <= 0) continue;
 
     const ref = db
