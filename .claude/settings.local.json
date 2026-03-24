@@ -25,7 +25,12 @@
       "Bash(curl:*)",
       "Bash(node -e \"const j=require\\(''/tmp/pl4-1.json''\\); console.log\\(''name:'', j.name, ''| stage:'', j.stage, ''| rarity:'', j.rarity\\)\")",
       "Bash(node -e \"const j=require\\(''C:/Users/satis/AppData/Local/Temp/pl4-1.json''\\); console.log\\(''name:'', j.name, ''| stage:'', j.stage, ''| rarity:'', j.rarity\\)\")",
-      "Bash(python3 -m json.tool)"
+      "Bash(python3 -m json.tool)",
+      "Bash(python3 -c \"import sys,json; sets=json.load\\(sys.stdin\\); [print\\(s[''''id''''], s[''''name'''']\\) for s in sets if ''''scarlet'''' in s[''''name''''].lower\\(\\) or ''''violet'''' in s[''''name''''].lower\\(\\) or s[''''id''''].startswith\\(''''sv''''\\)]\")",
+      "Bash(node -e \"const d=require\\(''''fs''''\\).readFileSync\\(''''/dev/stdin'''',''''utf8''''\\); const sets=JSON.parse\\(d\\); sets.filter\\(s=>s.id.startsWith\\(''''sv''''\\)\\).forEach\\(s=>console.log\\(s.id, s.name\\)\\)\")",
+      "Bash(\"C:/Users/satis/sv01.json\")",
+      "Bash(node -e \"const d=require\\(''C:/Users/satis/sv01.json''\\); console.log\\(''total cards:'', d.cardCount\\); const cards=d.cards||[]; console.log\\(''first 5:'', cards.slice\\(0,5\\).map\\(c=>c.localId+'' ''+c.name\\)\\); console.log\\(''last 5:'', cards.slice\\(-5\\).map\\(c=>c.localId+'' ''+c.name\\)\\)\")",
+      "Bash(node:*)"
     ]
   }
 }

@@ -2,18 +2,29 @@
 // Used by filter components on the Pokémon and Trainer pages.
 
 export const POKEMON_ENERGY_TYPES = [
-  { label: "Fire",       value: "Fire",       color: "#FF5722", emoji: "🔥" },
-  { label: "Water",      value: "Water",      color: "#2196F3", emoji: "💧" },
-  { label: "Grass",      value: "Grass",      color: "#4CAF50", emoji: "🌿" },
-  { label: "Lightning",  value: "Lightning",  color: "#FFC107", emoji: "⚡" },
-  { label: "Psychic",    value: "Psychic",    color: "#AB47BC", emoji: "🔮" },
-  { label: "Fighting",   value: "Fighting",   color: "#A0522D", emoji: "👊" },
-  { label: "Darkness",   value: "Darkness",   color: "#7E57C2", emoji: "🌑" },
-  { label: "Steel",      value: "Metal",      color: "#90A4AE", emoji: "⚙️" }, // TCGdex stores this as "Metal" internally
-  { label: "Dragon",     value: "Dragon",     color: "#5C6BC0", emoji: "🐉" },
-  { label: "Fairy",      value: "Fairy",      color: "#EC407A", emoji: "✨" },
-  { label: "Colorless",  value: "Colorless",  color: "#9E9E9E", emoji: "⭐" },
+  { label: "Fire",       value: "Fire",       color: "#FF4422", emoji: "🔥" }, // red-orange (fire energy card)
+  { label: "Water",      value: "Water",      color: "#38BDF8", emoji: "💧" }, // sky blue (water energy card)
+  { label: "Grass",      value: "Grass",      color: "#4ADE80", emoji: "🌿" }, // bright green (grass energy card)
+  { label: "Lightning",  value: "Lightning",  color: "#FBBF24", emoji: "⚡" }, // electric yellow (lightning energy card)
+  { label: "Psychic",    value: "Psychic",    color: "#D946EF", emoji: "🔮" }, // vivid magenta (psychic energy card)
+  { label: "Fighting",   value: "Fighting",   color: "#C2410C", emoji: "👊" }, // burnt orange-brown (fighting energy card)
+  { label: "Darkness",   value: "Darkness",   color: "#7C3AED", emoji: "🌑" }, // deep violet (darkness energy card)
+  { label: "Steel",      value: "Metal",      color: "#94A3B8", emoji: "⚙️" }, // silver-steel (metal energy card) — stored as "Metal" in TCGdex
+  { label: "Dragon",     value: "Dragon",     color: "#818CF8", emoji: "🐉" }, // indigo-blue (dragon energy card)
+  { label: "Fairy",      value: "Fairy",      color: "#F472B6", emoji: "✨" }, // hot pink (fairy energy card)
+  { label: "Colorless",  value: "Colorless",  color: "#A8A29E", emoji: "⭐" }, // warm grey (colorless energy card)
 ];
+
+// Lookup by TCGdex `types` field value → display color.
+// Falls back to muted slate for unknown/missing types.
+const TYPE_COLOR_MAP: Record<string, string> = Object.fromEntries(
+  POKEMON_ENERGY_TYPES.map((t) => [t.value, t.color])
+);
+
+export function getPokemonTypeColor(type: string | undefined): string {
+  if (!type) return "#7A8BA8";
+  return TYPE_COLOR_MAP[type] ?? "#7A8BA8";
+}
 
 export const POKEMON_STAGES = [
   { label: "Basic",   value: "Basic" },

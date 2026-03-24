@@ -50,6 +50,7 @@ export default async function SearchPage({
         id: d!.id,
         name: d!.name,
         imageUrl: d!.image ? `${d!.image}/low.webp` : "",
+        type: d!.types?.[0],
         rarity: d!.rarity,
         price: priceNum != null ? String(priceNum) : undefined,
       };

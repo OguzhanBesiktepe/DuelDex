@@ -8,6 +8,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getRarityColor } from "@/lib/rarityColors";
 import { getYGOTypeColor } from "@/lib/typeColors";
+import { getPokemonTypeColor } from "@/lib/pokemonTypes";
 
 interface CardItemProps {
   id: string;
@@ -93,7 +94,7 @@ export default function CardItem({
             {type && (
               <span
                 className="text-[11px] truncate"
-                style={{ color: game === "yugioh" ? getYGOTypeColor(type) : "#7A8BA8" }}
+                style={{ color: game === "yugioh" ? getYGOTypeColor(type) : getPokemonTypeColor(type) }}
               >
                 {type}
               </span>
