@@ -70,6 +70,17 @@ export function getBestTcgPrice(card: Pick<PokemonCard, "pricing">): number | nu
   return best;
 }
 
+// Returns the TCGPlayer productId from the first pricing variant that has one.
+// Used to build a direct product URL: https://www.tcgplayer.com/product/{id}
+export function getTcgPlayerProductId(card: Pick<PokemonCard, "pricing">): number | null {
+  const tcg = card.pricing?.tcgplayer;
+  if (!tcg) return null;
+  for (const variant of Object.values(tcg)) {
+    if (variant?.productId != null) return variant.productId;
+  }
+  return null;
+}
+
 export interface PokemonCardSummary {
   id: string;
   localId: string;

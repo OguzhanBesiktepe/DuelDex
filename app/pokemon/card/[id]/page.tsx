@@ -2,7 +2,7 @@
 // and displays full card info: image, HP, stage, attacks, weaknesses, and set details.
 // TCGdex has no TCGPlayer pricing so the only buy option shown is an eBay search link.
 
-import { fetchPokemonCardById, getBestTcgPrice } from "@/lib/pokemon";
+import { fetchPokemonCardById, getBestTcgPrice, getTcgPlayerProductId } from "@/lib/pokemon";
 import { notFound } from "next/navigation";
 import CardImageZoom from "@/components/CardImageZoom";
 import BackButton from "@/components/BackButton";
@@ -23,7 +23,10 @@ export default async function PokemonCardPage({
   const imageUrl = card.image ? `${card.image}/high.webp` : "";
   const images = imageUrl ? [{ url: imageUrl, id: 0 }] : [];
   const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(card.name + " pokemon card")}`;
-  const tcgPlayerUrl = `https://www.tcgplayer.com/search/pokemon/product?q=${encodeURIComponent(card.name)}`;
+  const tcgProductId = getTcgPlayerProductId(card);
+  const tcgPlayerUrl = tcgProductId
+    ? `https://www.tcgplayer.com/product/${tcgProductId}`
+    : `https://www.tcgplayer.com/search/pokemon/product?q=${encodeURIComponent(card.name)}`;
   const tcgPrice = getBestTcgPrice(card);
 
   return (
