@@ -21,7 +21,12 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "DuelDex",
   description: "TCG price browser for Yu-Gi-Oh! and Pokémon cards",
-  icons: { icon: "/Logo.png" },
+  icons: {
+    icon: "/Logo.png",
+    apple: "/icon-192x192.png",
+  },
+  manifest: "/manifest.webmanifest",
+  themeColor: "#080B14",
 };
 
 export default function RootLayout({
