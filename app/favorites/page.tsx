@@ -11,16 +11,28 @@ import { useAuth } from "@/lib/auth-context";
 import { getFavorites, removeFavorite, type FavoriteCard } from "@/lib/firestore";
 import { getRarityColor } from "@/lib/rarityColors";
 
-// Fetch the current price for a YGO card (or specific printing) from YGOPRODeck.
-// If setCode is provided, finds that printing's price from card_sets.
-// Returns 0 for Pokémon cards since TCGdex doesn't provide pricing.
+// Fetch the current price for a card.
+// Pokémon: fetches from TCGdex and picks the best TCGPlayer market price across all variants.
+// YGO: fetches from YGOPRODeck; if setCode is provided, uses that printing's price.
 async function fetchCurrentPrice(
   game: "yugioh" | "pokemon",
   cardId: string,
   setCode?: string
 ): Promise<number> {
-  if (game === "pokemon") return 0;
   try {
+    if (game === "pokemon") {
+      const res = await fetch(`https://api.tcgdex.net/v2/en/cards/${cardId}`);
+      if (!res.ok) return 0;
+      const card = await res.json();
+      const tcg = card?.pricing?.tcgplayer;
+      if (!tcg) return 0;
+      let best = 0;
+      for (const variant of Object.values(tcg)) {
+        const price = (variant as { marketPrice?: number } | undefined)?.marketPrice;
+        if (price != null && price > best) best = price;
+      }
+      return best;
+    }
     const res = await fetch(
       `https://db.ygoprodeck.com/api/v7/cardinfo.php?id=${cardId}`
     );
