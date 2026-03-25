@@ -5,6 +5,7 @@
 // then handles energy-type filtering, rarity filtering, and pagination in-memory.
 
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { POKEMON_ENERGY_TYPES } from "@/lib/pokemonTypes";
@@ -22,10 +23,17 @@ export interface SetCard {
   price?: string;
 }
 
-export default function PokemonSetDetailClient({ cards }: { cards: SetCard[] }) {
+export default function PokemonSetDetailClient({ cards, setId, initialPage = 1 }: { cards: SetCard[]; setId: string; initialPage?: number }) {
+  const router = useRouter();
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [selectedRarity, setSelectedRarity] = useState<string>("");
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(initialPage);
+
+  function changePage(newPage: number) {
+    setPage(newPage);
+    router.replace(`?page=${newPage}`, { scroll: false });
+    window.scrollTo(0, 0);
+  }
 
   // Collect unique rarities present in this set for the rarity filter
   const uniqueRarities = useMemo(() => {
@@ -190,7 +198,7 @@ export default function PokemonSetDetailClient({ cards }: { cards: SetCard[] }) 
           {pageCards.map((card) => {
             const rarityColor = getRarityColor(card.rarity, "pokemon");
             return (
-              <Link key={card.id} href={`/pokemon/card/${card.id}`} className="group block">
+              <Link key={card.id} href={`/pokemon/card/${card.id}?from=${encodeURIComponent(`/pokemon/sets/${setId}?page=${effectivePage}`)}`} className="group block">
                 <div
                   className="relative rounded-xl overflow-hidden transition-all duration-300"
                   style={{
@@ -257,7 +265,7 @@ export default function PokemonSetDetailClient({ cards }: { cards: SetCard[] }) 
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2 mt-8">
           <button
-            onClick={() => { setPage((p) => Math.max(1, p - 1)); window.scrollTo(0, 0); }}
+            onClick={() => changePage(Math.max(1, effectivePage - 1))}
             disabled={effectivePage === 1}
             className="px-3 py-1.5 rounded text-sm disabled:opacity-30"
             style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
@@ -268,7 +276,7 @@ export default function PokemonSetDetailClient({ cards }: { cards: SetCard[] }) 
             Page {effectivePage} of {totalPages}
           </span>
           <button
-            onClick={() => { setPage((p) => Math.min(totalPages, p + 1)); window.scrollTo(0, 0); }}
+            onClick={() => changePage(Math.min(totalPages, effectivePage + 1))}
             disabled={effectivePage === totalPages}
             className="px-3 py-1.5 rounded text-sm disabled:opacity-30"
             style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}

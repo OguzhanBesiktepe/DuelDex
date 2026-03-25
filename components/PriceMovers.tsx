@@ -7,6 +7,7 @@
 // run yet — the homepage simply omits the section rather than showing an error.
 
 import Link from "next/link";
+import { unstable_cache } from "next/cache";
 import { getAdminDb } from "@/lib/firebase-admin";
 import styles from "./PriceMovers.module.css";
 
@@ -189,10 +190,16 @@ function MoverRow({
 
 // ── Page section ──────────────────────────────────────────────────────────────
 
+const getCachedMovers = unstable_cache(
+  async (game: "yugioh" | "pokemon") => getMovers(game),
+  ["price-movers"],
+  { revalidate: 3600 }, // cache for 1 hour — data only changes once daily via cron
+);
+
 export default async function PriceMovers() {
   const [ygoResult, pkmnResult] = await Promise.all([
-    getMovers("yugioh"),
-    getMovers("pokemon"),
+    getCachedMovers("yugioh"),
+    getCachedMovers("pokemon"),
   ]);
 
   const { movers: ygoMovers, hasHistory: ygoHistory } = ygoResult;

@@ -10,10 +10,14 @@ import type { SetCard } from "@/components/PokemonSetDetailClient";
 
 export default async function PokemonSetDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ setId: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const { setId } = await params;
+  const { page } = await searchParams;
+  const initialPage = Math.max(1, parseInt(page ?? "1", 10) || 1);
 
   const set = await fetchPokemonSetDetail(decodeURIComponent(setId));
   if (!set) notFound();
@@ -90,7 +94,7 @@ export default async function PokemonSetDetailPage({
           </div>
         </div>
 
-        <PokemonSetDetailClient cards={cards} />
+        <PokemonSetDetailClient cards={cards} setId={setId} initialPage={initialPage} />
       </div>
     </div>
   );

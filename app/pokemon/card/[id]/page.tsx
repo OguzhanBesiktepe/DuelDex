@@ -41,6 +41,8 @@ export default async function PokemonCardPage({
               ? "Back to Home"
               : from === "/favorites"
                 ? "Back to Favorites"
+                : from?.includes("/pokemon/sets/")
+                ? "Back to Set"
                 : from?.includes("/lists/")
                 ? "Back to List"
                 : from?.includes("/pokemon/trainer")

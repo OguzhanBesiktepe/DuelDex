@@ -8,10 +8,14 @@ import { notFound } from "next/navigation";
 
 export default async function YGOSetDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ setCode: string }>;
+  searchParams: Promise<{ page?: string }>;
 }) {
   const { setCode } = await params;
+  const { page } = await searchParams;
+  const initialPage = Math.max(1, parseInt(page ?? "1", 10) || 1);
 
   const allSets = await fetchYGOSets();
   const set = allSets.find((s) => s.set_code === decodeURIComponent(setCode));
@@ -109,7 +113,7 @@ export default async function YGOSetDetailPage({
           </div>
         </div>
 
-        <SetDetailClient cards={mapped} setCode={setCode} />
+        <SetDetailClient cards={mapped} setCode={setCode} initialPage={initialPage} />
       </div>
     </div>
   );

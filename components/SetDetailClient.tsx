@@ -5,6 +5,7 @@
 // plus price sorting, all without further network requests.
 
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import CardGrid from "./CardGrid";
 
 interface SetCard {
@@ -48,10 +49,17 @@ function getPrice(card: SetCard): number {
   return isNaN(p) ? 0 : p;
 }
 
-export default function SetDetailClient({ cards, setCode }: { cards: SetCard[]; setCode: string }) {
+export default function SetDetailClient({ cards, setCode, initialPage = 1 }: { cards: SetCard[]; setCode: string; initialPage?: number }) {
+  const router = useRouter();
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
   const [sort, setSort] = useState<SortOption>("default");
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(initialPage);
+
+  function changePage(newPage: number) {
+    setPage(newPage);
+    router.replace(`?page=${newPage}`, { scroll: false });
+    window.scrollTo(0, 0);
+  }
 
   const filtered = useMemo(() => {
     let list = [...cards];
@@ -138,13 +146,13 @@ export default function SetDetailClient({ cards, setCode }: { cards: SetCard[]; 
         </span>
       </div>
 
-      <CardGrid cards={gridCards} game="yugioh" from={`/yugioh/sets/${encodeURIComponent(setCode)}`} />
+      <CardGrid cards={gridCards} game="yugioh" from={`/yugioh/sets/${encodeURIComponent(setCode)}?page=${effectivePage}`} />
 
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2 mt-8">
           <button
-            onClick={() => { setPage((p) => p - 1); window.scrollTo(0, 0); }}
+            onClick={() => changePage(effectivePage - 1)}
             disabled={effectivePage === 1}
             className="px-3 py-1.5 rounded text-sm disabled:opacity-30"
             style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
@@ -155,7 +163,7 @@ export default function SetDetailClient({ cards, setCode }: { cards: SetCard[]; 
             Page {effectivePage} of {totalPages}
           </span>
           <button
-            onClick={() => { setPage((p) => p + 1); window.scrollTo(0, 0); }}
+            onClick={() => changePage(effectivePage + 1)}
             disabled={effectivePage === totalPages}
             className="px-3 py-1.5 rounded text-sm disabled:opacity-30"
             style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
