@@ -12,12 +12,12 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#080B14",
     orientation: "portrait",
     screenshots: [
-      { src: "/screenshots/Homepage.jpg", sizes: "430x932", type: "image/jpeg", label: "DuelDex Homepage — Featured Sets" },
-      { src: "/screenshots/Monsters.jpg", sizes: "430x932", type: "image/jpeg", label: "Browse Yu-Gi-Oh! Monster Cards" },
-      { src: "/screenshots/Spells.jpg", sizes: "430x932", type: "image/jpeg", label: "Browse Yu-Gi-Oh! Spell Cards" },
-      { src: "/screenshots/Pokemonsters.jpg", sizes: "430x932", type: "image/jpeg", label: "Browse Pokémon Cards" },
-      { src: "/screenshots/Charizard.jpg", sizes: "430x932", type: "image/jpeg", label: "Card Detail with Live Pricing" },
-      { src: "/screenshots/Browser.jpg", sizes: "430x932", type: "image/jpeg", label: "Card Grid Browser" },
+      { src: "/screenshots/Homepage.jpg", sizes: "1179x1932", type: "image/jpeg", label: "DuelDex Homepage — Featured Sets" },
+      { src: "/screenshots/Monsters.jpg", sizes: "1179x1932", type: "image/jpeg", label: "Browse Yu-Gi-Oh! Monster Cards" },
+      { src: "/screenshots/Spells.jpg", sizes: "1179x1932", type: "image/jpeg", label: "Browse Yu-Gi-Oh! Spell Cards" },
+      { src: "/screenshots/Pokemonsters.jpg", sizes: "1179x1932", type: "image/jpeg", label: "Browse Pokémon Cards" },
+      { src: "/screenshots/Charizard.jpg", sizes: "1179x1932", type: "image/jpeg", label: "Card Detail with Live Pricing" },
+      { src: "/screenshots/Browser.jpg", sizes: "1179x1932", type: "image/jpeg", label: "Card Grid Browser" },
     ],
     icons: [
       { src: "/icon-192x192.png", sizes: "192x192", type: "image/png", purpose: "any" },
