@@ -489,7 +489,7 @@ export default function FavoritesPage() {
                   </div>
 
                   {/* Current price */}
-                  <div className="text-right shrink-0 hidden md:block w-20">
+                  <div className="text-right shrink-0 w-16">
                     <p className="text-xs" style={{ color: "#7A8BA8" }}>Now</p>
                     <p className="text-sm font-semibold" style={{ color: "#F0F2FF" }}>
                       {currentPrice === null ? (
@@ -503,7 +503,7 @@ export default function FavoritesPage() {
                   </div>
 
                   {/* Price diff */}
-                  <div className="shrink-0 hidden md:block w-16 text-right">
+                  <div className="shrink-0 w-14 text-right">
                     <PriceDiff
                       added={card.priceWhenAdded}
                       current={currentPrices[key] ?? null}

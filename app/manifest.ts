@@ -4,7 +4,8 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "DuelDex",
     short_name: "DuelDex",
-    description: "TCG price browser for Yu-Gi-Oh! and Pokémon cards",
+    description: "Browse and track Yu-Gi-Oh! and Pokémon TCG card prices. Search thousands of cards, view live market prices, save favorites, and build custom lists.",
+    id: "/",
     start_url: "/",
     display: "standalone",
     background_color: "#080B14",

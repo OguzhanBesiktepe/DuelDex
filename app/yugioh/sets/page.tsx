@@ -72,7 +72,7 @@ export default async function YGOSetsPage() {
               Yu-Gi-Oh! Sets
             </h1>
             <p className="text-sm mt-1" style={{ color: "#7A8BA8" }}>
-              {sets.length} sets · Click any set to browse its cards
+              {sets.length} sets
             </p>
           </div>
           <CategoryHero images={SETS_HERO_IMAGES} variant="packs" packHeight={300} />
