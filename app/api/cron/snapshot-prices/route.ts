@@ -1,12 +1,14 @@
 // Daily price snapshot job — called by Vercel Cron at 06:00 UTC.
-// Fetches the top 100 YGO cards by price from YGOPRODeck and the top-numbered
-// (rarest) cards from the 5 most recent large Pokémon sets via TCGdex,
-// then writes a price snapshot document for each card into Firestore under:
-//   price_snapshots/{YYYY-MM-DD}/yugioh/{cardId}
-//   price_snapshots/{YYYY-MM-DD}/pokemon/{cardId}
 //
-// Secured by a Bearer token — only Vercel Cron (which sends the CRON_SECRET
-// header automatically) and manual calls with the correct secret can trigger it.
+// Architecture (read-efficient):
+//   1. Reads previous snapshot from price_snapshots/{game} (1 read per game)
+//   2. Fetches fresh prices from external APIs
+//   3. Computes top-6 movers by comparing new vs previous prices
+//   4. Writes new snapshot to price_snapshots/{game} as a SINGLE document (1 write per game)
+//   5. Writes computed movers to price_movers/{game} as a SINGLE document (1 write per game)
+//
+// PriceMovers on the homepage reads only price_movers/{game} — 2 reads total per cache window.
+// This avoids the previous design of 268 individual card documents per day.
 
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminDb } from "@/lib/firebase-admin";
@@ -14,11 +16,6 @@ import { getBestTcgPrice } from "@/lib/pokemon";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
-
-// Returns today's date as "YYYY-MM-DD" in UTC
-function todayUTC(): string {
-  return new Date().toISOString().slice(0, 10);
-}
 
 interface CardSnapshot {
   cardId: string;
@@ -28,9 +25,65 @@ interface CardSnapshot {
   href: string;
 }
 
+interface Mover extends CardSnapshot {
+  prevPrice: number;
+  pct: number;
+}
+
+interface SnapshotDoc {
+  date: string;
+  cards: CardSnapshot[];
+}
+
+interface MoversDoc {
+  date: string;
+  movers: Mover[];
+  hasHistory: boolean;
+}
+
+// Computes top-6 movers by comparing today's cards against previous snapshot.
+function computeMovers(today: CardSnapshot[], prev: CardSnapshot[]): MoversDoc {
+  const date = new Date().toISOString().slice(0, 10);
+
+  if (prev.length === 0) {
+    // No previous snapshot — show top 6 by price
+    const movers = today
+      .filter((c) => c.price > 0)
+      .sort((a, b) => b.price - a.price)
+      .slice(0, 6)
+      .map((c) => ({ ...c, prevPrice: 0, pct: 0 }));
+    return { date, movers, hasHistory: false };
+  }
+
+  const prevMap = new Map<string, number>(prev.map((c) => [c.cardId, c.price]));
+
+  const movers: Mover[] = [];
+  for (const card of today) {
+    const prevPrice = prevMap.get(card.cardId);
+    if (!prevPrice || prevPrice <= 0) continue;
+    const pct = ((card.price - prevPrice) / prevPrice) * 100;
+    if (Math.abs(pct) < 1) continue; // ignore sub-1% noise
+    movers.push({ ...card, prevPrice, pct });
+  }
+
+  movers.sort((a, b) => Math.abs(b.pct) - Math.abs(a.pct));
+
+  if (movers.length === 0) {
+    // No meaningful movers — fall back to top 6 by current price
+    const top = today
+      .filter((c) => c.price > 0)
+      .sort((a, b) => b.price - a.price)
+      .slice(0, 6)
+      .map((c) => ({ ...c, prevPrice: 0, pct: 0 }));
+    return { date, movers: top, hasHistory: false };
+  }
+
+  return { date, movers: movers.slice(0, 6), hasHistory: true };
+}
+
 // ── Yu-Gi-Oh! ─────────────────────────────────────────────────────────────────
 
-async function snapshotYGO(date: string): Promise<number> {
+async function processYGO(date: string): Promise<number> {
   const res = await fetch(
     "https://db.ygoprodeck.com/api/v7/cardinfo.php?num=200&offset=0&tcgplayer_data=true",
     { cache: "no-store" },
@@ -45,48 +98,42 @@ async function snapshotYGO(date: string): Promise<number> {
     card_prices: { tcgplayer_price: string }[];
   }[] = data.data ?? [];
 
-  // Sort by TCGPlayer price descending so we store the most valuable cards
-  const cards = rawCards
-    .filter((c) => parseFloat(c.card_prices?.[0]?.tcgplayer_price ?? "0") > 0)
-    .sort(
-      (a, b) =>
-        parseFloat(b.card_prices?.[0]?.tcgplayer_price ?? "0") -
-        parseFloat(a.card_prices?.[0]?.tcgplayer_price ?? "0"),
-    );
+  const today: CardSnapshot[] = rawCards
+    .map((c) => ({
+      cardId: String(c.id),
+      name: c.name,
+      image: c.card_images?.[0]?.image_url_small ?? "",
+      price: parseFloat(c.card_prices?.[0]?.tcgplayer_price ?? "0") || 0,
+      href: `/yugioh/card/${c.id}`,
+    }))
+    .filter((c) => c.price > 0)
+    .sort((a, b) => b.price - a.price);
+
+  if (today.length === 0) return 0;
 
   const db = getAdminDb();
-  const batch = db.batch();
-  let count = 0;
 
-  for (const card of cards) {
-    const price = parseFloat(card.card_prices?.[0]?.tcgplayer_price ?? "0");
-    if (price <= 0) continue;
+  // Read previous snapshot (1 Firestore read)
+  const prevSnap = await db.collection("price_snapshots").doc("yugioh").get();
+  const prev: CardSnapshot[] = prevSnap.exists
+    ? ((prevSnap.data() as SnapshotDoc).cards ?? [])
+    : [];
 
-    const ref = db
-      .collection("price_snapshots")
-      .doc(date)
-      .collection("yugioh")
-      .doc(String(card.id));
+  // Compute movers in memory — no additional Firestore reads needed
+  const moversDoc = computeMovers(today, prev);
 
-    const snap: CardSnapshot = {
-      cardId: String(card.id),
-      name: card.name,
-      image: card.card_images?.[0]?.image_url_small ?? "",
-      price,
-      href: `/yugioh/card/${card.id}`,
-    };
-    batch.set(ref, snap);
-    count++;
-  }
+  // Write new snapshot + movers as single documents (2 writes)
+  await Promise.all([
+    db.collection("price_snapshots").doc("yugioh").set({ date, cards: today } as SnapshotDoc),
+    db.collection("price_movers").doc("yugioh").set(moversDoc),
+  ]);
 
-  await batch.commit();
-  return count;
+  return today.length;
 }
 
 // ── Pokémon ───────────────────────────────────────────────────────────────────
 
-async function snapshotPokemon(date: string): Promise<number> {
-  // Step 1 — fetch all sets, keep the 5 most recent with ≥ 80 cards
+async function processPokemon(date: string): Promise<number> {
   const setsRes = await fetch("https://api.tcgdex.net/v2/en/sets", {
     cache: "no-store",
   });
@@ -95,16 +142,10 @@ async function snapshotPokemon(date: string): Promise<number> {
   const allSets: { id: string; cardCount?: { total: number } }[] =
     await setsRes.json();
 
-  // TCGdex only has reliable TCGPlayer USD pricing for Sword & Shield (swsh) sets.
-  // Scarlet & Violet (sv) sets return tcgplayer: null. Use the 5 most recent swsh sets.
   const bigSets = allSets
-    .filter((s) =>
-      (s.cardCount?.total ?? 0) >= 80 &&
-      s.id.startsWith("swsh")
-    )
+    .filter((s) => (s.cardCount?.total ?? 0) >= 80 && s.id.startsWith("swsh"))
     .slice(-5);
 
-  // Step 2 — for each set, grab the 15 highest-numbered cards (likely rarest)
   const cardIdBatches = await Promise.all(
     bigSets.map(async (s) => {
       try {
@@ -126,7 +167,7 @@ async function snapshotPokemon(date: string): Promise<number> {
 
   const allIds = cardIdBatches.flat();
 
-  // Step 3 — fetch individual card details in batches of 10 to avoid timeout
+  // Fetch card details in batches of 10
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const cardDetails: any[] = [];
   for (let i = 0; i < allIds.length; i += 10) {
@@ -147,34 +188,35 @@ async function snapshotPokemon(date: string): Promise<number> {
     cardDetails.push(...results);
   }
 
+  const today: CardSnapshot[] = cardDetails
+    .filter((c) => c?.id)
+    .map((c) => ({
+      cardId: c.id,
+      name: c.name ?? "",
+      image: c.image ? `${c.image}/high.webp` : "",
+      price: Number(getBestTcgPrice(c) ?? 0),
+      href: `/pokemon/card/${c.id}`,
+    }))
+    .filter((c) => c.price > 0);
+
+  if (today.length === 0) return 0;
+
   const db = getAdminDb();
-  const batch = db.batch();
-  let count = 0;
 
-  for (const card of cardDetails) {
-    if (!card?.id) continue;
-    const price = getBestTcgPrice(card) ?? 0;
-    if (!price || Number(price) <= 0) continue;
+  // Read previous snapshot (1 Firestore read)
+  const prevSnap = await db.collection("price_snapshots").doc("pokemon").get();
+  const prev: CardSnapshot[] = prevSnap.exists
+    ? ((prevSnap.data() as SnapshotDoc).cards ?? [])
+    : [];
 
-    const ref = db
-      .collection("price_snapshots")
-      .doc(date)
-      .collection("pokemon")
-      .doc(card.id);
+  const moversDoc = computeMovers(today, prev);
 
-    const snap: CardSnapshot = {
-      cardId: card.id,
-      name: card.name ?? "",
-      image: card.image ? `${card.image}/high.webp` : "",
-      price: Number(price),
-      href: `/pokemon/card/${card.id}`,
-    };
-    batch.set(ref, snap);
-    count++;
-  }
+  await Promise.all([
+    db.collection("price_snapshots").doc("pokemon").set({ date, cards: today } as SnapshotDoc),
+    db.collection("price_movers").doc("pokemon").set(moversDoc),
+  ]);
 
-  await batch.commit();
-  return count;
+  return today.length;
 }
 
 // ── Handler ───────────────────────────────────────────────────────────────────
@@ -185,11 +227,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const date = todayUTC();
+  const date = new Date().toISOString().slice(0, 10);
 
   const [ygoCount, pkmnCount] = await Promise.all([
-    snapshotYGO(date).catch(() => 0),
-    snapshotPokemon(date).catch(() => 0),
+    processYGO(date).catch(() => 0),
+    processPokemon(date).catch(() => 0),
   ]);
 
   return NextResponse.json({ ok: true, date, yugioh: ygoCount, pokemon: pkmnCount });

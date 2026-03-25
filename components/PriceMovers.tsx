@@ -1,33 +1,26 @@
 // PriceMovers — server component rendered on the homepage.
-// Reads yesterday's and today's price snapshots from Firestore (written by the
-// daily cron job), computes the biggest movers, and renders two rows of 6 cards
-// (Yu-Gi-Oh! in orange, Pokémon in blue) with the same spring hover as the hero.
-//
-// Returns null on day 1 (no yesterday to compare against) or if the cron hasn't
-// run yet — the homepage simply omits the section rather than showing an error.
+// Reads pre-computed mover results from price_movers/{game} in Firestore.
+// The cron job does all the heavy computation — this component makes 2 reads total.
 
 import Link from "next/link";
 import { unstable_cache } from "next/cache";
 import { getAdminDb } from "@/lib/firebase-admin";
 import styles from "./PriceMovers.module.css";
 
-interface CardSnapshot {
+interface Mover {
   cardId: string;
   name: string;
   image: string;
   price: number;
   href: string;
-}
-
-interface Mover extends CardSnapshot {
   prevPrice: number;
-  pct: number; // signed percentage change
+  pct: number;
 }
 
-function dateStringUTC(offsetDays = 0): string {
-  const d = new Date();
-  d.setUTCDate(d.getUTCDate() + offsetDays);
-  return d.toISOString().slice(0, 10);
+interface MoversDoc {
+  date: string;
+  movers: Mover[];
+  hasHistory: boolean;
 }
 
 interface MoversResult {
@@ -38,71 +31,27 @@ interface MoversResult {
 async function getMovers(game: "yugioh" | "pokemon"): Promise<MoversResult> {
   try {
     const db = getAdminDb();
-
-    // Find the most recent snapshot within the last 7 days
-    // This ensures something always shows even if the cron fails for a few days
-    let todaySnap = await db.collection("price_snapshots").doc(dateStringUTC(0)).collection(game).get();
-    let daysBack = 0;
-    while (todaySnap.empty && daysBack < 7) {
-      daysBack++;
-      todaySnap = await db.collection("price_snapshots").doc(dateStringUTC(-daysBack)).collection(game).get();
-    }
-
-    // No snapshot data at all — section stays hidden
-    if (todaySnap.empty) return { movers: [], hasHistory: false };
-
-    // Look for a prior snapshot to compare against (one day before the one we found)
-    const yestSnap = await db
-      .collection("price_snapshots")
-      .doc(dateStringUTC(-(daysBack + 1)))
-      .collection(game)
-      .get();
-
-    // No prior snapshot — show top 6 by current price
-    if (yestSnap.empty) {
-      const top: Mover[] = todaySnap.docs
-        .map((d) => ({ ...(d.data() as CardSnapshot), prevPrice: 0, pct: 0 }))
-        .filter((c) => c.price > 0)
-        .sort((a, b) => b.price - a.price)
-        .slice(0, 6);
-      return { movers: top, hasHistory: false };
-    }
-
-    // Build cardId → previous price lookup
-    const yestMap = new Map<string, number>();
-    for (const d of yestSnap.docs) {
-      yestMap.set(d.id, (d.data() as CardSnapshot).price);
-    }
-
-    const movers: Mover[] = [];
-    for (const d of todaySnap.docs) {
-      const card = d.data() as CardSnapshot;
-      const prev = yestMap.get(d.id);
-      if (!prev || prev <= 0) continue;
-      const pct = ((card.price - prev) / prev) * 100;
-      if (Math.abs(pct) < 1) continue; // ignore sub-1% noise
-      movers.push({ ...card, prevPrice: prev, pct });
-    }
-
-    // Biggest absolute movers first, show top 6
-    movers.sort((a, b) => Math.abs(b.pct) - Math.abs(a.pct));
-
-    // If no cards moved enough, fall back to top 6 by current price
-    if (movers.length === 0) {
-      const top: Mover[] = todaySnap.docs
-        .map((d) => ({ ...(d.data() as CardSnapshot), prevPrice: 0, pct: 0 }))
-        .filter((c) => c.price > 0)
-        .sort((a, b) => b.price - a.price)
-        .slice(0, 6);
-      return { movers: top, hasHistory: false };
-    }
-
-    return { movers: movers.slice(0, 6), hasHistory: true };
+    const snap = await db.collection("price_movers").doc(game).get();
+    if (!snap.exists) return { movers: [], hasHistory: false };
+    const data = snap.data() as MoversDoc;
+    return { movers: data.movers ?? [], hasHistory: data.hasHistory ?? false };
   } catch (err) {
     console.error(`[PriceMovers] getMovers(${game}) failed:`, err);
     return { movers: [], hasHistory: false };
   }
 }
+
+// Cached per game — 5 min TTL so empty results recover quickly after cron runs
+const getCachedYGOMovers = unstable_cache(
+  () => getMovers("yugioh"),
+  ["price-movers-yugioh"],
+  { revalidate: 300 },
+);
+const getCachedPkmnMovers = unstable_cache(
+  () => getMovers("pokemon"),
+  ["price-movers-pokemon"],
+  { revalidate: 300 },
+);
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
 
@@ -191,18 +140,6 @@ function MoverRow({
 
 // ── Page section ──────────────────────────────────────────────────────────────
 
-// Separate cached functions per game — sharing one key would cause them to overwrite each other
-const getCachedYGOMovers = unstable_cache(
-  () => getMovers("yugioh"),
-  ["price-movers-yugioh"],
-  { revalidate: 300 }, // 5 min — short enough to recover quickly from empty cache
-);
-const getCachedPkmnMovers = unstable_cache(
-  () => getMovers("pokemon"),
-  ["price-movers-pokemon"],
-  { revalidate: 300 },
-);
-
 export default async function PriceMovers() {
   const [ygoResult, pkmnResult] = await Promise.all([
     getCachedYGOMovers(),
@@ -236,7 +173,7 @@ export default async function PriceMovers() {
       />
       <MoverRow
         label="Pokémon"
-        sublabel="Top Cards"
+        sublabel={pkmnHistory ? "Price Movers" : "Top Cards"}
         accent="#00AAFF"
         movers={pkmnMovers}
         hasHistory={pkmnHistory}
