@@ -231,8 +231,8 @@ export default function ListDetailPage({
               const key = itemKey(item);
               const currentPrice = currentPrices[key] ?? null;
               const cardHref = item.game === "yugioh"
-                ? `/yugioh/card/${item.cardId}`
-                : `/pokemon/card/${item.cardId}`;
+                ? `/yugioh/card/${item.cardId}?from=${encodeURIComponent(`/lists/${listId}`)}`
+                : `/pokemon/card/${item.cardId}?from=${encodeURIComponent(`/lists/${listId}`)}`;
               const rarityColor = item.setRarity ? getRarityColor(item.setRarity, "yugioh") : null;
 
               return (

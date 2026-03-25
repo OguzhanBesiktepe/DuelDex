@@ -30,7 +30,8 @@
       "Bash(node -e \"const d=require\\(''''fs''''\\).readFileSync\\(''''/dev/stdin'''',''''utf8''''\\); const sets=JSON.parse\\(d\\); sets.filter\\(s=>s.id.startsWith\\(''''sv''''\\)\\).forEach\\(s=>console.log\\(s.id, s.name\\)\\)\")",
       "Bash(\"C:/Users/satis/sv01.json\")",
       "Bash(node -e \"const d=require\\(''C:/Users/satis/sv01.json''\\); console.log\\(''total cards:'', d.cardCount\\); const cards=d.cards||[]; console.log\\(''first 5:'', cards.slice\\(0,5\\).map\\(c=>c.localId+'' ''+c.name\\)\\); console.log\\(''last 5:'', cards.slice\\(-5\\).map\\(c=>c.localId+'' ''+c.name\\)\\)\")",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "WebSearch"
     ]
   }
 }

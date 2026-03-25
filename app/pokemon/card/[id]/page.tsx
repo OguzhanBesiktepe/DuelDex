@@ -39,11 +39,13 @@ export default async function PokemonCardPage({
           label={
             from === "/"
               ? "Back to Home"
-              : from?.includes("/pokemon/trainer")
-                ? "Back to Trainers"
-                : from?.includes("/pokemon/energy")
-                  ? "Back to Energy Cards"
-                  : "Back to Pokémon"
+              : from?.includes("/lists/")
+                ? "Back to List"
+                : from?.includes("/pokemon/trainer")
+                  ? "Back to Trainers"
+                  : from?.includes("/pokemon/energy")
+                    ? "Back to Energy Cards"
+                    : "Back to Pokémon"
           }
           href={from ? decodeURIComponent(from) : "/pokemon/pokemon"}
         />
