@@ -4,7 +4,8 @@
     "namespace": "android_app",
     "package_name": "app.dueldex.twa",
     "sha256_cert_fingerprints": [
-      "DD:1C:89:D0:4E:27:44:B6:E8:4F:92:55:8D:E9:86:BB:38:8D:4A:86:D5:BD:A7:83:85:F5:82:07:B0:A4:12:96"
+      "DD:1C:89:D0:4E:27:44:B6:E8:4F:92:55:8D:E9:86:BB:38:8D:4A:86:D5:BD:A7:83:85:F5:82:07:B0:A4:12:96",
+      "D7:E6:3F:26:A0:8C:BA:8B:A3:CA:81:0A:70:12:6C:98:A7:15:91:64:3A:47:46:79:20:95:B4:14:88:FF:D8:38"
     ]
   }
 }]
