@@ -190,16 +190,22 @@ function MoverRow({
 
 // ── Page section ──────────────────────────────────────────────────────────────
 
-const getCachedMovers = unstable_cache(
-  async (game: "yugioh" | "pokemon") => getMovers(game),
-  ["price-movers"],
-  { revalidate: 3600 }, // cache for 1 hour — data only changes once daily via cron
+// Separate cached functions per game — sharing one key would cause them to overwrite each other
+const getCachedYGOMovers = unstable_cache(
+  () => getMovers("yugioh"),
+  ["price-movers-yugioh"],
+  { revalidate: 3600 },
+);
+const getCachedPkmnMovers = unstable_cache(
+  () => getMovers("pokemon"),
+  ["price-movers-pokemon"],
+  { revalidate: 3600 },
 );
 
 export default async function PriceMovers() {
   const [ygoResult, pkmnResult] = await Promise.all([
-    getCachedMovers("yugioh"),
-    getCachedMovers("pokemon"),
+    getCachedYGOMovers(),
+    getCachedPkmnMovers(),
   ]);
 
   const { movers: ygoMovers, hasHistory: ygoHistory } = ygoResult;

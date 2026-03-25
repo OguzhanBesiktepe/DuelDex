@@ -1,7 +1,7 @@
 // Root layout — wraps every page with fonts, AuthProvider, and ClientLayout.
 // Cinzel is used for headings; Inter is used for body text.
 
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cinzel, Inter } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "@/components/ClientLayout";
@@ -26,6 +26,9 @@ export const metadata: Metadata = {
     apple: "/icon-192x192.png",
   },
   manifest: "/manifest.webmanifest",
+};
+
+export const viewport: Viewport = {
   themeColor: "#080B14",
 };
 
