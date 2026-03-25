@@ -98,7 +98,8 @@ async function getMovers(game: "yugioh" | "pokemon"): Promise<MoversResult> {
     }
 
     return { movers: movers.slice(0, 6), hasHistory: true };
-  } catch {
+  } catch (err) {
+    console.error(`[PriceMovers] getMovers(${game}) failed:`, err);
     return { movers: [], hasHistory: false };
   }
 }
