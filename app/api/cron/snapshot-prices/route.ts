@@ -113,16 +113,19 @@ async function processYGO(date: string): Promise<number> {
 
   const db = getAdminDb();
 
-  // Read previous snapshot (1 Firestore read)
-  const prevSnap = await db.collection("price_snapshots").doc("yugioh").get();
-  const prev: CardSnapshot[] = prevSnap.exists
-    ? ((prevSnap.data() as SnapshotDoc).cards ?? [])
-    : [];
+  // Read previous snapshot — fall back to empty if Firestore is unavailable
+  let prev: CardSnapshot[] = [];
+  try {
+    const prevSnap = await db.collection("price_snapshots").doc("yugioh").get();
+    prev = prevSnap.exists ? ((prevSnap.data() as SnapshotDoc).cards ?? []) : [];
+  } catch {
+    // Quota exceeded or network error — proceed without history
+  }
 
-  // Compute movers in memory — no additional Firestore reads needed
   const moversDoc = computeMovers(today, prev);
 
-  // Write new snapshot + movers as single documents (2 writes)
+  // Write new snapshot + movers — if quota is exceeded these will also fail,
+  // but at least we tried and the error surfaces in the response
   await Promise.all([
     db.collection("price_snapshots").doc("yugioh").set({ date, cards: today } as SnapshotDoc),
     db.collection("price_movers").doc("yugioh").set(moversDoc),
@@ -203,11 +206,13 @@ async function processPokemon(date: string): Promise<number> {
 
   const db = getAdminDb();
 
-  // Read previous snapshot (1 Firestore read)
-  const prevSnap = await db.collection("price_snapshots").doc("pokemon").get();
-  const prev: CardSnapshot[] = prevSnap.exists
-    ? ((prevSnap.data() as SnapshotDoc).cards ?? [])
-    : [];
+  let prev: CardSnapshot[] = [];
+  try {
+    const prevSnap = await db.collection("price_snapshots").doc("pokemon").get();
+    prev = prevSnap.exists ? ((prevSnap.data() as SnapshotDoc).cards ?? []) : [];
+  } catch {
+    // Quota exceeded or network error — proceed without history
+  }
 
   const moversDoc = computeMovers(today, prev);
 
