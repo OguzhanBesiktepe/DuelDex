@@ -126,20 +126,26 @@ async function snapshotPokemon(date: string): Promise<number> {
 
   const allIds = cardIdBatches.flat();
 
-  // Step 3 — fetch individual card details in parallel to get price data
-  const cardDetails = await Promise.all(
-    allIds.map(async (id) => {
-      try {
-        const r = await fetch(`https://api.tcgdex.net/v2/en/cards/${id}`, {
-          cache: "no-store",
-        });
-        if (!r.ok) return null;
-        return await r.json();
-      } catch {
-        return null;
-      }
-    }),
-  );
+  // Step 3 — fetch individual card details in batches of 10 to avoid timeout
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const cardDetails: any[] = [];
+  for (let i = 0; i < allIds.length; i += 10) {
+    const batch = allIds.slice(i, i + 10);
+    const results = await Promise.all(
+      batch.map(async (id) => {
+        try {
+          const r = await fetch(`https://api.tcgdex.net/v2/en/cards/${id}`, {
+            cache: "no-store",
+          });
+          if (!r.ok) return null;
+          return await r.json();
+        } catch {
+          return null;
+        }
+      }),
+    );
+    cardDetails.push(...results);
+  }
 
   const db = getAdminDb();
   const batch = db.batch();

@@ -38,27 +38,27 @@ interface MoversResult {
 async function getMovers(game: "yugioh" | "pokemon"): Promise<MoversResult> {
   try {
     const db = getAdminDb();
-    const today = dateStringUTC(0);
-    const yesterday = dateStringUTC(-1);
 
-    const [todaySnap, yestSnap] = await Promise.all([
-      db.collection("price_snapshots").doc(today).collection(game).get(),
-      db.collection("price_snapshots").doc(yesterday).collection(game).get(),
-    ]);
-
-    // Cron hasn't run yet for today — fall back to yesterday's snapshot
-    if (todaySnap.empty && !yestSnap.empty) {
-      const top: Mover[] = yestSnap.docs
-        .map((d) => ({ ...(d.data() as CardSnapshot), prevPrice: 0, pct: 0 }))
-        .filter((c) => c.price > 0)
-        .sort((a, b) => b.price - a.price)
-        .slice(0, 6);
-      return { movers: top, hasHistory: false };
+    // Find the most recent snapshot within the last 7 days
+    // This ensures something always shows even if the cron fails for a few days
+    let todaySnap = await db.collection("price_snapshots").doc(dateStringUTC(0)).collection(game).get();
+    let daysBack = 0;
+    while (todaySnap.empty && daysBack < 7) {
+      daysBack++;
+      todaySnap = await db.collection("price_snapshots").doc(dateStringUTC(-daysBack)).collection(game).get();
     }
 
+    // No snapshot data at all — section stays hidden
     if (todaySnap.empty) return { movers: [], hasHistory: false };
 
-    // No yesterday data yet — show top 6 by current price
+    // Look for a prior snapshot to compare against (one day before the one we found)
+    const yestSnap = await db
+      .collection("price_snapshots")
+      .doc(dateStringUTC(-(daysBack + 1)))
+      .collection(game)
+      .get();
+
+    // No prior snapshot — show top 6 by current price
     if (yestSnap.empty) {
       const top: Mover[] = todaySnap.docs
         .map((d) => ({ ...(d.data() as CardSnapshot), prevPrice: 0, pct: 0 }))
@@ -68,7 +68,7 @@ async function getMovers(game: "yugioh" | "pokemon"): Promise<MoversResult> {
       return { movers: top, hasHistory: false };
     }
 
-    // Build cardId → yesterday's price lookup
+    // Build cardId → previous price lookup
     const yestMap = new Map<string, number>();
     for (const d of yestSnap.docs) {
       yestMap.set(d.id, (d.data() as CardSnapshot).price);
@@ -194,12 +194,12 @@ function MoverRow({
 const getCachedYGOMovers = unstable_cache(
   () => getMovers("yugioh"),
   ["price-movers-yugioh"],
-  { revalidate: 3600 },
+  { revalidate: 300 }, // 5 min — short enough to recover quickly from empty cache
 );
 const getCachedPkmnMovers = unstable_cache(
   () => getMovers("pokemon"),
   ["price-movers-pokemon"],
-  { revalidate: 3600 },
+  { revalidate: 300 },
 );
 
 export default async function PriceMovers() {
