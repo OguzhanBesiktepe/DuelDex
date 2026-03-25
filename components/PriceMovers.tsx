@@ -45,6 +45,16 @@ async function getMovers(game: "yugioh" | "pokemon"): Promise<MoversResult> {
       db.collection("price_snapshots").doc(yesterday).collection(game).get(),
     ]);
 
+    // Cron hasn't run yet for today — fall back to yesterday's snapshot
+    if (todaySnap.empty && !yestSnap.empty) {
+      const top: Mover[] = yestSnap.docs
+        .map((d) => ({ ...(d.data() as CardSnapshot), prevPrice: 0, pct: 0 }))
+        .filter((c) => c.price > 0)
+        .sort((a, b) => b.price - a.price)
+        .slice(0, 6);
+      return { movers: top, hasHistory: false };
+    }
+
     if (todaySnap.empty) return { movers: [], hasHistory: false };
 
     // No yesterday data yet — show top 6 by current price
