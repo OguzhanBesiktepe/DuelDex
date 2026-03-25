@@ -69,7 +69,7 @@ export default async function YGOCardPage({
         {/* Back */}
         {/* Derive a context-aware back label from the `from` query param */}
         <BackButton
-          label={from === "/" ? "Back to Home" : from?.startsWith("/lists/") ? "Back to List" : from?.startsWith("/search") ? "Back to Search Results" : from?.startsWith("/yugioh/sets/") ? "Back to Set" : card.type.includes("Spell") ? "Back to Spell Cards" : card.type.includes("Trap") ? "Back to Trap Cards" : "Back to Monster Cards"}
+          label={from === "/" ? "Back to Home" : from === "/favorites" ? "Back to Favorites" : from?.startsWith("/lists/") ? "Back to List" : from?.startsWith("/search") ? "Back to Search Results" : from?.startsWith("/yugioh/sets/") ? "Back to Set" : card.type.includes("Spell") ? "Back to Spell Cards" : card.type.includes("Trap") ? "Back to Trap Cards" : "Back to Monster Cards"}
           href={from ? decodeURIComponent(from) : card.type.includes("Spell") ? "/yugioh/spells" : card.type.includes("Trap") ? "/yugioh/traps" : "/yugioh/monsters"}
         />
 

@@ -39,7 +39,9 @@ export default async function PokemonCardPage({
           label={
             from === "/"
               ? "Back to Home"
-              : from?.includes("/lists/")
+              : from === "/favorites"
+                ? "Back to Favorites"
+                : from?.includes("/lists/")
                 ? "Back to List"
                 : from?.includes("/pokemon/trainer")
                   ? "Back to Trainers"

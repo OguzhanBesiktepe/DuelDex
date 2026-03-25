@@ -385,8 +385,8 @@ export default function FavoritesPage() {
               const currentPrice = currentPrices[key] ?? null;
               const cardHref =
                 card.game === "yugioh"
-                  ? `/yugioh/card/${card.cardId}`
-                  : `/pokemon/card/${card.cardId}`;
+                  ? `/yugioh/card/${card.cardId}?from=${encodeURIComponent("/favorites")}`
+                  : `/pokemon/card/${card.cardId}?from=${encodeURIComponent("/favorites")}`;
 
               // Printing-specific badge info
               const rarityColor = card.setRarity
