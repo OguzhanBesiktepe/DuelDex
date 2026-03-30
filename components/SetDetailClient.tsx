@@ -7,6 +7,7 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import CardGrid from "./CardGrid";
+import Pagination from "./Pagination";
 
 interface SetCard {
   id: string;
@@ -149,29 +150,12 @@ export default function SetDetailClient({ cards, setCode, initialPage = 1 }: { c
       <CardGrid cards={gridCards} game="yugioh" from={`/yugioh/sets/${encodeURIComponent(setCode)}?page=${effectivePage}`} />
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 mt-8">
-          <button
-            onClick={() => changePage(effectivePage - 1)}
-            disabled={effectivePage === 1}
-            className="px-3 py-1.5 rounded text-sm disabled:opacity-30"
-            style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
-          >
-            Previous
-          </button>
-          <span className="text-sm" style={{ color: "#7A8BA8" }}>
-            Page {effectivePage} of {totalPages}
-          </span>
-          <button
-            onClick={() => changePage(effectivePage + 1)}
-            disabled={effectivePage === totalPages}
-            className="px-3 py-1.5 rounded text-sm disabled:opacity-30"
-            style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
-          >
-            Next
-          </button>
-        </div>
-      )}
+      <Pagination
+        page={effectivePage}
+        totalPages={totalPages}
+        accent="#FF7A00"
+        onPage={changePage}
+      />
     </div>
   );
 }

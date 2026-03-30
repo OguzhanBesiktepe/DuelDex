@@ -6,6 +6,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Pagination from "./Pagination";
 import Link from "next/link";
 import Image from "next/image";
 import { POKEMON_ENERGY_TYPES } from "@/lib/pokemonTypes";
@@ -262,29 +263,12 @@ export default function PokemonSetDetailClient({ cards, setId, initialPage = 1 }
       )}
 
       {/* ── Pagination ── */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 mt-8">
-          <button
-            onClick={() => changePage(Math.max(1, effectivePage - 1))}
-            disabled={effectivePage === 1}
-            className="px-3 py-1.5 rounded text-sm disabled:opacity-30"
-            style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
-          >
-            Previous
-          </button>
-          <span className="text-sm" style={{ color: "#7A8BA8" }}>
-            Page {effectivePage} of {totalPages}
-          </span>
-          <button
-            onClick={() => changePage(Math.min(totalPages, effectivePage + 1))}
-            disabled={effectivePage === totalPages}
-            className="px-3 py-1.5 rounded text-sm disabled:opacity-30"
-            style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
-          >
-            Next
-          </button>
-        </div>
-      )}
+      <Pagination
+        page={effectivePage}
+        totalPages={totalPages}
+        accent="#00AAFF"
+        onPage={changePage}
+      />
     </div>
   );
 }

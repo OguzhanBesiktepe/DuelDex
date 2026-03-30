@@ -6,6 +6,7 @@ import CardGrid from "@/components/CardGrid";
 import CategoryHero from "@/components/CategoryHero";
 import TrainerSubtypeFilter from "@/components/TrainerSubtypeFilter";
 import { fetchAllPokemonCards, fetchPokemonCardById, getBestTcgPrice } from "@/lib/pokemon";
+import Pagination from "@/components/Pagination";
 
 const PER_PAGE = 24;
 
@@ -132,31 +133,14 @@ export default async function TrainerPage({
         <CardGrid cards={mapped} game="pokemon" from="/pokemon/trainer" />
 
         {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-8">
-            {effectivePage > 1 && (
-              <a
-                href={`?page=${effectivePage - 1}${filterQuery}`}
-                className="px-3 py-1.5 rounded text-sm"
-                style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
-              >
-                Previous
-              </a>
-            )}
-            <span className="text-sm" style={{ color: "#7A8BA8" }}>
-              Page {effectivePage} of {totalPages} &middot; {total.toLocaleString()} cards
-            </span>
-            {effectivePage < totalPages && (
-              <a
-                href={`?page=${effectivePage + 1}${filterQuery}`}
-                className="px-3 py-1.5 rounded text-sm"
-                style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
-              >
-                Next
-              </a>
-            )}
-          </div>
-        )}
+        <Pagination
+          page={effectivePage}
+          totalPages={totalPages}
+          total={total}
+          countLabel="cards"
+          accent="#00AAFF"
+          filterSuffix={filterQuery}
+        />
       </div>
     </div>
   );

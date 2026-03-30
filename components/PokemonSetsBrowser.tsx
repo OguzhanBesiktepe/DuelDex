@@ -4,6 +4,7 @@
 // All filtering is done in-memory since the full set list is loaded once server-side.
 
 import { useState, useMemo } from "react";
+import Pagination from "./Pagination";
 import Link from "next/link";
 import type { PokemonSet } from "@/lib/pokemon";
 
@@ -158,74 +159,14 @@ export default function PokemonSetsBrowser({ sets }: { sets: PokemonSet[] }) {
       </div>
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 mt-8 flex-wrap">
-          <button
-            onClick={() => { setPage(1); window.scrollTo(0, 0); }}
-            disabled={effectivePage === 1}
-            className="px-3 py-1.5 rounded text-sm disabled:opacity-30"
-            style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
-          >
-            «
-          </button>
-          <button
-            onClick={() => { setPage((p) => p - 1); window.scrollTo(0, 0); }}
-            disabled={effectivePage === 1}
-            className="px-3 py-1.5 rounded text-sm disabled:opacity-30"
-            style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
-          >
-            Previous
-          </button>
-
-          {Array.from({ length: totalPages }, (_, i) => i + 1)
-            .filter((p) => p === 1 || p === totalPages || Math.abs(p - effectivePage) <= 2)
-            .reduce<(number | "…")[]>((acc, p, idx, arr) => {
-              if (idx > 0 && p - (arr[idx - 1] as number) > 1) acc.push("…");
-              acc.push(p);
-              return acc;
-            }, [])
-            .map((p, i) =>
-              p === "…" ? (
-                <span key={`ellipsis-${i}`} className="px-1 text-sm" style={{ color: "#7A8BA8" }}>…</span>
-              ) : (
-                <button
-                  key={p}
-                  onClick={() => { setPage(p as number); window.scrollTo(0, 0); }}
-                  className="px-3 py-1.5 rounded text-sm min-w-[36px]"
-                  style={{
-                    background: effectivePage === p ? "#00AAFF22" : "#0E1220",
-                    color: effectivePage === p ? "#00AAFF" : "#F0F2FF",
-                    border: `1px solid ${effectivePage === p ? "#00AAFF44" : "#1A2035"}`,
-                    fontWeight: effectivePage === p ? 600 : 400,
-                  }}
-                >
-                  {p}
-                </button>
-              )
-            )}
-
-          <button
-            onClick={() => { setPage((p) => p + 1); window.scrollTo(0, 0); }}
-            disabled={effectivePage === totalPages}
-            className="px-3 py-1.5 rounded text-sm disabled:opacity-30"
-            style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
-          >
-            Next
-          </button>
-          <button
-            onClick={() => { setPage(totalPages); window.scrollTo(0, 0); }}
-            disabled={effectivePage === totalPages}
-            className="px-3 py-1.5 rounded text-sm disabled:opacity-30"
-            style={{ background: "#0E1220", color: "#F0F2FF", border: "1px solid #1A2035" }}
-          >
-            »
-          </button>
-
-          <span className="text-sm w-full text-center mt-1" style={{ color: "#7A8BA8" }}>
-            Page {effectivePage} of {totalPages} · {filtered.length} sets
-          </span>
-        </div>
-      )}
+      <Pagination
+        page={effectivePage}
+        totalPages={totalPages}
+        total={filtered.length}
+        countLabel="sets"
+        accent="#00AAFF"
+        onPage={(p) => setPage(p)}
+      />
     </div>
   );
 }

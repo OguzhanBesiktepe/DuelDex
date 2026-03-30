@@ -7,6 +7,7 @@ import TypeFilter from "@/components/TypeFilter";
 import CategoryHero from "@/components/CategoryHero";
 import { TRAP_TYPES } from "@/lib/cardTypes";
 import { fetchYGOCards, ygoImage } from "@/lib/yugioh";
+import Pagination from "@/components/Pagination";
 
 const TRAP_HERO_IMAGES: [
   { src: string; alt: string },
@@ -104,39 +105,14 @@ export default async function TrapsPage({
 
         <CardGrid cards={mapped} game="yugioh" />
 
-        {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-8">
-            {effectivePage > 1 && (
-              <a
-                href={`?page=${effectivePage - 1}${subtypeQuery}`}
-                className="px-3 py-1.5 rounded text-sm"
-                style={{
-                  background: "#0E1220",
-                  color: "#F0F2FF",
-                  border: "1px solid #1A2035",
-                }}
-              >
-                Previous
-              </a>
-            )}
-            <span className="text-sm" style={{ color: "#7A8BA8" }}>
-              Page {effectivePage} of {totalPages}
-            </span>
-            {effectivePage < totalPages && (
-              <a
-                href={`?page=${effectivePage + 1}${subtypeQuery}`}
-                className="px-3 py-1.5 rounded text-sm"
-                style={{
-                  background: "#0E1220",
-                  color: "#F0F2FF",
-                  border: "1px solid #1A2035",
-                }}
-              >
-                Next
-              </a>
-            )}
-          </div>
-        )}
+        <Pagination
+          page={effectivePage}
+          totalPages={totalPages}
+          total={total}
+          countLabel="cards"
+          accent="#FF7A00"
+          filterSuffix={subtypeQuery}
+        />
       </div>
     </div>
   );
