@@ -32,7 +32,7 @@ export default async function YGOSetDetailPage({
     return {
       id: String(c.id),
       name: c.name,
-      imageUrl: c.card_images[0]?.id ? ygoImage(c.card_images[0].id) : "",
+      imageUrl: c.card_images[0]?.id ? ygoImage(c.card_images[0].id, true) : "",
       type: c.race,
       cardType: c.type,
       rarity: c.card_sets?.find((s) => s.set_name === set.set_name)?.set_rarity,

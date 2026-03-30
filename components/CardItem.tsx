@@ -72,7 +72,6 @@ export default function CardItem({
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               className="object-contain p-4 transition-transform duration-300 group-hover:scale-105 group-active:scale-105"
-              unoptimized
             />
           ) : (
             <div className="flex items-center justify-center w-full h-full">
