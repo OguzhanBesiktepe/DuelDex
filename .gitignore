@@ -40,3 +40,15 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .env*.local
+
+# Android / Gradle
+.gradle/
+local.properties
+*.apk
+*.aab
+
+# VSCode
+.vscode/
+
+# Claude
+.claude/settings.local.json
