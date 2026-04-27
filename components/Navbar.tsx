@@ -719,6 +719,15 @@ export default function Navbar() {
                   <span className="text-lg">📋</span>
                   My Lists
                 </Link>
+                <Link
+                  href="/account"
+                  onClick={() => setUserMenuOpen(false)}
+                  className="flex items-center gap-3 px-5 py-4 text-sm font-semibold transition hover:bg-white/5"
+                  style={{ color: "#F0F2FF" }}
+                >
+                  <span className="text-lg">⚙️</span>
+                  Account Settings
+                </Link>
               </nav>
 
               {/* Sign out at the bottom */}

@@ -12,6 +12,7 @@ import {
   type ListItem,
 } from "@/lib/firestore";
 import { getRarityColor } from "@/lib/rarityColors";
+import PortfolioChart from "@/components/PortfolioChart";
 
 // Unique key per list item — handles multiple printings of the same card
 function itemKey(item: ListItem): string {
@@ -258,6 +259,15 @@ export default function ListDetailPage({
               </Link>
             </div>
           </div>
+        )}
+
+        {/* Portfolio chart — only shown once all current prices have loaded */}
+        {allPricesLoaded && items.length > 0 && (
+          <PortfolioChart
+            items={items}
+            currentPrices={currentPrices}
+            listName={list?.name ?? "portfolio"}
+          />
         )}
 
         {/* Items list */}
