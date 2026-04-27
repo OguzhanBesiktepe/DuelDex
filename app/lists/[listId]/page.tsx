@@ -131,13 +131,14 @@ export default function ListDetailPage({
     setRemoving(null);
   };
 
-  const totalCurrentValue = items.reduce((sum, item) => {
-    return sum + (currentPrices[itemKey(item)] ?? 0);
-  }, 0);
+  const ygoItems = items.filter((i) => i.game === "yugioh");
+  const pkmItems = items.filter((i) => i.game === "pokemon");
 
-  const totalAddedValue = items.reduce(
-    (sum, item) => sum + (item.priceWhenAdded ?? 0), 0
-  );
+  const totalAddedUSD = ygoItems.reduce((sum, i) => sum + (i.priceWhenAdded ?? 0), 0);
+  const totalAddedEUR = pkmItems.reduce((sum, i) => sum + (i.priceWhenAdded ?? 0), 0);
+
+  const totalCurrentUSD = ygoItems.reduce((sum, i) => sum + (currentPrices[itemKey(i)] ?? 0), 0);
+  const totalCurrentEUR = pkmItems.reduce((sum, i) => sum + (currentPrices[itemKey(i)] ?? 0), 0);
 
   const allPricesLoaded =
     items.length > 0 &&
@@ -178,32 +179,65 @@ export default function ListDetailPage({
         {/* Value summary */}
         {items.length > 0 && (
           <div
-            className="rounded-xl border p-4 mb-6 flex flex-wrap gap-6"
+            className="rounded-xl border p-4 mb-6 flex flex-wrap gap-x-8 gap-y-4"
             style={{ background: "#0E1220", borderColor: "#1A2035" }}
           >
-            <div>
-              <p className="text-xs mb-0.5" style={{ color: "#7A8BA8" }}>Total value (when added)</p>
-              <p className="text-xl font-bold" style={{ color: "#3ecf6a" }}>
-                {totalAddedValue > 0 ? `$${totalAddedValue.toFixed(2)}` : "N/A"}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs mb-0.5" style={{ color: "#7A8BA8" }}>Current total value</p>
-              <p className="text-xl font-bold" style={{ color: "#F0F2FF" }}>
-                {!allPricesLoaded ? (
-                  <span className="text-sm animate-pulse" style={{ color: "#7A8BA8" }}>Fetching prices…</span>
-                ) : totalCurrentValue > 0 ? (
-                  `$${totalCurrentValue.toFixed(2)}`
-                ) : "N/A"}
-              </p>
-            </div>
-            {allPricesLoaded && totalAddedValue > 0 && totalCurrentValue > 0 && (
-              <div>
-                <p className="text-xs mb-0.5" style={{ color: "#7A8BA8" }}>Overall change</p>
-                <p className="text-xl font-bold" style={{ color: totalCurrentValue >= totalAddedValue ? "#3ecf6a" : "#CC1F1F" }}>
-                  {totalCurrentValue >= totalAddedValue ? "▲" : "▼"} ${Math.abs(totalCurrentValue - totalAddedValue).toFixed(2)}
-                </p>
+            {/* USD block — YGO cards */}
+            {totalAddedUSD > 0 && (
+              <div className="flex flex-wrap gap-x-6 gap-y-2 items-end">
+                <div>
+                  <p className="text-xs mb-0.5" style={{ color: "#7A8BA8" }}>Added (USD)</p>
+                  <p className="text-xl font-bold" style={{ color: "#3ecf6a" }}>${totalAddedUSD.toFixed(2)}</p>
+                </div>
+                <div>
+                  <p className="text-xs mb-0.5" style={{ color: "#7A8BA8" }}>Now (USD)</p>
+                  <p className="text-xl font-bold" style={{ color: "#F0F2FF" }}>
+                    {!allPricesLoaded ? <span className="text-sm animate-pulse" style={{ color: "#7A8BA8" }}>…</span> : `$${totalCurrentUSD.toFixed(2)}`}
+                  </p>
+                </div>
+                {allPricesLoaded && totalCurrentUSD > 0 && (
+                  <div>
+                    <p className="text-xs mb-0.5" style={{ color: "#7A8BA8" }}>Change</p>
+                    <p className="text-xl font-bold" style={{ color: totalCurrentUSD >= totalAddedUSD ? "#3ecf6a" : "#CC1F1F" }}>
+                      {totalCurrentUSD >= totalAddedUSD ? "▲" : "▼"} ${Math.abs(totalCurrentUSD - totalAddedUSD).toFixed(2)}
+                    </p>
+                  </div>
+                )}
               </div>
+            )}
+
+            {/* Divider between currencies */}
+            {totalAddedUSD > 0 && totalAddedEUR > 0 && (
+              <div className="self-stretch border-l hidden sm:block" style={{ borderColor: "#1A2035" }} />
+            )}
+
+            {/* EUR block — Pokémon cards */}
+            {totalAddedEUR > 0 && (
+              <div className="flex flex-wrap gap-x-6 gap-y-2 items-end">
+                <div>
+                  <p className="text-xs mb-0.5" style={{ color: "#7A8BA8" }}>Added (EUR)</p>
+                  <p className="text-xl font-bold" style={{ color: "#3ecf6a" }}>€{totalAddedEUR.toFixed(2)}</p>
+                </div>
+                <div>
+                  <p className="text-xs mb-0.5" style={{ color: "#7A8BA8" }}>Now (EUR)</p>
+                  <p className="text-xl font-bold" style={{ color: "#F0F2FF" }}>
+                    {!allPricesLoaded ? <span className="text-sm animate-pulse" style={{ color: "#7A8BA8" }}>…</span> : `€${totalCurrentEUR.toFixed(2)}`}
+                  </p>
+                </div>
+                {allPricesLoaded && totalCurrentEUR > 0 && (
+                  <div>
+                    <p className="text-xs mb-0.5" style={{ color: "#7A8BA8" }}>Change</p>
+                    <p className="text-xl font-bold" style={{ color: totalCurrentEUR >= totalAddedEUR ? "#3ecf6a" : "#CC1F1F" }}>
+                      {totalCurrentEUR >= totalAddedEUR ? "▲" : "▼"} €{Math.abs(totalCurrentEUR - totalAddedEUR).toFixed(2)}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Fallback when all priceWhenAdded are 0 (old favorites before fix) */}
+            {totalAddedUSD === 0 && totalAddedEUR === 0 && (
+              <p className="text-sm" style={{ color: "#7A8BA8" }}>No price data recorded when these cards were added.</p>
             )}
           </div>
         )}
