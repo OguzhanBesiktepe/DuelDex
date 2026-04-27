@@ -36,9 +36,9 @@ export default function TrainerSubtypeFilter({
   const toggleFullArt = useCallback(() => {
     const params = new URLSearchParams(searchParams.toString());
     if (fullArt) {
-      params.delete("fullArt");
+      params.set("fullArt", "0"); // explicitly off
     } else {
-      params.set("fullArt", "1");
+      params.delete("fullArt"); // absence = default on
     }
     params.delete("page");
     router.push(`?${params.toString()}`);
@@ -47,12 +47,12 @@ export default function TrainerSubtypeFilter({
   const clearAll = useCallback(() => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete("trainerType");
-    params.delete("fullArt");
+    params.set("fullArt", "0"); // clear = show all trainers, not full art
     params.delete("page");
     router.push(`?${params.toString()}`);
   }, [router, searchParams]);
 
-  const noneActive = !selected && !fullArt;
+  const noneActive = !selected && !fullArt; // fullArt=false means user explicitly turned it off
 
   return (
     <div>

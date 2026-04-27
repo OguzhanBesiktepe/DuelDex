@@ -42,7 +42,7 @@ export default async function TrainerPage({
   const params = await searchParams;
   const page = Math.max(1, parseInt(params.page ?? "1", 10));
   const selectedTrainerType = params.trainerType ?? "";
-  const fullArt = params.fullArt === "1";
+  const fullArt = params.fullArt !== "0"; // default on; only off when explicitly ?fullArt=0
 
   let allCards: Awaited<ReturnType<typeof fetchAllPokemonCards>>;
 
