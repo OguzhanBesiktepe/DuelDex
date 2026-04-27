@@ -192,8 +192,13 @@ export default function Navbar() {
       style={{ background: "#0E1220", borderColor: "#1A2035" }}
     >
       <div className="mx-auto flex max-w-7xl items-center gap-6 px-4 py-3">
-        {/* Logo */}
-        <Link href="/" className="shrink-0">
+        {/* Logo — on mobile: persistent orange ring signals it's tappable;
+             active: press state gives tactile feedback on tap.
+             On desktop the ring is removed and hover effects take over. */}
+        <Link
+          href="/"
+          className="shrink-0 rounded-lg transition-all duration-150 active:scale-95 active:opacity-70 ring-1 ring-[#FF7A00]/30 md:ring-0"
+        >
           <Image
             src="/Logo.png"
             alt="DuelDex"

@@ -58,9 +58,9 @@ export default async function YGOCardPage({
   const price = card.card_prices?.[0];
   const sets = card.card_sets ?? [];
   const hasTCG = price && parseFloat(price.tcgplayer_price) > 0;
-  const hasEbay = price && parseFloat(price.ebay_price) > 0;
   // Buy links use search queries rather than direct product IDs so they always find results
   const tcgPlayerUrl = `https://www.tcgplayer.com/search/yugioh/product?q=${encodeURIComponent(card.name)}`;
+  const cardMarketUrl = `https://www.cardmarket.com/en/YuGiOh/Products/Singles?searchString=${encodeURIComponent(card.name)}`;
   const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(card.name + " yugioh")}`;
 
   return (
@@ -83,22 +83,29 @@ export default async function YGOCardPage({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full text-center px-4 py-2.5 rounded-lg text-sm font-bold transition-opacity hover:opacity-85"
-                style={{ background: "#FF7A00", color: "#080B14" }}
+                style={{ background: "#00AAFF", color: "#080B14" }}
               >
                 Buy on TCGPlayer ↗
               </a>
             )}
-            {!hasTCG && hasEbay && (
-              <a
-                href={ebayUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full text-center px-4 py-2.5 rounded-lg text-sm font-bold transition-opacity hover:opacity-85"
-                style={{ background: "#F5AF02", color: "#080B14" }}
-              >
-                Buy on eBay ↗
-              </a>
-            )}
+            <a
+              href={cardMarketUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full text-center px-4 py-2.5 rounded-lg text-sm font-bold transition-opacity hover:opacity-85"
+              style={{ background: "#E07B2A", color: "#FFFFFF" }}
+            >
+              Buy on Cardmarket ↗
+            </a>
+            <a
+              href={ebayUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full text-center px-4 py-2.5 rounded-lg text-sm font-bold transition-opacity hover:opacity-85"
+              style={{ background: "#F5AF02", color: "#080B14" }}
+            >
+              Buy on eBay ↗
+            </a>
             {/* Favorite + Add to List buttons — only visible when signed in */}
             <CardActions
               cardId={String(card.id)}

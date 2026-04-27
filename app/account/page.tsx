@@ -6,7 +6,6 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import {
   updatePassword,
   reauthenticateWithCredential,
@@ -86,14 +85,6 @@ export default function AccountPage() {
   return (
     <div style={{ background: "#080B14", minHeight: "100vh" }}>
       <div className="mx-auto max-w-lg px-4 py-10">
-        <Link
-          href="/favorites"
-          className="inline-flex items-center gap-1 text-sm mb-6 transition hover:underline"
-          style={{ color: "#7A8BA8" }}
-        >
-          ← Back
-        </Link>
-
         <h1
           className="text-3xl font-bold mb-8"
           style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
