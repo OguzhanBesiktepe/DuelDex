@@ -22,6 +22,7 @@ export interface SetCard {
   rarity?: string;
   stage?: string;
   price?: string;
+  priceCurrency?: "USD" | "EUR";
 }
 
 export default function PokemonSetDetailClient({ cards, setId, initialPage = 1 }: { cards: SetCard[]; setId: string; initialPage?: number }) {
@@ -246,7 +247,7 @@ export default function PokemonSetDetailClient({ cards, setId, initialPage = 1 }
                     </div>
                     {card.price && (
                       <p className="text-xs font-bold mt-1.5" style={{ color: "#3ecf6a" }}>
-                        ${parseFloat(card.price).toFixed(2)}
+                        {card.priceCurrency === "EUR" ? "€" : "$"}{parseFloat(card.price).toFixed(2)}
                       </p>
                     )}
                   </div>

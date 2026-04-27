@@ -11,6 +11,7 @@ interface CardData {
   type?: string;
   rarity?: string;
   price?: string;
+  priceCurrency?: "USD" | "EUR";
   ebayPrice?: string;
   minPrice?: number;
   maxPrice?: number;

@@ -2,7 +2,7 @@
 // (types, rarity, price) in parallel, then passes everything to PokemonSetDetailClient
 // for instant client-side filtering by energy type and rarity.
 
-import { fetchPokemonSetDetail, fetchPokemonCardById, getBestTcgPrice } from "@/lib/pokemon";
+import { fetchPokemonSetDetail, fetchPokemonCardById, getBestTcgPrice, getCardMarketPrice } from "@/lib/pokemon";
 import PokemonSetDetailClient from "@/components/PokemonSetDetailClient";
 import BackButton from "@/components/BackButton";
 import { notFound } from "next/navigation";
@@ -31,7 +31,9 @@ export default async function PokemonSetDetailPage({
   const cards: SetCard[] = details
     .filter((d) => d !== null && !!d!.image)
     .map((d) => {
-      const priceNum = getBestTcgPrice(d!);
+      const tcgPrice = getBestTcgPrice(d!);
+      const cmPrice = tcgPrice == null ? getCardMarketPrice(d!) : null;
+      const priceNum = tcgPrice ?? cmPrice;
       return {
         id: d!.id,
         name: d!.name,
@@ -40,6 +42,7 @@ export default async function PokemonSetDetailPage({
         rarity: d!.rarity,
         stage: d!.stage,
         price: priceNum != null ? String(priceNum) : undefined,
+        priceCurrency: (cmPrice != null ? "EUR" : "USD") as "USD" | "EUR",
       };
     });
 

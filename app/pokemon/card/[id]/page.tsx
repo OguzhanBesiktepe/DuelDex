@@ -2,7 +2,7 @@
 // and displays full card info: image, HP, stage, attacks, weaknesses, and set details.
 // TCGdex has no TCGPlayer pricing so the only buy option shown is an eBay search link.
 
-import { fetchPokemonCardById, getBestTcgPrice, getTcgPlayerProductId, getLegendHalf } from "@/lib/pokemon";
+import { fetchPokemonCardById, getBestTcgPrice, getCardMarketPrice, getCardMarketUrl, getTcgPlayerProductId, getLegendHalf } from "@/lib/pokemon";
 import { notFound } from "next/navigation";
 import CardImageZoom from "@/components/CardImageZoom";
 import BackButton from "@/components/BackButton";
@@ -30,6 +30,8 @@ export default async function PokemonCardPage({
     ? `https://www.tcgplayer.com/product/${tcgProductId}`
     : `https://www.tcgplayer.com/search/pokemon/product?q=${encodeURIComponent(tcgSearchName)}`;
   const tcgPrice = getBestTcgPrice(card);
+  const cmPrice = getCardMarketPrice(card);
+  const cardMarketUrl = getCardMarketUrl(card);
 
   return (
     <div style={{ background: "#080B14", minHeight: "100vh" }}>
@@ -59,11 +61,15 @@ export default async function PokemonCardPage({
           {images.length > 0 && (
             <div className="shrink-0 mx-auto md:mx-0 flex flex-col items-center gap-4">
               <CardImageZoom images={images} alt={card.name} />
-              {tcgPrice && (
+              {tcgPrice != null ? (
                 <p className="text-lg font-bold" style={{ color: "#3ecf6a" }}>
                   ${tcgPrice.toFixed(2)} <span className="text-xs font-normal" style={{ color: "#7A8BA8" }}>TCGPlayer market</span>
                 </p>
-              )}
+              ) : cmPrice != null ? (
+                <p className="text-lg font-bold" style={{ color: "#3ecf6a" }}>
+                  €{cmPrice.toFixed(2)} <span className="text-xs font-normal" style={{ color: "#7A8BA8" }}>Cardmarket trend</span>
+                </p>
+              ) : null}
               <a
                 href={tcgPlayerUrl}
                 target="_blank"
@@ -72,6 +78,15 @@ export default async function PokemonCardPage({
                 style={{ background: "#00AAFF", color: "#080B14" }}
               >
                 Buy on TCGPlayer ↗
+              </a>
+              <a
+                href={cardMarketUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full text-center px-4 py-2.5 rounded-lg text-sm font-bold transition-opacity hover:opacity-85"
+                style={{ background: "#E07B2A", color: "#FFFFFF" }}
+              >
+                Buy on Cardmarket ↗
               </a>
               <a
                 href={ebayUrl}
@@ -88,7 +103,7 @@ export default async function PokemonCardPage({
                 cardName={card.name}
                 cardImage={card.image ? `${card.image}/low.webp` : ""}
                 game="pokemon"
-                price={tcgPrice ?? 0}
+                price={tcgPrice ?? cmPrice ?? 0}
               />
             </div>
           )}

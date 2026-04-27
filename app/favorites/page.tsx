@@ -24,14 +24,18 @@ async function fetchCurrentPrice(
       const res = await fetch(`https://api.tcgdex.net/v2/en/cards/${cardId}`);
       if (!res.ok) return 0;
       const card = await res.json();
+      // Try TCGPlayer first (USD)
       const tcg = card?.pricing?.tcgplayer;
-      if (!tcg) return 0;
-      let best = 0;
-      for (const variant of Object.values(tcg)) {
-        const price = (variant as { marketPrice?: number } | undefined)?.marketPrice;
-        if (price != null && price > best) best = price;
+      if (tcg) {
+        let best = 0;
+        for (const variant of Object.values(tcg)) {
+          const price = (variant as { marketPrice?: number } | undefined)?.marketPrice;
+          if (price != null && price > best) best = price;
+        }
+        if (best > 0) return best;
       }
-      return best;
+      // Fall back to Cardmarket trend (EUR)
+      return card?.pricing?.cardmarket?.trend ?? 0;
     }
     const res = await fetch(
       `https://db.ygoprodeck.com/api/v7/cardinfo.php?id=${cardId}`
@@ -57,7 +61,7 @@ function favKey(card: FavoriteCard): string {
 }
 
 // Format a price diff with a ▲/▼ prefix and appropriate color
-function PriceDiff({ added, current }: { added: number; current: number | null }) {
+function PriceDiff({ added, current, currency }: { added: number; current: number | null; currency: string }) {
   if (current === null) {
     return (
       <span className="text-xs animate-pulse" style={{ color: "#7A8BA8" }}>
@@ -78,7 +82,7 @@ function PriceDiff({ added, current }: { added: number; current: number | null }
       className="text-xs font-semibold"
       style={{ color: positive ? "#3ecf6a" : "#CC1F1F" }}
     >
-      {positive ? "▲" : "▼"} ${Math.abs(diff).toFixed(2)}
+      {positive ? "▲" : "▼"} {currency}{Math.abs(diff).toFixed(2)}
     </span>
   );
 }
@@ -395,6 +399,7 @@ export default function FavoritesPage() {
             {displayed.map((card, i) => {
               const key = favKey(card);
               const currentPrice = currentPrices[key] ?? null;
+              const currency = card.game === "pokemon" ? "€" : "$";
               const cardHref =
                 card.game === "yugioh"
                   ? `/yugioh/card/${card.cardId}?from=${encodeURIComponent("/favorites")}`
@@ -483,7 +488,7 @@ export default function FavoritesPage() {
                     </p>
                     <p className="text-sm font-semibold" style={{ color: "#3ecf6a" }}>
                       {card.priceWhenAdded > 0
-                        ? `$${card.priceWhenAdded.toFixed(2)}`
+                        ? `${currency}${card.priceWhenAdded.toFixed(2)}`
                         : "N/A"}
                     </p>
                   </div>
@@ -495,7 +500,7 @@ export default function FavoritesPage() {
                       {currentPrice === null ? (
                         <span className="animate-pulse text-xs" style={{ color: "#7A8BA8" }}>…</span>
                       ) : currentPrice > 0 ? (
-                        `$${currentPrice.toFixed(2)}`
+                        `${currency}${currentPrice.toFixed(2)}`
                       ) : (
                         "N/A"
                       )}
@@ -507,6 +512,7 @@ export default function FavoritesPage() {
                     <PriceDiff
                       added={card.priceWhenAdded}
                       current={currentPrices[key] ?? null}
+                      currency={currency}
                     />
                   </div>
 

@@ -17,6 +17,7 @@ interface CardItemProps {
   type?: string;
   rarity?: string;
   price?: string;
+  priceCurrency?: "USD" | "EUR";
   ebayPrice?: string;
   minPrice?: number;
   maxPrice?: number;
@@ -31,6 +32,7 @@ export default function CardItem({
   type,
   rarity,
   price,
+  priceCurrency = "USD",
   ebayPrice,
   minPrice,
   maxPrice,
@@ -41,12 +43,17 @@ export default function CardItem({
   const href = `/${game}/card/${id}${from ? `?from=${encodeURIComponent(from)}` : ""}`;
   const rarityColor = getRarityColor(rarity, game);
 
-  // Prefer TCGPlayer price; fall back to eBay if TCGPlayer is missing/zero
+  // Prefer TCGPlayer/Cardmarket price; fall back to eBay if missing/zero
   const tcg = price && parseFloat(price) > 0 ? parseFloat(price) : null;
   const ebay =
     ebayPrice && parseFloat(ebayPrice) > 0 ? parseFloat(ebayPrice) : null;
   const fallbackPrice = tcg ?? ebay;
-  const fallbackLabel = fallbackPrice ? (tcg ? null : "eBay") : null;
+  const currencySymbol = priceCurrency === "EUR" ? "€" : "$";
+  let priceLabel: string | null = null;
+  if (fallbackPrice) {
+    if (tcg) priceLabel = priceCurrency === "EUR" ? "Cardmarket" : "TCGPlayer";
+    else priceLabel = "eBay";
+  }
 
   // minPrice/maxPrice come from the card's set_price across all printings
   const hasRange = minPrice != null && minPrice > 0 && maxPrice != null && maxPrice > 0;
@@ -121,13 +128,13 @@ export default function CardItem({
                   ${minPrice!.toFixed(2)} – ${maxPrice!.toFixed(2)}
                 </p>
               ) : (
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 flex-wrap">
                   <p className="text-sm font-bold" style={{ color: "#3ecf6a" }}>
-                    ${(hasRange ? minPrice! : fallbackPrice!).toFixed(2)}
+                    {currencySymbol}{(hasRange ? minPrice! : fallbackPrice!).toFixed(2)}
                   </p>
-                  {!hasRange && fallbackLabel && (
+                  {!hasRange && priceLabel && (
                     <span className="text-[10px]" style={{ color: "#7A8BA8" }}>
-                      {fallbackLabel}
+                      {priceLabel}
                     </span>
                   )}
                 </div>

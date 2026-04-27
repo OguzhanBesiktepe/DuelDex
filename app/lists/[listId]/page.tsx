@@ -30,16 +30,18 @@ async function fetchCurrentPrice(
       const res = await fetch(`https://api.tcgdex.net/v2/en/cards/${cardId}`);
       if (!res.ok) return 0;
       const card = await res.json();
+      // Try TCGPlayer first (USD)
       const tcg = card?.pricing?.tcgplayer;
-      if (!tcg) return 0;
-      // Iterate all variant keys — TCGdex uses dynamic kebab-case keys
-      // (e.g. "1st-edition-holofoil", "unlimited-holofoil") that vary by card
-      let best = 0;
-      for (const variant of Object.values(tcg)) {
-        const price = (variant as { marketPrice?: number } | undefined)?.marketPrice;
-        if (price != null && price > best) best = price;
+      if (tcg) {
+        let best = 0;
+        for (const variant of Object.values(tcg)) {
+          const price = (variant as { marketPrice?: number } | undefined)?.marketPrice;
+          if (price != null && price > best) best = price;
+        }
+        if (best > 0) return best;
       }
-      return best;
+      // Fall back to Cardmarket trend (EUR)
+      return card?.pricing?.cardmarket?.trend ?? 0;
     }
     const res = await fetch(`https://db.ygoprodeck.com/api/v7/cardinfo.php?id=${cardId}`);
     if (!res.ok) return 0;
@@ -57,7 +59,7 @@ async function fetchCurrentPrice(
   }
 }
 
-function PriceDiff({ added, current }: { added: number; current: number | null }) {
+function PriceDiff({ added, current, currency }: { added: number; current: number | null; currency: string }) {
   if (current === null) {
     return <span className="text-xs animate-pulse" style={{ color: "#7A8BA8" }}>…</span>;
   }
@@ -71,7 +73,7 @@ function PriceDiff({ added, current }: { added: number; current: number | null }
   const positive = diff > 0;
   return (
     <span className="text-xs font-semibold" style={{ color: positive ? "#3ecf6a" : "#CC1F1F" }}>
-      {positive ? "▲" : "▼"} ${Math.abs(diff).toFixed(2)}
+      {positive ? "▲" : "▼"} {currency}{Math.abs(diff).toFixed(2)}
     </span>
   );
 }
@@ -230,6 +232,7 @@ export default function ListDetailPage({
             {items.map((item, i) => {
               const key = itemKey(item);
               const currentPrice = currentPrices[key] ?? null;
+              const currency = item.game === "pokemon" ? "€" : "$";
               const cardHref = item.game === "yugioh"
                 ? `/yugioh/card/${item.cardId}?from=${encodeURIComponent(`/lists/${listId}`)}`
                 : `/pokemon/card/${item.cardId}?from=${encodeURIComponent(`/lists/${listId}`)}`;
@@ -293,7 +296,7 @@ export default function ListDetailPage({
                       Added {item.dateAdded.toLocaleDateString()}
                     </p>
                     <p className="text-sm font-semibold" style={{ color: "#3ecf6a" }}>
-                      {item.priceWhenAdded > 0 ? `$${item.priceWhenAdded.toFixed(2)}` : "N/A"}
+                      {item.priceWhenAdded > 0 ? `${currency}${item.priceWhenAdded.toFixed(2)}` : "N/A"}
                     </p>
                   </div>
 
@@ -303,13 +306,13 @@ export default function ListDetailPage({
                     <p className="text-sm font-semibold" style={{ color: "#F0F2FF" }}>
                       {currentPrice === null ? (
                         <span className="animate-pulse text-xs" style={{ color: "#7A8BA8" }}>…</span>
-                      ) : currentPrice > 0 ? `$${currentPrice.toFixed(2)}` : "N/A"}
+                      ) : currentPrice > 0 ? `${currency}${currentPrice.toFixed(2)}` : "N/A"}
                     </p>
                   </div>
 
                   {/* Price diff */}
                   <div className="shrink-0 hidden md:block w-16 text-right">
-                    <PriceDiff added={item.priceWhenAdded} current={currentPrice} />
+                    <PriceDiff added={item.priceWhenAdded} current={currentPrice} currency={currency} />
                   </div>
 
                   {/* Remove button */}

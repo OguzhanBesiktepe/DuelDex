@@ -6,7 +6,7 @@ import CardGrid from "@/components/CardGrid";
 import CategoryHero from "@/components/CategoryHero";
 import PokemonTypeFilter from "@/components/PokemonTypeFilter";
 import PokemonStageFilter from "@/components/PokemonStageFilter";
-import { fetchAllPokemonCards, fetchPokemonCardById, getBestTcgPrice } from "@/lib/pokemon";
+import { fetchAllPokemonCards, fetchPokemonCardById, getBestTcgPrice, getCardMarketPrice } from "@/lib/pokemon";
 import type { PokemonCardSummary } from "@/lib/pokemon";
 import Pagination from "@/components/Pagination";
 
@@ -76,7 +76,9 @@ export default async function PokemonPage({
   const mapped = details
     .filter((d) => d !== null)
     .map((d) => {
-      const priceNum = getBestTcgPrice(d!);
+      const tcgPrice = getBestTcgPrice(d!);
+      const cmPrice = tcgPrice == null ? getCardMarketPrice(d!) : null;
+      const priceNum = tcgPrice ?? cmPrice;
       return {
         id: d!.id,
         name: d!.name,
@@ -84,6 +86,7 @@ export default async function PokemonPage({
         type: d!.types?.[0],
         rarity: d!.rarity,
         price: priceNum != null ? String(priceNum) : undefined,
+        priceCurrency: (cmPrice != null ? "EUR" : "USD") as "USD" | "EUR",
       };
     })
     .filter((c) => !!c.imageUrl);

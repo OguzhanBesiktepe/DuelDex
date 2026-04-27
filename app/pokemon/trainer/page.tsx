@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import CardGrid from "@/components/CardGrid";
 import CategoryHero from "@/components/CategoryHero";
 import TrainerSubtypeFilter from "@/components/TrainerSubtypeFilter";
-import { fetchAllPokemonCards, fetchPokemonCardById, getBestTcgPrice } from "@/lib/pokemon";
+import { fetchAllPokemonCards, fetchPokemonCardById, getBestTcgPrice, getCardMarketPrice } from "@/lib/pokemon";
 import Pagination from "@/components/Pagination";
 
 const PER_PAGE = 24;
@@ -85,7 +85,9 @@ export default async function TrainerPage({
   const mapped = details
     .filter((d) => d !== null && d.category === "Trainer") // guard against TCGdex miscategorized cards
     .map((d) => {
-      const priceNum = getBestTcgPrice(d!);
+      const tcgPrice = getBestTcgPrice(d!);
+      const cmPrice = tcgPrice == null ? getCardMarketPrice(d!) : null;
+      const priceNum = tcgPrice ?? cmPrice;
       return {
         id: d!.id,
         name: d!.name,
@@ -93,6 +95,7 @@ export default async function TrainerPage({
         type: d!.types?.[0],
         rarity: d!.rarity,
         price: priceNum != null ? String(priceNum) : undefined,
+        priceCurrency: (cmPrice != null ? "EUR" : "USD") as "USD" | "EUR",
       };
     })
     .filter((c) => !!c.imageUrl);

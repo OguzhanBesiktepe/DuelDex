@@ -43,6 +43,7 @@ export interface PokemonCard {
     };
     cardmarket?: {
       unit?: string;
+      idProduct?: number;
       avg?: number;
       low?: number;
       trend?: number;
@@ -86,6 +87,81 @@ export function getTcgPlayerProductId(card: Pick<PokemonCard, "pricing">): numbe
 // Legend cards and some older sets have tcgplayer: null but do have Cardmarket data.
 export function getCardMarketPrice(card: Pick<PokemonCard, "pricing">): number | null {
   return card.pricing?.cardmarket?.trend ?? null;
+}
+
+// Maps TCGdex set IDs → official PTCG expansion codes used by Cardmarket in card slugs.
+// Cardmarket URL format: /Singles/{Set-Name-Slug}/{Card-Name-Slug}-{EXPANSION-CODE}{localId}
+// e.g. Bulbasaur (swsh10.5, localId "001") → /Singles/Pokemon-GO/Bulbasaur-PGO001
+const CARDMARKET_EXPANSION_CODES: Record<string, string> = {
+  // Scarlet & Violet
+  "sv1": "SVI", "sv2": "PAL", "sv3": "OBF", "sv3pt5": "MEW", "sv3.5": "MEW",
+  "sv4": "PAR", "sv4pt5": "PAF", "sv4.5": "PAF", "sv5": "TEF", "sv6": "TWM",
+  "sv6pt5": "SFA", "sv6.5": "SFA", "sv7": "SCR", "sv8": "SSP",
+  "sv8pt5": "PRE", "sv8.5": "PRE",
+  // Sword & Shield
+  "swsh1": "SSH", "swsh2": "RCL", "swsh3": "DAA", "swsh4": "VIV", "swsh5": "BST",
+  "swsh6": "CRE", "swsh7": "EVS", "swsh8": "FST", "swsh9": "BRS", "swsh10": "ASR",
+  "swsh10.5": "PGO", "swsh11": "LOR", "swsh12": "SIT", "swsh12.5": "CRZ",
+  // Note: promo sets (swshp, xyp, smp, svp, bwp, dpp, plp) are excluded — their localIds
+  // already contain the set prefix (e.g. "SWSH001"), causing doubled slugs. Falls back to search.
+  // cel25 excluded: Celebrations uses non-standard localId padding on Cardmarket.
+  // Sun & Moon
+  "sm1": "SUM", "sm2": "GRI", "sm3": "BUS", "sm3.5": "SLG", "sm35": "SLG",
+  "sm4": "CIN", "sm5": "UPR", "sm6": "FLI", "sm7": "CES", "sm75": "DRM",
+  "sm7.5": "DRM", "sm8": "LOT", "sm9": "TEU", "sm10": "UNB", "sm11": "UNM",
+  "sm115": "HIF", "sm11.5": "HIF", "sm12": "CEC",
+  // XY
+  "xy1": "XY", "xy2": "FLF", "xy3": "FFI", "xy4": "PHF", "xy5": "PRC",
+  "xy6": "ROS", "xy7": "AOR", "xy8": "BKT", "xy9": "BKP", "xy10": "FCO",
+  "xy11": "STS", "xy12": "EVO", "g1": "GEN",
+  // Black & White
+  "bw1": "BLW", "bw2": "EPO", "bw3": "NVI", "bw4": "NXD", "bw5": "DEX",
+  "bw6": "DRX", "bw7": "BCR", "bw8": "PLS", "bw9": "PLF", "bw10": "PLB",
+  "bw11": "LTR",
+  // HeartGold SoulSilver
+  "hgss1": "HS", "hgss2": "UL", "hgss3": "UD", "hgss4": "TM", "hgss5": "CL",
+  // Platinum
+  "pl1": "PL", "pl2": "RR", "pl3": "SV", "pl4": "AR",
+  // Diamond & Pearl
+  "dp1": "DP", "dp2": "MT", "dp3": "SW", "dp4": "GE", "dp5": "MD",
+  "dp6": "LA", "dp7": "SF",
+  // EX Series
+  "ex1": "RS", "ex2": "SS", "ex3": "DR", "ex4": "MA", "ex5": "HL",
+  "ex6": "FL", "ex7": "DX", "ex8": "UF", "ex9": "DS", "ex10": "LM",
+  "ex11": "HP", "ex12": "CG", "ex13": "DF", "ex14": "PK",
+  // Base / Neo / Classic
+  "base1": "BS", "base2": "JU", "base3": "FO", "base4": "BS2",
+  "base5": "TR", "base6": "G1",
+  "neo1": "N1", "neo2": "N2", "neo3": "N3", "neo4": "N4",
+  "gym1": "G1", "gym2": "G2",
+};
+
+// Returns a direct Cardmarket product URL using the official PTCG expansion code + localId.
+// Falls back to Cardmarket search if the set is not in the mapping table.
+export function getCardMarketUrl(card: Pick<PokemonCard, "name" | "localId" | "set">): string {
+  const slugify = (s: string) =>
+    s
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "") // é → e, ü → u
+      .replace(/♀/g, "F")
+      .replace(/♂/g, "M")
+      .replace(/&/g, "")
+      .replace(/[''']/g, "")
+      .replace(/\./g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
+
+  if (card.set?.name && card.set?.id) {
+    const setSlug = slugify(card.set.name);
+    const expansionCode = CARDMARKET_EXPANSION_CODES[card.set.id];
+    if (expansionCode && card.localId) {
+      const cardSlug = `${slugify(card.name)}-${expansionCode}${card.localId}`;
+      return `https://www.cardmarket.com/en/Pokemon/Products/Singles/${setSlug}/${cardSlug}`;
+    }
+  }
+  // Fallback: search by card name (always works, just less direct)
+  return `https://www.cardmarket.com/en/Pokemon/Products/Search?searchString=${encodeURIComponent(card.name)}`;
 }
 
 // For LEGEND dual cards, determines whether this half is "Top" or "Bottom" by fetching
