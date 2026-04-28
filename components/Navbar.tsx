@@ -725,6 +725,15 @@ export default function Navbar() {
                   My Lists
                 </Link>
                 <Link
+                  href="/portfolio"
+                  onClick={() => setUserMenuOpen(false)}
+                  className="flex items-center gap-3 px-5 py-4 text-sm font-semibold transition hover:bg-white/5"
+                  style={{ color: "#F0F2FF" }}
+                >
+                  <span className="text-lg">📊</span>
+                  Portfolio
+                </Link>
+                <Link
                   href="/account"
                   onClick={() => setUserMenuOpen(false)}
                   className="flex items-center gap-3 px-5 py-4 text-sm font-semibold transition hover:bg-white/5"
