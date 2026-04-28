@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import {
@@ -87,6 +87,8 @@ export default function ListDetailPage({
   const { listId } = use(params);
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const from = searchParams.get("from");
 
   const [list, setList] = useState<ListMeta | null>(null);
   const [items, setItems] = useState<ListItem[]>([]);
@@ -158,11 +160,11 @@ export default function ListDetailPage({
       <div className="mx-auto max-w-4xl px-4 py-10">
 
         <Link
-          href="/lists"
+          href={from === "/portfolio" ? "/portfolio" : "/lists"}
           className="inline-flex items-center gap-1 text-sm mb-6 transition hover:underline"
           style={{ color: "#7A8BA8" }}
         >
-          ← Back to My Lists
+          {from === "/portfolio" ? "← Back to Portfolio" : "← Back to My Lists"}
         </Link>
 
         <div className="mb-6">

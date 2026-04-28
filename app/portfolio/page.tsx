@@ -369,7 +369,7 @@ export default function PortfolioPage() {
                 {listSummaries.map((s, i) => (
                   <Link
                     key={s.list.id}
-                    href={`/lists/${s.list.id}`}
+                    href={`/lists/${s.list.id}?from=/portfolio`}
                     className="flex items-center gap-4 px-5 py-4 transition hover:bg-white/[0.04]"
                     style={{
                       background: "#0E1220",
