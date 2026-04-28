@@ -29,19 +29,20 @@ export interface PokemonCard {
   };
   pricing?: {
     tcgplayer?: {
-      // TCGdex uses kebab-case variant keys — actual keys seen in the wild:
-      // "normal", "holofoil", "reverse-holofoil", "1st-edition-holofoil",
-      // "unlimited-holofoil", "1st-edition-normal", "unlimited-normal"
+      // Top-level metadata fields returned by TCGdex
+      updated?: string;
+      unit?: string;
+      // Variant keys: "normal", "reverse", "holo" (per TCGdex docs)
       [variant: string]: {
-        productId?: number;
-        marketPrice?: number;
         lowPrice?: number;
         midPrice?: number;
         highPrice?: number;
+        marketPrice?: number;
         directLowPrice?: number | null;
-      } | undefined;
+      } | string | undefined;
     };
     cardmarket?: {
+      updated?: string;
       unit?: string;
       idProduct?: number;
       avg?: number;
@@ -51,6 +52,7 @@ export interface PokemonCard {
     };
   };
   suffix?: string; // "Legend" for LEGEND dual cards
+  level?: number | string; // printed level (e.g. 48 for "Luxray GL Lv.48") — Platinum/DP era SP cards
   set?: {
     id: string;
     name: string;
@@ -59,27 +61,23 @@ export interface PokemonCard {
 }
 
 // Returns the best available TCGPlayer market price across all variant keys.
-// TCGdex uses dynamic kebab-case keys ("holofoil", "unlimited-holofoil",
-// "1st-edition-holofoil", "normal", etc.) so we iterate all of them.
+// TCGdex variant keys are "normal", "reverse", "holo" — skip metadata strings ("updated", "unit").
 export function getBestTcgPrice(card: Pick<PokemonCard, "pricing">): number | null {
   const tcg = card.pricing?.tcgplayer;
   if (!tcg) return null;
   let best: number | null = null;
   for (const variant of Object.values(tcg)) {
-    const price = variant?.marketPrice;
+    if (typeof variant !== "object" || variant == null) continue;
+    // Prefer marketPrice, fall back to lowPrice if marketPrice is absent
+    const price = variant.marketPrice ?? variant.lowPrice ?? null;
     if (price != null && (best === null || price > best)) best = price;
   }
   return best;
 }
 
-// Returns the TCGPlayer productId from the first pricing variant that has one.
-// Used to build a direct product URL: https://www.tcgplayer.com/product/{id}
-export function getTcgPlayerProductId(card: Pick<PokemonCard, "pricing">): number | null {
-  const tcg = card.pricing?.tcgplayer;
-  if (!tcg) return null;
-  for (const variant of Object.values(tcg)) {
-    if (variant?.productId != null) return variant.productId;
-  }
+// TCGdex does not return a TCGPlayer productId — always falls back to search URL.
+// Kept for API compatibility; returns null unconditionally.
+export function getTcgPlayerProductId(_card: Pick<PokemonCard, "pricing">): number | null {
   return null;
 }
 
@@ -138,7 +136,7 @@ const CARDMARKET_EXPANSION_CODES: Record<string, string> = {
 
 // Returns a direct Cardmarket product URL using the official PTCG expansion code + localId.
 // Falls back to Cardmarket search if the set is not in the mapping table.
-export function getCardMarketUrl(card: Pick<PokemonCard, "name" | "localId" | "set">): string {
+export function getCardMarketUrl(card: Pick<PokemonCard, "name" | "localId" | "set" | "level">): string {
   const slugify = (s: string) =>
     s
       .normalize("NFD")
@@ -152,16 +150,22 @@ export function getCardMarketUrl(card: Pick<PokemonCard, "name" | "localId" | "s
       .replace(/-+/g, "-")
       .replace(/^-|-$/g, "");
 
+  // Older cards (Platinum / Diamond & Pearl era) have a printed level that Cardmarket
+  // includes in the product slug: "Luxray GL" at level 48 → "Luxray-GL-Lv48"
+  const fullName = card.level != null
+    ? `${card.name} Lv.${card.level}`
+    : card.name;
+
   if (card.set?.name && card.set?.id) {
     const setSlug = slugify(card.set.name);
     const expansionCode = CARDMARKET_EXPANSION_CODES[card.set.id];
     if (expansionCode && card.localId) {
-      const cardSlug = `${slugify(card.name)}-${expansionCode}${card.localId}`;
+      const cardSlug = `${slugify(fullName)}-${expansionCode}${card.localId}`;
       return `https://www.cardmarket.com/en/Pokemon/Products/Singles/${setSlug}/${cardSlug}`;
     }
   }
   // Fallback: search by card name (always works, just less direct)
-  return `https://www.cardmarket.com/en/Pokemon/Products/Search?searchString=${encodeURIComponent(card.name)}`;
+  return `https://www.cardmarket.com/en/Pokemon/Products/Search?searchString=${encodeURIComponent(fullName)}`;
 }
 
 // For LEGEND dual cards, determines whether this half is "Top" or "Bottom" by fetching

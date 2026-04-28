@@ -40,7 +40,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${cinzel.variable} ${inter.variable} antialiased flex flex-col min-h-screen`}>
+      <body
+        className={`${cinzel.variable} ${inter.variable} antialiased flex flex-col min-h-screen`}
+      >
         <AuthProvider>
           <ClientLayout>{children}</ClientLayout>
         </AuthProvider>

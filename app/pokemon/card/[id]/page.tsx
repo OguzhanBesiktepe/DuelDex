@@ -80,7 +80,7 @@ export default async function PokemonCardPage({
               ) : null}
               <MarketplaceLinks
                 links={[
-                  ...(tcgPrice != null ? [{ href: tcgPlayerUrl, logo: "/logos/TCGplayer_Logo.svg.png", alt: "TCGPlayer", background: "#00AAFF" }] : []),
+                  { href: tcgPlayerUrl, logo: "/logos/TCGplayer_Logo.svg.png", alt: "TCGPlayer", background: "#00AAFF" },
                   { href: cardMarketUrl, logo: "/logos/cardmarket.png", alt: "Cardmarket", background: "#FFFFFF" },
                   { href: ebayUrl, logo: "/logos/ebay.png", alt: "eBay", background: "#F0F0F0", logoHeight: 30 },
                 ]}
