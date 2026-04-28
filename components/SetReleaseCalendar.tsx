@@ -3,7 +3,6 @@
 // Each set row shows a representative image, release dates, a countdown badge,
 // and pre-order links for TCGPlayer, Cardmarket, and Amazon.
 
-import { ygoImage } from "@/lib/yugioh";
 
 interface BuyLink {
   href: string;
@@ -89,14 +88,31 @@ function pkmnPreorderLinks(setName: string): BuyLink[] {
 
 async function fetchYGOSetImage(setName: string): Promise<string | null> {
   try {
+    // First attempt: fetch a card from the set directly
     const res = await fetch(
       `https://db.ygoprodeck.com/api/v7/cardinfo.php?cardset=${encodeURIComponent(setName)}&num=1`,
       { next: { revalidate: 86400 } }
     );
-    if (!res.ok) return null;
-    const data = await res.json();
-    const id = data.data?.[0]?.card_images?.[0]?.id;
-    return id ? ygoImage(id) : null;
+    if (res.ok) {
+      const data = await res.json();
+      const url = data.data?.[0]?.card_images?.[0]?.image_url_small;
+      if (url) return url;
+    }
+
+    // Second attempt: keyword search using the set name — works for announced-but-unreleased sets
+    // that may have preview cards listed without full set metadata
+    const firstWord = setName.split(" ")[0];
+    const res2 = await fetch(
+      `https://db.ygoprodeck.com/api/v7/cardinfo.php?fname=${encodeURIComponent(firstWord)}&num=1`,
+      { next: { revalidate: 86400 } }
+    );
+    if (res2.ok) {
+      const data2 = await res2.json();
+      const url2 = data2.data?.[0]?.card_images?.[0]?.image_url_small;
+      if (url2) return url2;
+    }
+
+    return null;
   } catch {
     return null;
   }
@@ -243,7 +259,23 @@ function SetRow({
             />
           )
         ) : (
-          <div style={{ width: 44, height: 60, borderRadius: 4, background: "#1A2035", flexShrink: 0 }} />
+          <div
+            style={{
+              width: 44,
+              height: 60,
+              borderRadius: 4,
+              flexShrink: 0,
+              background: `linear-gradient(135deg, ${accentColor}20, ${accentColor}08)`,
+              border: `1px solid ${accentColor}30`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 20,
+              color: `${accentColor}70`,
+            }}
+          >
+            ?
+          </div>
         )}
 
         {/* Name + dates */}

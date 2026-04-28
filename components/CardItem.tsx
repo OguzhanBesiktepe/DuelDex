@@ -4,6 +4,7 @@
 // Displays card image, name, type badge, rarity badge, and price.
 // Border + glow color is driven by the card's rarity color for a gem-tier aesthetic.
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { getRarityColor } from "@/lib/rarityColors";
@@ -42,6 +43,8 @@ export default function CardItem({
   // Append ?from= so the detail page can show a contextual back-button label
   const href = `/${game}/card/${id}${from ? `?from=${encodeURIComponent(from)}` : ""}`;
   const rarityColor = getRarityColor(rarity, game);
+  const [imgSrc, setImgSrc] = useState(imageUrl);
+  const ygoFallback = `https://images.ygoprodeck.com/images/cards_small/${id}.jpg`;
 
   // Prefer TCGPlayer/Cardmarket price; fall back to eBay if missing/zero
   const tcg = price && parseFloat(price) > 0 ? parseFloat(price) : null;
@@ -72,14 +75,19 @@ export default function CardItem({
       >
         {/* Card image */}
         <div className="relative w-full aspect-[3/4] bg-[#080B14]">
-          {imageUrl ? (
+          {imgSrc ? (
             <Image
-              src={imageUrl}
+              src={imgSrc}
               alt={name}
               fill
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               className="object-contain p-4 transition-transform duration-300 group-hover:scale-105 group-active:scale-105"
               unoptimized
+              onError={() => {
+                if (game === "yugioh" && imgSrc !== ygoFallback) {
+                  setImgSrc(ygoFallback);
+                }
+              }}
             />
           ) : (
             <div className="flex items-center justify-center w-full h-full">

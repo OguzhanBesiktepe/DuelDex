@@ -19,9 +19,24 @@ export default function CardImageZoom({
 }: CardImageZoomProps) {
   const [index, setIndex] = useState(0);
   const [open, setOpen] = useState(false);
+  const [failedIds, setFailedIds] = useState<Set<number>>(new Set());
 
   const total = images.length;
-  const src = images[index]?.url ?? "";
+
+  function getSrc(img: { url: string; id: number } | undefined): string {
+    if (!img) return "";
+    if (failedIds.has(img.id)) {
+      return `https://images.ygoprodeck.com/images/cards/${img.id}.jpg`;
+    }
+    return img.url;
+  }
+
+  function handleError(img: { url: string; id: number } | undefined) {
+    if (!img || failedIds.has(img.id)) return;
+    setFailedIds((prev) => new Set([...prev, img.id]));
+  }
+
+  const src = getSrc(images[index]);
 
   const prev = useCallback(
     () => setIndex((i) => (i - 1 + total) % total),
@@ -65,6 +80,7 @@ export default function CardImageZoom({
             cursor: "zoom-in",
           }}
           onClick={() => setOpen(true)}
+          onError={() => handleError(images[index])}
         />
 
         {/* Art switcher — only shown when multiple arts exist */}
@@ -176,6 +192,7 @@ export default function CardImageZoom({
               e.stopPropagation();
               setOpen(false);
             }}
+            onError={() => handleError(images[index])}
           />
 
           {/* Next arrow in lightbox */}
