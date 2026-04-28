@@ -19,8 +19,8 @@ const POKEMON_LINKS = [
 
 const BUY_LINKS = [
   { href: "https://www.tcgplayer.com", label: "TCGPlayer" },
+  { href: "https://www.cardmarket.com", label: "Cardmarket" },
   { href: "https://www.ebay.com/", label: "eBay" },
-  { href: "https://www.amazon.com/", label: "Amazon" },
 ];
 
 export default function Footer() {
