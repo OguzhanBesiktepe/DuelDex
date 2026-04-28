@@ -15,6 +15,7 @@ interface Mover {
   href: string;
   prevPrice: number;
   pct: number;
+  currency?: string; // "USD" or "EUR"
 }
 
 interface MoversDoc {
@@ -75,7 +76,7 @@ function MoverTile({ mover, showPct }: { mover: Mover; showPct: boolean }) {
         </p>
         <div className="mt-1 flex items-center justify-between gap-1">
           <span className="text-xs font-bold" style={{ color: "#3ecf6a" }}>
-            ${mover.price.toFixed(2)}
+            {mover.currency === "EUR" ? "€" : "$"}{mover.price.toFixed(2)}
           </span>
           {showPct && (
             <span

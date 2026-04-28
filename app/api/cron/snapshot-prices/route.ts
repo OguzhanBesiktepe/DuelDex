@@ -12,7 +12,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminDb } from "@/lib/firebase-admin";
-import { getBestTcgPrice } from "@/lib/pokemon";
+import { getBestTcgPrice, getCardMarketPrice } from "@/lib/pokemon";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -23,6 +23,7 @@ interface CardSnapshot {
   image: string;
   price: number;
   href: string;
+  currency?: string; // "USD" or "EUR"
 }
 
 interface Mover extends CardSnapshot {
@@ -193,13 +194,20 @@ async function processPokemon(date: string): Promise<number> {
 
   const today: CardSnapshot[] = cardDetails
     .filter((c) => c?.id)
-    .map((c) => ({
-      cardId: c.id,
-      name: c.name ?? "",
-      image: c.image ? `${c.image}/high.webp` : "",
-      price: Number(getBestTcgPrice(c) ?? 0),
-      href: `/pokemon/card/${c.id}`,
-    }))
+    .map((c) => {
+      const tcgPrice = getBestTcgPrice(c);
+      const cmPrice = getCardMarketPrice(c);
+      const price = Number(tcgPrice ?? cmPrice ?? 0);
+      const currency = tcgPrice != null ? "USD" : "EUR";
+      return {
+        cardId: c.id,
+        name: c.name ?? "",
+        image: c.image ? `${c.image}/high.webp` : "",
+        price,
+        currency,
+        href: `/pokemon/card/${c.id}`,
+      };
+    })
     .filter((c) => c.price > 0);
 
   if (today.length === 0) return 0;

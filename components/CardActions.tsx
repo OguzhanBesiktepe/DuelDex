@@ -5,7 +5,7 @@
 //   ♥ Favorite  — toggles the card in the user's favorites
 //   + Add to List — dropdown to pick an existing list or create a new one
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "@/lib/auth-context";
 import {
   addFavorite,
@@ -40,6 +40,7 @@ export default function CardActions({
   // ── Favorite state ───────────────────────────────────────────────────────────
   const [favorited, setFavorited] = useState(false);
   const [favLoading, setFavLoading] = useState(true); // checking initial state
+  const [animating, setAnimating] = useState(false);
 
   // ── List dropdown state ──────────────────────────────────────────────────────
   const [listDropdownOpen, setListDropdownOpen] = useState(false);
@@ -84,14 +85,18 @@ export default function CardActions({
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  // Don't render anything for signed-out users
-  if (!user) return null;
-
   // ── Favorite toggle ──────────────────────────────────────────────────────────
-  const handleFavoriteToggle = async () => {
-    // Optimistic update — flip the UI immediately so it feels instant
+  // Must be defined before the early return to satisfy Rules of Hooks
+  const handleFavoriteToggle = useCallback(async () => {
+    if (!user) return;
     const wasAlreadyFavorited = favorited;
     setFavorited(!favorited);
+
+    // Sparkle burst only fires when adding a favorite, not removing
+    if (!wasAlreadyFavorited) {
+      setAnimating(true);
+      setTimeout(() => setAnimating(false), 700);
+    }
 
     try {
       if (wasAlreadyFavorited) {
@@ -106,10 +111,12 @@ export default function CardActions({
         });
       }
     } catch {
-      // If Firestore fails, revert the optimistic update
       setFavorited(wasAlreadyFavorited);
     }
-  };
+  }, [favorited, user, cardId, cardName, cardImage, game, price]);
+
+  // Don't render anything for signed-out users
+  if (!user) return null;
 
   // ── List dropdown ────────────────────────────────────────────────────────────
   const handleOpenListDropdown = async () => {
@@ -176,22 +183,86 @@ export default function CardActions({
     setNewListName("");
   };
 
+  // 8 sparkle dots evenly spaced around a circle (angles in degrees)
+  const SPARKLES = [
+    { angle: 0,   color: "#CC1F1F" },
+    { angle: 45,  color: "#FF7A00" },
+    { angle: 90,  color: "#FFD700" },
+    { angle: 135, color: "#FF7A00" },
+    { angle: 180, color: "#CC1F1F" },
+    { angle: 225, color: "#FF7A00" },
+    { angle: 270, color: "#FFD700" },
+    { angle: 315, color: "#FF7A00" },
+  ];
+
   return (
+    <>
+      {/* Keyframe definitions — scoped via unique class names */}
+      <style>{`
+        @keyframes fav-heart-pop {
+          0%   { transform: scale(1); }
+          35%  { transform: scale(1.45); }
+          65%  { transform: scale(0.88); }
+          100% { transform: scale(1); }
+        }
+        @keyframes fav-sparkle {
+          0%   { transform: translate(var(--sx), var(--sy)) scale(1); opacity: 1; }
+          80%  { opacity: 0.6; }
+          100% { transform: translate(calc(var(--sx) * 3.2), calc(var(--sy) * 3.2)) scale(0); opacity: 0; }
+        }
+        .fav-heart-animating {
+          animation: fav-heart-pop 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+        }
+        .fav-sparkle-dot {
+          animation: fav-sparkle 0.6s ease-out forwards;
+        }
+      `}</style>
+
     <div className="flex gap-2 w-full">
       {/* ── Favorite button ── */}
       <button
         onClick={handleFavoriteToggle}
         disabled={favLoading}
         title={favorited ? "Remove from favorites" : "Add to favorites"}
-        className="flex items-center justify-center gap-2 flex-1 px-4 py-2.5 rounded-lg text-sm font-bold transition-all disabled:opacity-40"
+        className="relative flex items-center justify-center gap-2 flex-1 px-4 py-2.5 rounded-lg text-sm font-bold transition-all disabled:opacity-40 overflow-visible"
         style={{
           background: favorited ? "rgba(204,31,31,0.15)" : "#0E1220",
           border: `1px solid ${favorited ? "#CC1F1F" : "#1A2035"}`,
           color: favorited ? "#CC1F1F" : "#7A8BA8",
         }}
       >
-        {/* Filled heart when favorited, outline when not */}
-        <span className="text-base">{favorited ? "♥" : "♡"}</span>
+        {/* Heart icon with pop animation */}
+        <span
+          className={`text-base select-none ${animating ? "fav-heart-animating" : ""}`}
+          style={{ display: "inline-block" }}
+        >
+          {favorited ? "♥" : "♡"}
+        </span>
+
+        {/* Sparkle dots — rendered only during animation */}
+        {animating && SPARKLES.map((s, i) => {
+          const rad = (s.angle * Math.PI) / 180;
+          const sx = `${(Math.cos(rad) * 18).toFixed(1)}px`;
+          const sy = `${(Math.sin(rad) * 18).toFixed(1)}px`;
+          return (
+            <span
+              key={i}
+              className="fav-sparkle-dot pointer-events-none absolute rounded-full"
+              style={{
+                width: 6,
+                height: 6,
+                background: s.color,
+                top: "50%",
+                left: "50%",
+                marginTop: -3,
+                marginLeft: -3,
+                "--sx": sx,
+                "--sy": sy,
+              } as React.CSSProperties}
+            />
+          );
+        })}
+
         {favorited ? "Favorited" : "Favorite"}
       </button>
 
@@ -336,5 +407,6 @@ export default function CardActions({
         )}
       </div>
     </div>
+    </>
   );
 }

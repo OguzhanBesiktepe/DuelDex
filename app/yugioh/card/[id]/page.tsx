@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import CardImageZoom from "@/components/CardImageZoom";
 import PrintingsPanel from "@/components/PrintingsPanel";
 import CardActions from "@/components/CardActions";
+import { MarketplaceLinks } from "@/components/MarketplaceButton";
 import { getYGOTypeColor, getYGORaceColor } from "@/lib/typeColors";
 
 export default async function YGOCardPage({
@@ -77,35 +78,13 @@ export default async function YGOCardPage({
           {/* Card image */}
           <div className="shrink-0 mx-auto md:mx-0 flex flex-col items-center gap-4">
             <CardImageZoom images={images} alt={card.name} />
-            {hasTCG && (
-              <a
-                href={tcgPlayerUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full text-center px-4 py-2.5 rounded-lg text-sm font-bold transition-opacity hover:opacity-85"
-                style={{ background: "#00AAFF", color: "#080B14" }}
-              >
-                Buy on TCGPlayer ↗
-              </a>
-            )}
-            <a
-              href={cardMarketUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full text-center px-4 py-2.5 rounded-lg text-sm font-bold transition-opacity hover:opacity-85"
-              style={{ background: "#E07B2A", color: "#FFFFFF" }}
-            >
-              Buy on Cardmarket ↗
-            </a>
-            <a
-              href={ebayUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full text-center px-4 py-2.5 rounded-lg text-sm font-bold transition-opacity hover:opacity-85"
-              style={{ background: "#F5AF02", color: "#080B14" }}
-            >
-              Buy on eBay ↗
-            </a>
+            <MarketplaceLinks
+              links={[
+                ...(hasTCG ? [{ href: tcgPlayerUrl, logo: "/logos/TCGplayer_Logo.svg.png", alt: "TCGPlayer", background: "#00AAFF" }] : []),
+                { href: cardMarketUrl, logo: "/logos/cardmarket.png", alt: "Cardmarket", background: "#FFFFFF" },
+                { href: ebayUrl, logo: "/logos/ebay.png", alt: "eBay", background: "#F0F0F0", logoHeight: 30 },
+              ]}
+            />
             {/* Favorite + Add to List buttons — only visible when signed in */}
             <CardActions
               cardId={String(card.id)}

@@ -7,6 +7,7 @@ import { Vibrant } from "node-vibrant/node";
 import HeroSection, { type FeaturedSet } from "@/components/HeroSection";
 import { ygoImage } from "@/lib/yugioh";
 import PriceMovers from "@/components/PriceMovers";
+import SignUpBanner from "@/components/SignUpBanner";
 
 export const dynamic = "force-dynamic";
 
@@ -237,6 +238,7 @@ export default async function HomePage() {
       <Suspense fallback={null}>
         <PriceMovers />
       </Suspense>
+      <SignUpBanner />
     </main>
   );
 }
