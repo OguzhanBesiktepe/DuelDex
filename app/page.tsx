@@ -5,7 +5,6 @@
 import { Suspense } from "react";
 import { Vibrant } from "node-vibrant/node";
 import HeroSection, { type FeaturedSet } from "@/components/HeroSection";
-import { ygoImage } from "@/lib/yugioh";
 import PriceMovers from "@/components/PriceMovers";
 import SignUpBanner from "@/components/SignUpBanner";
 import SetReleaseCalendar from "@/components/SetReleaseCalendar";
@@ -95,9 +94,9 @@ async function fetchFeaturedYGO(): Promise<FeaturedSet | null> {
 
     const cardImages: string[] = [];
     for (const card of shuffled) {
-      const id = card.card_images?.[0]?.id;
-      if (id) {
-        cardImages.push(ygoImage(id));
+      const url = card.card_images?.[0]?.image_url;
+      if (url) {
+        cardImages.push(url);
         if (cardImages.length === 3) break;
       }
     }
@@ -222,7 +221,7 @@ async function getFeaturedSet(): Promise<FeaturedSet> {
   return {
     gameLabel: "Yu-Gi-Oh!",
     setName: "Legend of Blue Eyes White Dragon",
-    cardImages: [ygoImage(89631139)],
+    cardImages: ["https://images.ygoprodeck.com/images/cards/89631139.jpg"],
     setHref: "/yugioh/sets",
     accentColor: "#FF7A00",
     accentRgb: "255, 122, 0",
