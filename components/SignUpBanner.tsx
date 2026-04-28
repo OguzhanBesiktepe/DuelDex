@@ -104,11 +104,8 @@ export default function SignUpBanner() {
           className="rounded-lg px-8 py-3 text-sm font-bold transition-opacity hover:opacity-90"
           style={{ background: "#FF7A00", color: "#080B14" }}
         >
-          Get Started Free →
+          Sign Up for Free →
         </Link>
-        <p className="text-xs" style={{ color: "#7A8BA8" }}>
-          No credit card required. Sign in with Google or email.
-        </p>
       </div>
     </section>
   );

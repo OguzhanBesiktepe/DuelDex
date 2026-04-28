@@ -8,6 +8,7 @@ import CardImageZoom from "@/components/CardImageZoom";
 import BackButton from "@/components/BackButton";
 import CardActions from "@/components/CardActions";
 import { MarketplaceLinks } from "@/components/MarketplaceButton";
+import RecordView from "@/components/RecordView";
 
 export default async function PokemonCardPage({
   params,
@@ -36,6 +37,12 @@ export default async function PokemonCardPage({
 
   return (
     <div style={{ background: "#080B14", minHeight: "100vh" }}>
+      <RecordView
+        cardId={card.id}
+        game="pokemon"
+        name={card.name}
+        image={card.image ? `${card.image}/low.webp` : ""}
+      />
       <div className="max-w-screen-lg mx-auto px-4 py-8">
         {/* Back */}
         <BackButton

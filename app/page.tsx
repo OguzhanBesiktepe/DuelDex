@@ -8,6 +8,8 @@ import HeroSection, { type FeaturedSet } from "@/components/HeroSection";
 import { ygoImage } from "@/lib/yugioh";
 import PriceMovers from "@/components/PriceMovers";
 import SignUpBanner from "@/components/SignUpBanner";
+import SetReleaseCalendar from "@/components/SetReleaseCalendar";
+import RecentlyViewed from "@/components/RecentlyViewed";
 
 export const dynamic = "force-dynamic";
 
@@ -236,8 +238,12 @@ export default async function HomePage() {
     <main style={{ background: "#080B14", minHeight: "100vh" }}>
       <HeroSection featured={featured} />
       <Suspense fallback={null}>
+        <SetReleaseCalendar />
+      </Suspense>
+      <Suspense fallback={null}>
         <PriceMovers />
       </Suspense>
+      <RecentlyViewed />
       <SignUpBanner />
     </main>
   );

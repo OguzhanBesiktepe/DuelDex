@@ -9,6 +9,7 @@ import PrintingsPanel from "@/components/PrintingsPanel";
 import CardActions from "@/components/CardActions";
 import { MarketplaceLinks } from "@/components/MarketplaceButton";
 import { getYGOTypeColor, getYGORaceColor } from "@/lib/typeColors";
+import RecordView from "@/components/RecordView";
 
 export default async function YGOCardPage({
   params,
@@ -66,6 +67,12 @@ export default async function YGOCardPage({
 
   return (
     <div style={{ background: "#080B14", minHeight: "100vh" }}>
+      <RecordView
+        cardId={String(card.id)}
+        game="yugioh"
+        name={card.name}
+        image={card.card_images[0]?.id ? ygoImage(card.card_images[0].id, true) : ""}
+      />
       <div className="max-w-screen-lg mx-auto px-4 py-8">
         {/* Back */}
         {/* Derive a context-aware back label from the `from` query param */}
