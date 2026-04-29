@@ -46,23 +46,26 @@ export default function AlertModal({
   );
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (!user) return null;
 
   const symbol = currency === "EUR" ? "€" : "$";
   const val = parseFloat(thresholdValue);
-  const canSave = val > 0 && currentPrice > 0;
+  const canSave = val > 0;
 
   const handleSave = async () => {
     if (!canSave) return;
     setSaving(true);
+    setError(null);
     try {
       if (existingAlert) {
         await updateAlert(user.uid, existingAlert.id, { thresholdType, thresholdValue: val, direction });
       } else {
         await createAlert(user.uid, user.email ?? "", {
           cardId, cardName, cardImage, game,
-          setCode, setName,
+          ...(setCode !== undefined ? { setCode } : {}),
+          ...(setName !== undefined ? { setName } : {}),
           thresholdType,
           thresholdValue: val,
           direction,
@@ -72,8 +75,9 @@ export default function AlertModal({
       }
       onSaved();
       onClose();
-    } catch {
-      // noop — user can retry
+    } catch (err) {
+      console.error("Alert save failed:", err);
+      setError(err instanceof Error ? err.message : "Failed to save alert. Check your connection and try again.");
     } finally {
       setSaving(false);
     }
@@ -220,9 +224,14 @@ export default function AlertModal({
             </button>
           )}
 
-          {currentPrice <= 0 && (
+          {error && (
+            <p className="text-center text-xs mt-1 px-2 py-2 rounded-lg" style={{ color: "#CC1F1F", background: "rgba(204,31,31,0.1)", border: "1px solid rgba(204,31,31,0.3)" }}>
+              {error}
+            </p>
+          )}
+          {currentPrice <= 0 && !error && (
             <p className="text-center text-xs mt-1" style={{ color: "#7A8BA8" }}>
-              Alerts require a known price baseline
+              No price data — alert will use $0.00 as baseline
             </p>
           )}
         </div>

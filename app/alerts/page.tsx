@@ -297,13 +297,22 @@ export default function AlertsPage() {
               <p className="text-xs mb-4" style={{ color: "#7A8BA8" }}>
                 Go to any card page and tap the bell icon to set a price alert.
               </p>
-              <Link
-                href="/yugioh/monsters"
-                className="inline-block px-4 py-2 rounded-lg text-sm font-bold transition hover:opacity-90"
-                style={{ background: "#FF7A00", color: "#080B14" }}
-              >
-                Browse Cards
-              </Link>
+              <div className="flex gap-2 justify-center">
+                <Link
+                  href="/yugioh/monsters"
+                  className="inline-block px-4 py-2 rounded-lg text-sm font-bold transition hover:opacity-90"
+                  style={{ background: "#FF7A00", color: "#080B14" }}
+                >
+                  Browse Yu-Gi-Oh!
+                </Link>
+                <Link
+                  href="/pokemon/pokemon"
+                  className="inline-block px-4 py-2 rounded-lg text-sm font-bold transition hover:opacity-90"
+                  style={{ background: "#00AAFF", color: "#080B14" }}
+                >
+                  Browse Pokémon
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="flex flex-col gap-3">

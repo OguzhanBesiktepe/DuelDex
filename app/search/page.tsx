@@ -4,7 +4,7 @@
 
 import CardGrid from "@/components/CardGrid";
 import { searchYGOCards, ygoImage } from "@/lib/yugioh";
-import { searchPokemonCards, fetchPokemonCardById, getBestTcgPrice } from "@/lib/pokemon";
+import { searchPokemonCards, fetchPokemonCardById, getBestTcgPrice, getCardMarketPrice } from "@/lib/pokemon";
 
 export default async function SearchPage({
   searchParams,
@@ -45,7 +45,9 @@ export default async function SearchPage({
   const pkmnCards = pkmnDetails
     .filter((d) => d !== null)
     .map((d) => {
-      const priceNum = getBestTcgPrice(d!);
+      const tcgPrice = getBestTcgPrice(d!);
+      const cmPrice = tcgPrice == null ? getCardMarketPrice(d!) : null;
+      const priceNum = tcgPrice ?? cmPrice;
       return {
         id: d!.id,
         name: d!.name,
@@ -53,6 +55,7 @@ export default async function SearchPage({
         type: d!.types?.[0],
         rarity: d!.rarity,
         price: priceNum != null ? String(priceNum) : undefined,
+        priceCurrency: (cmPrice != null ? "EUR" : "USD") as "USD" | "EUR",
       };
     });
 
