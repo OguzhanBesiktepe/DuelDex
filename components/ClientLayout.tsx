@@ -4,6 +4,7 @@
 // Auth pages (e.g. /signin) hide both so the full screen is available for the sign-in form.
 
 import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
@@ -13,6 +14,13 @@ const AUTH_ROUTES = ["/signin"];
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAuthPage = AUTH_ROUTES.includes(pathname);
+
+  // Register service worker for Web Push notifications
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    }
+  }, []);
 
   return (
     <>

@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/snapshot-prices",
       "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/check-alerts",
+      "schedule": "0 7 * * *"
     }
   ]
 }

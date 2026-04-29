@@ -260,7 +260,7 @@ export default async function PokemonCardPage({
                 </p>
                 <div className="flex flex-col gap-2">
                   {Object.entries(card.pricing.tcgplayer).map(([variant, data]) => {
-                    if (!data) return null;
+                    if (!data || typeof data !== "object") return null;
                     const label = variant
                       .replace(/-/g, " ")
                       .replace(/\b\w/g, (c) => c.toUpperCase());

@@ -150,6 +150,56 @@ export async function setUserAvatar(userId: string, url: string) {
   await setDoc(doc(db, "users", userId), { avatarUrl: url }, { merge: true });
 }
 
+/** Cache the user's email so the cron job can send alerts without calling Admin Auth. */
+export async function setUserAlertEmail(userId: string, email: string) {
+  await setDoc(doc(db, "users", userId), { alertEmail: email }, { merge: true });
+}
+
+/** Save portfolio auto-alert preferences (enabled toggle + threshold %). */
+export async function setPortfolioAlertSettings(
+  userId: string,
+  enabled: boolean,
+  threshold: number
+) {
+  await setDoc(
+    doc(db, "users", userId),
+    { portfolioAlertsEnabled: enabled, portfolioAlertThreshold: threshold },
+    { merge: true }
+  );
+}
+
+/** Read portfolio alert settings. Returns defaults if not yet set. */
+export async function getPortfolioAlertSettings(
+  userId: string
+): Promise<{ enabled: boolean; threshold: number }> {
+  const snap = await getDoc(doc(db, "users", userId));
+  if (!snap.exists()) return { enabled: false, threshold: 10 };
+  const data = snap.data();
+  return {
+    enabled: data.portfolioAlertsEnabled ?? false,
+    threshold: data.portfolioAlertThreshold ?? 10,
+  };
+}
+
+/** Store a browser push subscription under users/{uid}/pushSubscriptions. */
+export async function savePushSubscription(
+  userId: string,
+  sub: { endpoint: string; keys: { p256dh: string; auth: string } }
+) {
+  // Use endpoint as doc ID (URL-safe base64 of endpoint URL)
+  const id = btoa(sub.endpoint).replace(/[+/=]/g, "_").slice(0, 100);
+  await setDoc(doc(db, "users", userId, "pushSubscriptions", id), {
+    ...sub,
+    createdAt: serverTimestamp(),
+  });
+}
+
+/** Remove a push subscription (user disabled notifications). */
+export async function removePushSubscription(userId: string, endpoint: string) {
+  const id = btoa(endpoint).replace(/[+/=]/g, "_").slice(0, 100);
+  await deleteDoc(doc(db, "users", userId, "pushSubscriptions", id));
+}
+
 // ── Lists ─────────────────────────────────────────────────────────────────────
 
 /** Create a new named list. Returns the new list's Firestore document ID. */

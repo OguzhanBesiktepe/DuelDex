@@ -20,6 +20,8 @@ import {
   isCardInList,
   type ListMeta,
 } from "@/lib/firestore";
+import { getAlertsForCard, type PriceAlertWithId } from "@/lib/alerts";
+import AlertModal from "@/components/AlertModal";
 
 type CardSet = {
   set_name: string;
@@ -59,6 +61,10 @@ export default function PrintingsPanel({
   const [favoritedCodes, setFavoritedCodes] = useState<Set<string>>(new Set());
   const [togglingFavCode, setTogglingFavCode] = useState<string | null>(null);
 
+  // ── Alert state ────────────────────────────────────────────────────────────
+  const [alertsByCode, setAlertsByCode] = useState<Map<string, PriceAlertWithId>>(new Map());
+  const [alertModalFor, setAlertModalFor] = useState<{ set: CardSet; existing: PriceAlertWithId | null } | null>(null);
+
   // ── List dropdown state ────────────────────────────────────────────────────
   // openForCode = the set_code of the row whose "+" menu is currently open
   const [openForCode, setOpenForCode] = useState<string | null>(null);
@@ -83,6 +89,20 @@ export default function PrintingsPanel({
       setFavoritedCodes(new Set(codes));
     });
   }, [user, cardId]);
+
+  // Load which printings have active alerts
+  const loadAlerts = () => {
+    if (!user || !cardId) return;
+    getAlertsForCard(user.uid, cardId, "yugioh").then((alerts) => {
+      const m = new Map<string, PriceAlertWithId>();
+      for (const a of alerts) {
+        if (a.setCode && a.enabled) m.set(a.setCode, a);
+      }
+      setAlertsByCode(m);
+    });
+  };
+
+  useEffect(loadAlerts, [user, cardId]);
 
   // Close list dropdown on outside click
   useEffect(() => {
@@ -301,6 +321,7 @@ export default function PrintingsPanel({
               const rc = getRarityColor(s.set_rarity, "yugioh");
               const isFav = favoritedCodes.has(s.set_code);
               const isListOpen = openForCode === s.set_code;
+              const hasAlert = alertsByCode.has(s.set_code);
 
               return (
                 <button
@@ -358,6 +379,26 @@ export default function PrintingsPanel({
                         }}
                       >
                         +
+                      </span>
+                    )}
+
+                    {/* Alert bell */}
+                    {showActions && (
+                      <span
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setAlertModalFor({ set: s, existing: alertsByCode.get(s.set_code) ?? null });
+                        }}
+                        title={hasAlert ? "Edit price alert" : "Set price alert"}
+                        className="transition-transform hover:scale-110"
+                        style={{
+                          color: hasAlert ? "#FF7A00" : "#3A4A60",
+                          cursor: "pointer",
+                          fontSize: "0.85rem",
+                          lineHeight: 1,
+                        }}
+                      >
+                        {hasAlert ? "🔔" : "🔕"}
                       </span>
                     )}
                   </div>
@@ -482,6 +523,22 @@ export default function PrintingsPanel({
         </>
       )}
 
+      {/* Printing-specific alert modal */}
+      {alertModalFor && cardId && cardImage && (
+        <AlertModal
+          cardId={cardId}
+          cardName={cardName}
+          cardImage={cardImage}
+          game="yugioh"
+          currentPrice={parseFloat(alertModalFor.set.set_price) || 0}
+          currency="USD"
+          setCode={alertModalFor.set.set_code}
+          setName={alertModalFor.set.set_name}
+          existingAlert={alertModalFor.existing}
+          onClose={() => setAlertModalFor(null)}
+          onSaved={loadAlerts}
+        />
+      )}
     </div>
   );
 }

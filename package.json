@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1014.0",
+    "@types/web-push": "^3.6.4",
     "firebase": "^12.10.0",
     "firebase-admin": "^13.7.0",
     "html-to-image": "^1.11.13",
@@ -17,7 +18,9 @@
     "node-vibrant": "^4.0.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "recharts": "^3.8.1"
+    "recharts": "^3.8.1",
+    "resend": "^6.12.2",
+    "web-push": "^3.6.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

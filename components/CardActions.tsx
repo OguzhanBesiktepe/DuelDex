@@ -19,6 +19,7 @@ import {
   type ListMeta,
 } from "@/lib/firestore";
 import Link from "next/link";
+import AlertButton from "@/components/AlertButton";
 
 interface CardActionsProps {
   cardId: string;
@@ -198,6 +199,7 @@ export default function CardActions({
   return (
     <>
       {/* Keyframe definitions — scoped via unique class names */}
+
       <style>{`
         @keyframes fav-heart-pop {
           0%   { transform: scale(1); }
@@ -218,6 +220,7 @@ export default function CardActions({
         }
       `}</style>
 
+    <div className="flex flex-col gap-2 w-full">
     <div className="flex gap-2 w-full">
       {/* ── Favorite button ── */}
       <button
@@ -406,6 +409,17 @@ export default function CardActions({
           </div>
         )}
       </div>
+    </div>
+
+    {/* Alert button — full width below the two main buttons */}
+    <AlertButton
+      cardId={cardId}
+      cardName={cardName}
+      cardImage={cardImage}
+      game={game}
+      currentPrice={price}
+      currency={game === "yugioh" ? "USD" : "EUR"}
+    />
     </div>
     </>
   );
