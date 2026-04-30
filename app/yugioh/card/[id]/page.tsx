@@ -48,9 +48,9 @@ export default async function YGOCardPage({
     return true;
   });
   const ATTRIBUTE_COLORS: Record<string, string> = {
-    LIGHT: "#FFD700",
+    LIGHT: "var(--gold)",
     DARK: "#9B6BFF",
-    WATER: "#00AAFF",
+    WATER: "var(--pkmn-accent)",
     FIRE: "#FF4422",
     EARTH: "#A0784A",
     WIND: "#44CC88",
@@ -66,7 +66,7 @@ export default async function YGOCardPage({
   const ebayUrl = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(card.name + " yugioh")}`;
 
   return (
-    <div style={{ background: "#080B14", minHeight: "100vh" }}>
+    <div style={{ background: "var(--background)", minHeight: "100vh" }}>
       <RecordView
         cardId={String(card.id)}
         game="yugioh"
@@ -87,7 +87,7 @@ export default async function YGOCardPage({
             <CardImageZoom images={images} alt={card.name} />
             <MarketplaceLinks
               links={[
-                ...(hasTCG ? [{ href: tcgPlayerUrl, logo: "/logos/TCGplayer_Logo.svg.png", alt: "TCGPlayer", background: "#00AAFF" }] : []),
+                ...(hasTCG ? [{ href: tcgPlayerUrl, logo: "/logos/TCGplayer_Logo.svg.png", alt: "TCGPlayer", background: "var(--pkmn-accent)" }] : []),
                 { href: cardMarketUrl, logo: "/logos/cardmarket.png", alt: "Cardmarket", background: "#FFFFFF" },
                 { href: ebayUrl, logo: "/logos/ebay.png", alt: "eBay", background: "#F0F0F0", logoHeight: 30 },
               ]}
@@ -106,7 +106,7 @@ export default async function YGOCardPage({
           <div className="flex-1 min-w-0">
             <h1
               className="text-3xl font-bold mb-1"
-              style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+              style={{ color: "var(--text-primary)", fontFamily: "var(--font-cinzel)" }}
             >
               {card.name}
             </h1>
@@ -143,7 +143,7 @@ export default async function YGOCardPage({
                 );
               })()}
               {card.attribute && (() => {
-                const attrColor = ATTRIBUTE_COLORS[card.attribute] ?? "#7A8BA8";
+                const attrColor = ATTRIBUTE_COLORS[card.attribute] ?? "var(--text-muted)";
                 return (
                   <span
                     className="text-xs px-2 py-1 rounded-full"
@@ -166,12 +166,12 @@ export default async function YGOCardPage({
               <div className="flex gap-4 mb-4">
                 {card.level !== undefined && (
                   <div>
-                    <p className="text-xs" style={{ color: "#7A8BA8" }}>
+                    <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                       Level
                     </p>
                     <p
                       className="text-lg font-bold"
-                      style={{ color: "#FFD700" }}
+                      style={{ color: "var(--gold)" }}
                     >
                       {card.level}
                     </p>
@@ -179,12 +179,12 @@ export default async function YGOCardPage({
                 )}
                 {card.atk !== undefined && (
                   <div>
-                    <p className="text-xs" style={{ color: "#7A8BA8" }}>
+                    <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                       ATK
                     </p>
                     <p
                       className="text-lg font-bold"
-                      style={{ color: "#F0F2FF" }}
+                      style={{ color: "var(--text-primary)" }}
                     >
                       {/* YGOPRODeck returns -1 for Link Monsters that have no DEF */}
                       {card.atk === -1 ? "?" : card.atk}
@@ -193,12 +193,12 @@ export default async function YGOCardPage({
                 )}
                 {card.def !== undefined && (
                   <div>
-                    <p className="text-xs" style={{ color: "#7A8BA8" }}>
+                    <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                       DEF
                     </p>
                     <p
                       className="text-lg font-bold"
-                      style={{ color: "#F0F2FF" }}
+                      style={{ color: "var(--text-primary)" }}
                     >
                       {card.def === -1 ? "?" : card.def}
                     </p>
@@ -210,7 +210,7 @@ export default async function YGOCardPage({
             {/* Description */}
             <p
               className="text-sm leading-relaxed mb-6"
-              style={{ color: "#7A8BA8" }}
+              style={{ color: "var(--text-muted)" }}
             >
               {card.desc}
             </p>

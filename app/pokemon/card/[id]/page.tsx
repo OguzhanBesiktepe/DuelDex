@@ -36,7 +36,7 @@ export default async function PokemonCardPage({
   const cardMarketUrl = getCardMarketUrl(card);
 
   return (
-    <div style={{ background: "#080B14", minHeight: "100vh" }}>
+    <div style={{ background: "var(--background)", minHeight: "100vh" }}>
       <RecordView
         cardId={card.id}
         game="pokemon"
@@ -70,17 +70,17 @@ export default async function PokemonCardPage({
             <div className="shrink-0 mx-auto md:mx-0 flex flex-col items-center gap-4">
               <CardImageZoom images={images} alt={card.name} />
               {tcgPrice != null ? (
-                <p className="text-lg font-bold" style={{ color: "#3ecf6a" }}>
-                  ${tcgPrice.toFixed(2)} <span className="text-xs font-normal" style={{ color: "#7A8BA8" }}>TCGPlayer market</span>
+                <p className="text-lg font-bold" style={{ color: "var(--price-color)" }}>
+                  ${tcgPrice.toFixed(2)} <span className="text-xs font-normal" style={{ color: "var(--text-muted)" }}>TCGPlayer market</span>
                 </p>
               ) : cmPrice != null ? (
-                <p className="text-lg font-bold" style={{ color: "#3ecf6a" }}>
-                  €{cmPrice.toFixed(2)} <span className="text-xs font-normal" style={{ color: "#7A8BA8" }}>Cardmarket trend</span>
+                <p className="text-lg font-bold" style={{ color: "var(--price-color)" }}>
+                  €{cmPrice.toFixed(2)} <span className="text-xs font-normal" style={{ color: "var(--text-muted)" }}>Cardmarket trend</span>
                 </p>
               ) : null}
               <MarketplaceLinks
                 links={[
-                  { href: tcgPlayerUrl, logo: "/logos/TCGplayer_Logo.svg.png", alt: "TCGPlayer", background: "#00AAFF" },
+                  { href: tcgPlayerUrl, logo: "/logos/TCGplayer_Logo.svg.png", alt: "TCGPlayer", background: "var(--pkmn-accent)" },
                   { href: cardMarketUrl, logo: "/logos/cardmarket.png", alt: "Cardmarket", background: "#FFFFFF" },
                   { href: ebayUrl, logo: "/logos/ebay.png", alt: "eBay", background: "#F0F0F0", logoHeight: 30 },
                 ]}
@@ -100,13 +100,13 @@ export default async function PokemonCardPage({
           <div className="flex-1 min-w-0">
             <h1
               className="text-3xl font-bold mb-1 flex items-center gap-3 flex-wrap"
-              style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+              style={{ color: "var(--text-primary)", fontFamily: "var(--font-cinzel)" }}
             >
               {card.name}
               {legendHalf && (
                 <span
                   className="text-sm font-bold px-2.5 py-1 rounded-full"
-                  style={{ background: "#FFD70022", color: "#FFD700", border: "1px solid #FFD70066" }}
+                  style={{ background: "#FFD70022", color: "var(--gold)", border: "1px solid #FFD70066" }}
                 >
                   {legendHalf}
                 </span>
@@ -119,7 +119,7 @@ export default async function PokemonCardPage({
                   className="text-xs px-2 py-1 rounded-full"
                   style={{
                     background: "#00AAFF22",
-                    color: "#00AAFF",
+                    color: "var(--pkmn-accent)",
                     border: "1px solid #00AAFF44",
                   }}
                 >
@@ -129,7 +129,7 @@ export default async function PokemonCardPage({
               {card.rarity && (
                 <span
                   className="text-xs px-2 py-1 rounded-full"
-                  style={{ background: "#1A2035", color: "#7A8BA8" }}
+                  style={{ background: "var(--border)", color: "var(--text-muted)" }}
                 >
                   {card.rarity}
                 </span>
@@ -138,7 +138,7 @@ export default async function PokemonCardPage({
                 <span
                   key={t}
                   className="text-xs px-2 py-1 rounded-full"
-                  style={{ background: "#1A2035", color: "#7A8BA8" }}
+                  style={{ background: "var(--border)", color: "var(--text-muted)" }}
                 >
                   {t}
                 </span>
@@ -149,20 +149,20 @@ export default async function PokemonCardPage({
             <div className="flex gap-4 mb-4">
               {card.hp && (
                 <div>
-                  <p className="text-xs" style={{ color: "#7A8BA8" }}>
+                  <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                     HP
                   </p>
-                  <p className="text-lg font-bold" style={{ color: "#CC1F1F" }}>
+                  <p className="text-lg font-bold" style={{ color: "var(--primary-red)" }}>
                     {card.hp}
                   </p>
                 </div>
               )}
               {card.stage && (
                 <div>
-                  <p className="text-xs" style={{ color: "#7A8BA8" }}>
+                  <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                     Stage
                   </p>
-                  <p className="text-lg font-bold" style={{ color: "#F0F2FF" }}>
+                  <p className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>
                     {card.stage}
                   </p>
                 </div>
@@ -173,7 +173,7 @@ export default async function PokemonCardPage({
             {card.description && (
               <p
                 className="text-sm leading-relaxed mb-6 italic"
-                style={{ color: "#7A8BA8" }}
+                style={{ color: "var(--text-muted)" }}
               >
                 {card.description}
               </p>
@@ -184,7 +184,7 @@ export default async function PokemonCardPage({
               <div className="mb-6">
                 <p
                   className="text-xs font-semibold uppercase tracking-wide mb-2"
-                  style={{ color: "#7A8BA8" }}
+                  style={{ color: "var(--text-muted)" }}
                 >
                   Attacks
                 </p>
@@ -194,21 +194,21 @@ export default async function PokemonCardPage({
                       key={i}
                       className="px-3 py-2 rounded"
                       style={{
-                        background: "#0E1220",
+                        background: "var(--surface)",
                         border: "1px solid #1A2035",
                       }}
                     >
                       <div className="flex items-center justify-between">
                         <span
                           className="text-sm font-semibold"
-                          style={{ color: "#F0F2FF" }}
+                          style={{ color: "var(--text-primary)" }}
                         >
                           {atk.name}
                         </span>
                         {atk.damage && (
                           <span
                             className="text-sm font-bold"
-                            style={{ color: "#CC1F1F" }}
+                            style={{ color: "var(--primary-red)" }}
                           >
                             {atk.damage}
                           </span>
@@ -217,7 +217,7 @@ export default async function PokemonCardPage({
                       {atk.effect && (
                         <p
                           className="text-xs mt-1"
-                          style={{ color: "#7A8BA8" }}
+                          style={{ color: "var(--text-muted)" }}
                         >
                           {atk.effect}
                         </p>
@@ -232,15 +232,15 @@ export default async function PokemonCardPage({
             {card.set && (
               <div
                 className="rounded-xl p-4"
-                style={{ background: "#0E1220", border: "1px solid #1A2035" }}
+                style={{ background: "var(--surface)", border: "1px solid #1A2035" }}
               >
                 <p
                   className="text-xs font-semibold uppercase tracking-wide mb-1"
-                  style={{ color: "#7A8BA8" }}
+                  style={{ color: "var(--text-muted)" }}
                 >
                   Set
                 </p>
-                <p className="text-sm" style={{ color: "#F0F2FF" }}>
+                <p className="text-sm" style={{ color: "var(--text-primary)" }}>
                   {card.set.name}
                 </p>
               </div>
@@ -250,11 +250,11 @@ export default async function PokemonCardPage({
             {card.pricing?.tcgplayer && Object.keys(card.pricing.tcgplayer).length > 0 && (
               <div
                 className="rounded-xl p-4"
-                style={{ background: "#0E1220", border: "1px solid #1A2035" }}
+                style={{ background: "var(--surface)", border: "1px solid #1A2035" }}
               >
                 <p
                   className="text-xs font-semibold uppercase tracking-wide mb-3"
-                  style={{ color: "#7A8BA8" }}
+                  style={{ color: "var(--text-muted)" }}
                 >
                   TCGPlayer Prices
                 </p>
@@ -266,18 +266,18 @@ export default async function PokemonCardPage({
                       .replace(/\b\w/g, (c) => c.toUpperCase());
                     return (
                       <div key={variant} className="flex items-center justify-between">
-                        <span className="text-xs capitalize" style={{ color: "#7A8BA8" }}>
+                        <span className="text-xs capitalize" style={{ color: "var(--text-muted)" }}>
                           {label}
                         </span>
                         <div className="flex items-center gap-3 text-xs">
                           {data.lowPrice != null && (
-                            <span style={{ color: "#7A8BA8" }}>
-                              Low <span style={{ color: "#F0F2FF" }}>${data.lowPrice.toFixed(2)}</span>
+                            <span style={{ color: "var(--text-muted)" }}>
+                              Low <span style={{ color: "var(--text-primary)" }}>${data.lowPrice.toFixed(2)}</span>
                             </span>
                           )}
                           {data.marketPrice != null && (
-                            <span style={{ color: "#7A8BA8" }}>
-                              Market <span className="font-bold" style={{ color: "#3ecf6a" }}>${data.marketPrice.toFixed(2)}</span>
+                            <span style={{ color: "var(--text-muted)" }}>
+                              Market <span className="font-bold" style={{ color: "var(--price-color)" }}>${data.marketPrice.toFixed(2)}</span>
                             </span>
                           )}
                         </div>

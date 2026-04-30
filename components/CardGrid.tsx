@@ -28,7 +28,7 @@ export default function CardGrid({ cards, game, from }: CardGridProps) {
     return (
       <div
         className="flex items-center justify-center py-24 text-sm"
-        style={{ color: "#7A8BA8" }}
+        style={{ color: "var(--text-muted)" }}
       >
         No cards found.
       </div>

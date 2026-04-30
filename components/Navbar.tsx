@@ -189,7 +189,7 @@ export default function Navbar() {
   return (
     <nav
       className="sticky top-0 z-50 w-full border-b"
-      style={{ background: "#0E1220", borderColor: "#1A2035" }}
+      style={{ background: "var(--surface)", borderColor: "var(--border)" }}
     >
       <div className="mx-auto flex max-w-7xl items-center gap-6 px-4 py-3">
         {/* Logo — on mobile: persistent orange ring signals it's tappable;
@@ -197,7 +197,7 @@ export default function Navbar() {
              On desktop the ring is removed and hover effects take over. */}
         <Link
           href="/"
-          className="shrink-0 rounded-lg transition-all duration-150 active:scale-95 active:opacity-70 ring-1 ring-[#FF7A00]/30 md:ring-0"
+          className="shrink-0 rounded-lg transition-all duration-150 active:scale-95 active:opacity-70"
         >
           <Image
             src="/Logo.png"
@@ -224,7 +224,7 @@ export default function Navbar() {
             {ygoOpen && (
               <div
                 className="absolute left-0 top-full w-52 rounded-lg border py-1 shadow-xl"
-                style={{ background: "#0E1220", borderColor: "#1A2035" }}
+                style={{ background: "var(--surface)", borderColor: "var(--border)" }}
               >
                 {ygoLinks.map((link) => (
                   <Link
@@ -269,7 +269,7 @@ export default function Navbar() {
             {pkmnOpen && (
               <div
                 className="absolute left-0 top-full w-52 rounded-lg border py-1 shadow-xl"
-                style={{ background: "#0E1220", borderColor: "#1A2035" }}
+                style={{ background: "var(--surface)", borderColor: "var(--border)" }}
               >
                 {pokemonLinks.map((link) => (
                   <Link
@@ -299,9 +299,9 @@ export default function Navbar() {
               style={{
                 borderColor:
                   dropdownOpen && suggestions.length > 0
-                    ? "#FF7A00"
-                    : "#1A2035",
-                background: "#080B14",
+                    ? "var(--ygo-accent)"
+                    : "var(--border)",
+                background: "var(--background)",
               }}
               onSubmit={(e) => {
                 e.preventDefault();
@@ -326,7 +326,7 @@ export default function Navbar() {
               {loading && (
                 <span
                   className="ml-2 text-xs animate-pulse"
-                  style={{ color: "#7A8BA8" }}
+                  style={{ color: "var(--text-muted)" }}
                 >
                   ...
                 </span>
@@ -338,7 +338,7 @@ export default function Navbar() {
               <div
                 className="absolute left-0 right-0 top-full mt-1 rounded-xl overflow-hidden z-50"
                 style={{
-                  background: "#0E1220",
+                  background: "var(--surface)",
                   border: "1px solid #1A2035",
                   boxShadow: "0 16px 48px rgba(0,0,0,0.6)",
                 }}
@@ -369,12 +369,12 @@ export default function Navbar() {
                     )}
                     <span
                       className="flex-1 text-sm truncate"
-                      style={{ color: "#F0F2FF" }}
+                      style={{ color: "var(--text-primary)" }}
                     >
                       {s.name}
                     </span>
                     {s.price != null && (
-                      <span className="text-xs font-bold shrink-0" style={{ color: "#3ecf6a" }}>
+                      <span className="text-xs font-bold shrink-0" style={{ color: "var(--price-color)" }}>
                         ${s.price.toFixed(2)}
                       </span>
                     )}
@@ -391,7 +391,7 @@ export default function Navbar() {
                   onMouseLeave={() => setActiveIndex(-1)}
                   className="w-full px-4 py-2 text-xs text-left transition-colors"
                   style={{
-                    color: "#7A8BA8",
+                    color: "var(--text-muted)",
                     borderTop: "1px solid #1A2035",
                     background: activeIndex === suggestions.length ? "rgba(255,255,255,0.08)" : undefined,
                   }}
@@ -407,7 +407,7 @@ export default function Navbar() {
             <button
               onClick={() => setUserMenuOpen(true)}
               className="ml-2 shrink-0 flex items-center gap-1.5 rounded-full border-2 p-0.5 transition-all duration-200 hover:scale-105 cursor-pointer"
-              style={{ borderColor: "#FF7A00" }}
+              style={{ borderColor: "var(--ygo-accent)" }}
               onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "0 0 14px rgba(255,122,0,0.65)")}
               onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
               title="My Account"
@@ -419,13 +419,13 @@ export default function Navbar() {
                 className="rounded-full object-cover"
                 style={{ width: 32, height: 32 }}
               />
-              <span className="text-[10px] pr-1" style={{ color: "#FF7A00" }}>▾</span>
+              <span className="text-[10px] pr-1" style={{ color: "var(--ygo-accent)" }}>▾</span>
             </button>
           ) : (
             <Link
               href="/signin"
               className="ml-2 shrink-0 rounded-md px-4 py-2 text-sm font-semibold transition hover:opacity-90"
-              style={{ background: "#FF7A00", color: "#080B14" }}
+              style={{ background: "var(--ygo-accent)", color: "var(--background)" }}
             >
               Sign In
             </Link>
@@ -445,15 +445,15 @@ export default function Navbar() {
       {menuOpen && (
         <div
           className="border-t px-4 pb-4 md:hidden"
-          style={{ borderColor: "#1A2035" }}
+          style={{ borderColor: "var(--border)" }}
         >
           {/* Mobile search */}
           <div ref={searchRef} className="relative mt-3 mb-1">
             <form
               className="flex items-center rounded-md border px-3 py-2"
               style={{
-                borderColor: dropdownOpen && suggestions.length > 0 ? "#FF7A00" : "#1A2035",
-                background: "#080B14",
+                borderColor: dropdownOpen && suggestions.length > 0 ? "var(--ygo-accent)" : "var(--border)",
+                background: "var(--background)",
               }}
               onSubmit={(e) => {
                 e.preventDefault();
@@ -477,13 +477,13 @@ export default function Navbar() {
                 autoComplete="off"
               />
               {loading && (
-                <span className="ml-2 text-xs animate-pulse" style={{ color: "#7A8BA8" }}>...</span>
+                <span className="ml-2 text-xs animate-pulse" style={{ color: "var(--text-muted)" }}>...</span>
               )}
             </form>
             {dropdownOpen && suggestions.length > 0 && (
               <div
                 className="absolute left-0 right-0 top-full mt-1 rounded-xl overflow-hidden z-50"
-                style={{ background: "#0E1220", border: "1px solid #1A2035", boxShadow: "0 16px 48px rgba(0,0,0,0.6)" }}
+                style={{ background: "var(--surface)", border: "1px solid #1A2035", boxShadow: "0 16px 48px rgba(0,0,0,0.6)" }}
               >
                 {suggestions.map((s, i) => (
                   <Link
@@ -498,9 +498,9 @@ export default function Navbar() {
                     {s.image && (
                       <img src={s.image} alt={s.name} width={28} height={39} className="rounded shrink-0 object-contain" style={{ width: 28, height: 39 }} />
                     )}
-                    <span className="flex-1 text-sm truncate" style={{ color: "#F0F2FF" }}>{s.name}</span>
+                    <span className="flex-1 text-sm truncate" style={{ color: "var(--text-primary)" }}>{s.name}</span>
                     {s.price != null && (
-                      <span className="text-xs font-bold shrink-0" style={{ color: "#3ecf6a" }}>
+                      <span className="text-xs font-bold shrink-0" style={{ color: "var(--price-color)" }}>
                         ${s.price.toFixed(2)}
                       </span>
                     )}
@@ -518,7 +518,7 @@ export default function Navbar() {
                   onMouseLeave={() => setActiveIndex(-1)}
                   className="w-full px-4 py-2 text-xs text-left transition-colors"
                   style={{
-                    color: "#7A8BA8",
+                    color: "var(--text-muted)",
                     borderTop: "1px solid #1A2035",
                     background: activeIndex === suggestions.length ? "rgba(255,255,255,0.08)" : undefined,
                   }}
@@ -585,7 +585,7 @@ export default function Navbar() {
             <button
               onClick={() => { setUserMenuOpen(true); setMenuOpen(false); }}
               className="mt-4 w-full rounded-md py-2 text-sm font-semibold"
-              style={{ background: "#1A2035", color: "#F0F2FF" }}
+              style={{ background: "var(--border)", color: "var(--text-primary)" }}
             >
               My Account →
             </button>
@@ -594,7 +594,7 @@ export default function Navbar() {
               href="/signin"
               onClick={() => setMenuOpen(false)}
               className="mt-4 block w-full rounded-md py-2 text-center text-sm font-semibold"
-              style={{ background: "#FF7A00", color: "#080B14" }}
+              style={{ background: "var(--ygo-accent)", color: "var(--background)" }}
             >
               Sign In
             </Link>
@@ -622,7 +622,7 @@ export default function Navbar() {
         className="fixed top-0 right-0 h-full z-50 flex flex-col"
         style={{
           width: "min(320px, 85vw)",
-          background: "#0E1220",
+          background: "var(--surface)",
           borderLeft: "1px solid #1A2035",
           boxShadow: "-8px 0 32px rgba(0,0,0,0.5)",
           transform: userMenuOpen ? "translateX(0)" : "translateX(100%)",
@@ -632,13 +632,13 @@ export default function Navbar() {
         {/* Close button — always visible */}
         {!showAvatarPicker && (
           <div className="flex items-center justify-between px-5 py-4 shrink-0" style={{ borderBottom: "1px solid #1A2035" }}>
-            <span className="text-sm font-semibold" style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}>
+            <span className="text-sm font-semibold" style={{ color: "var(--text-primary)", fontFamily: "var(--font-cinzel)" }}>
               My Account
             </span>
             <button
               onClick={() => setUserMenuOpen(false)}
               className="text-lg transition hover:opacity-70"
-              style={{ color: "#7A8BA8" }}
+              style={{ color: "var(--text-muted)" }}
             >
               ✕
             </button>
@@ -687,17 +687,17 @@ export default function Navbar() {
 
                 <div className="min-w-0 flex-1">
                   {user.displayName && (
-                    <p className="text-sm font-semibold truncate" style={{ color: "#F0F2FF" }}>
+                    <p className="text-sm font-semibold truncate" style={{ color: "var(--text-primary)" }}>
                       {user.displayName}
                     </p>
                   )}
-                  <p className="text-xs truncate" style={{ color: "#7A8BA8" }}>
+                  <p className="text-xs truncate" style={{ color: "var(--text-muted)" }}>
                     {user.email}
                   </p>
                   <button
                     onClick={() => setShowAvatarPicker(true)}
                     className="text-xs mt-0.5 transition hover:opacity-80"
-                    style={{ color: "#FF7A00" }}
+                    style={{ color: "var(--ygo-accent)" }}
                   >
                     Change avatar →
                   </button>
@@ -710,16 +710,16 @@ export default function Navbar() {
                   href="/favorites"
                   onClick={() => setUserMenuOpen(false)}
                   className="flex items-center gap-3 px-5 py-4 text-sm font-semibold transition hover:bg-white/5"
-                  style={{ color: "#F0F2FF" }}
+                  style={{ color: "var(--text-primary)" }}
                 >
-                  <span className="text-lg" style={{ color: "#CC1F1F" }}>♥</span>
+                  <span className="text-lg" style={{ color: "var(--primary-red)" }}>♥</span>
                   My Favorites
                 </Link>
                 <Link
                   href="/lists"
                   onClick={() => setUserMenuOpen(false)}
                   className="flex items-center gap-3 px-5 py-4 text-sm font-semibold transition hover:bg-white/5"
-                  style={{ color: "#F0F2FF" }}
+                  style={{ color: "var(--text-primary)" }}
                 >
                   <span className="text-lg">📋</span>
                   My Lists
@@ -728,7 +728,7 @@ export default function Navbar() {
                   href="/alerts"
                   onClick={() => setUserMenuOpen(false)}
                   className="flex items-center gap-3 px-5 py-4 text-sm font-semibold transition hover:bg-white/5"
-                  style={{ color: "#F0F2FF" }}
+                  style={{ color: "var(--text-primary)" }}
                 >
                   <span className="text-lg">🔔</span>
                   My Alerts
@@ -737,7 +737,7 @@ export default function Navbar() {
                   href="/portfolio"
                   onClick={() => setUserMenuOpen(false)}
                   className="flex items-center gap-3 px-5 py-4 text-sm font-semibold transition hover:bg-white/5"
-                  style={{ color: "#F0F2FF" }}
+                  style={{ color: "var(--text-primary)" }}
                 >
                   <span className="text-lg">📊</span>
                   Portfolio
@@ -746,7 +746,7 @@ export default function Navbar() {
                   href="/account"
                   onClick={() => setUserMenuOpen(false)}
                   className="flex items-center gap-3 px-5 py-4 text-sm font-semibold transition hover:bg-white/5"
-                  style={{ color: "#F0F2FF" }}
+                  style={{ color: "var(--text-primary)" }}
                 >
                   <span className="text-lg">⚙️</span>
                   Account Settings
@@ -758,7 +758,7 @@ export default function Navbar() {
                 <button
                   onClick={() => { signOut(); setUserMenuOpen(false); }}
                   className="w-full rounded-lg py-2.5 text-sm font-bold transition hover:opacity-90"
-                  style={{ background: "#FF7A00", color: "#080B14" }}
+                  style={{ background: "var(--ygo-accent)", color: "var(--background)" }}
                 >
                   Sign Out
                 </button>

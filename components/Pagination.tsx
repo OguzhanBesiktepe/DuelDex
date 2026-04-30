@@ -35,15 +35,15 @@ export default function Pagination({
   totalPages,
   total,
   countLabel = "items",
-  accent = "#FF7A00",
+  accent = "var(--ygo-accent)",
   filterSuffix = "",
   onPage,
 }: PaginationProps) {
   if (totalPages <= 1) return null;
 
   const btnStyle = {
-    background: "#0E1220",
-    color: "#F0F2FF",
+    background: "var(--surface)",
+    color: "var(--text-primary)",
     border: "1px solid #1A2035",
   } as React.CSSProperties;
 
@@ -114,7 +114,7 @@ export default function Pagination({
 
       {pageItems.map((p, i) =>
         p === "…" ? (
-          <span key={`ellipsis-${i}`} className="px-1 text-sm" style={{ color: "#7A8BA8" }}>
+          <span key={`ellipsis-${i}`} className="px-1 text-sm" style={{ color: "var(--text-muted)" }}>
             …
           </span>
         ) : (
@@ -128,7 +128,7 @@ export default function Pagination({
       <NavItem targetPage={totalPages} disabled={page === totalPages}>»</NavItem>
 
       {total !== undefined && (
-        <span className="text-sm w-full text-center mt-1.5" style={{ color: "#7A8BA8" }}>
+        <span className="text-sm w-full text-center mt-1.5" style={{ color: "var(--text-muted)" }}>
           Page {page} of {totalPages} · {total.toLocaleString()} {countLabel}
         </span>
       )}

@@ -154,7 +154,7 @@ export default function SignInPage() {
   return (
     <div
       className="flex min-h-screen flex-col items-center justify-center px-4 py-12"
-      style={{ background: "#080B14" }}
+      style={{ background: "var(--background)" }}
     >
       {/* Logo */}
       <Link
@@ -175,18 +175,18 @@ export default function SignInPage() {
       {/* Card */}
       <div
         className="w-full max-w-md rounded-2xl border p-8 shadow-2xl"
-        style={{ background: "#0E1220", borderColor: "#1A2035" }}
+        style={{ background: "var(--surface)", borderColor: "var(--border)" }}
       >
         {/* Heading */}
         <h1
           className="mb-1 text-center text-2xl font-bold"
-          style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+          style={{ color: "var(--text-primary)", fontFamily: "var(--font-cinzel)" }}
         >
           {view === "signin" && "Welcome Back"}
           {view === "signup" && "Create Account"}
           {view === "forgot" && "Reset Password"}
         </h1>
-        <p className="mb-6 text-center text-sm" style={{ color: "#7A8BA8" }}>
+        <p className="mb-6 text-center text-sm" style={{ color: "var(--text-muted)" }}>
           {view === "signin" && "Search, Track & Collect."}
           {view === "signup" && "Join DuelDex and start tracking cards."}
           {view === "forgot" && "Enter your email and we'll send a reset link."}
@@ -200,8 +200,8 @@ export default function SignInPage() {
               disabled={submitting}
               className="flex w-full items-center justify-center gap-3 rounded-lg border px-4 py-3 text-sm font-semibold transition disabled:opacity-50"
               style={{
-                borderColor: "#00AAFF",
-                color: "#F0F2FF",
+                borderColor: "var(--pkmn-accent)",
+                color: "var(--text-primary)",
                 background: "rgba(0,170,255,0.05)",
               }}
               onMouseEnter={(e) =>
@@ -216,11 +216,11 @@ export default function SignInPage() {
             </button>
 
             <div className="my-5 flex items-center gap-3">
-              <hr className="flex-1" style={{ borderColor: "#1A2035" }} />
-              <span className="text-xs" style={{ color: "#7A8BA8" }}>
+              <hr className="flex-1" style={{ borderColor: "var(--border)" }} />
+              <span className="text-xs" style={{ color: "var(--text-muted)" }}>
                 or
               </span>
-              <hr className="flex-1" style={{ borderColor: "#1A2035" }} />
+              <hr className="flex-1" style={{ borderColor: "var(--border)" }} />
             </div>
           </>
         )}
@@ -231,7 +231,7 @@ export default function SignInPage() {
           <div>
             <label
               className="mb-1 block text-xs font-semibold uppercase tracking-widest"
-              style={{ color: "#7A8BA8" }}
+              style={{ color: "var(--text-muted)" }}
             >
               Email
             </label>
@@ -243,9 +243,9 @@ export default function SignInPage() {
               placeholder="you@example.com"
               className="w-full rounded-lg border px-4 py-3 text-sm outline-none transition focus:border-[#00AAFF]"
               style={{
-                background: "#080B14",
-                borderColor: "#1A2035",
-                color: "#F0F2FF",
+                background: "var(--background)",
+                borderColor: "var(--border)",
+                color: "var(--text-primary)",
               }}
             />
           </div>
@@ -255,7 +255,7 @@ export default function SignInPage() {
             <div>
               <label
                 className="mb-1 block text-xs font-semibold uppercase tracking-widest"
-                style={{ color: "#7A8BA8" }}
+                style={{ color: "var(--text-muted)" }}
               >
                 Password
               </label>
@@ -267,9 +267,9 @@ export default function SignInPage() {
                 placeholder="••••••••"
                 className="w-full rounded-lg border px-4 py-3 text-sm outline-none transition focus:border-[#00AAFF]"
                 style={{
-                  background: "#080B14",
-                  borderColor: "#1A2035",
-                  color: "#F0F2FF",
+                  background: "var(--background)",
+                  borderColor: "var(--border)",
+                  color: "var(--text-primary)",
                 }}
               />
             </div>
@@ -280,7 +280,7 @@ export default function SignInPage() {
             <div>
               <label
                 className="mb-1 block text-xs font-semibold uppercase tracking-widest"
-                style={{ color: "#7A8BA8" }}
+                style={{ color: "var(--text-muted)" }}
               >
                 Confirm Password
               </label>
@@ -292,9 +292,9 @@ export default function SignInPage() {
                 placeholder="••••••••"
                 className="w-full rounded-lg border px-4 py-3 text-sm outline-none transition focus:border-[#00AAFF]"
                 style={{
-                  background: "#080B14",
-                  borderColor: "#1A2035",
-                  color: "#F0F2FF",
+                  background: "var(--background)",
+                  borderColor: "var(--border)",
+                  color: "var(--text-primary)",
                 }}
               />
             </div>
@@ -307,7 +307,7 @@ export default function SignInPage() {
                 type="button"
                 onClick={() => switchView("forgot")}
                 className="text-xs transition hover:underline"
-                style={{ color: "#00AAFF" }}
+                style={{ color: "var(--pkmn-accent)" }}
               >
                 Forgot password?
               </button>
@@ -332,7 +332,7 @@ export default function SignInPage() {
               className="rounded-lg px-4 py-3 text-sm"
               style={{
                 background: "rgba(62,207,106,0.15)",
-                color: "#3ecf6a",
+                color: "var(--price-color)",
                 border: "1px solid rgba(62,207,106,0.3)",
               }}
             >
@@ -347,7 +347,7 @@ export default function SignInPage() {
             className="w-full rounded-lg py-3 text-sm font-bold transition hover:opacity-90 disabled:opacity-50"
             style={{
               background: "linear-gradient(90deg, #FF7A00, #00AAFF)",
-              color: "#080B14",
+              color: "var(--background)",
             }}
           >
             {submitting
@@ -361,14 +361,14 @@ export default function SignInPage() {
         </form>
 
         {/* Footer links */}
-        <div className="mt-6 text-center text-sm" style={{ color: "#7A8BA8" }}>
+        <div className="mt-6 text-center text-sm" style={{ color: "var(--text-muted)" }}>
           {view === "signin" && (
             <>
               Don&apos;t have an account?{" "}
               <button
                 onClick={() => switchView("signup")}
                 className="font-semibold transition hover:underline"
-                style={{ color: "#00AAFF" }}
+                style={{ color: "var(--pkmn-accent)" }}
               >
                 Sign Up
               </button>
@@ -380,7 +380,7 @@ export default function SignInPage() {
               <button
                 onClick={() => switchView("signin")}
                 className="font-semibold transition hover:underline"
-                style={{ color: "#00AAFF" }}
+                style={{ color: "var(--pkmn-accent)" }}
               >
                 Sign In
               </button>
@@ -390,7 +390,7 @@ export default function SignInPage() {
             <button
               onClick={() => switchView("signin")}
               className="font-semibold transition hover:underline"
-              style={{ color: "#00AAFF" }}
+              style={{ color: "var(--pkmn-accent)" }}
             >
               ← Back to Sign In
             </button>

@@ -89,14 +89,14 @@ export default function PokemonSetDetailClient({ cards, setId, initialPage = 1 }
       {/* ── Filters ── */}
       <div
         className="rounded-xl p-4 mb-6"
-        style={{ background: "#0E1220", border: "1px solid #1A2035" }}
+        style={{ background: "var(--surface)", border: "1px solid #1A2035" }}
       >
         {/* Energy type filter — only shown if the set has typed Pokémon */}
         {availableTypes.length > 0 && (
           <div className="mb-4">
             <p
               className="text-xs font-semibold uppercase tracking-wide mb-2"
-              style={{ color: "#7A8BA8" }}
+              style={{ color: "var(--text-muted)" }}
             >
               Energy Type
             </p>
@@ -105,8 +105,8 @@ export default function PokemonSetDetailClient({ cards, setId, initialPage = 1 }
                 onClick={clearTypes}
                 className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
                 style={{
-                  background: selectedTypes.length === 0 ? "#00AAFF25" : "#1A2035",
-                  color: selectedTypes.length === 0 ? "#00AAFF" : "#7A8BA8",
+                  background: selectedTypes.length === 0 ? "#00AAFF25" : "var(--border)",
+                  color: selectedTypes.length === 0 ? "var(--pkmn-accent)" : "var(--text-muted)",
                   border: selectedTypes.length === 0 ? "1px solid #00AAFF60" : "1px solid #1A2035",
                 }}
               >
@@ -120,8 +120,8 @@ export default function PokemonSetDetailClient({ cards, setId, initialPage = 1 }
                     onClick={() => toggleType(t.value)}
                     className="px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1"
                     style={{
-                      background: active ? `${t.color}25` : "#1A2035",
-                      color: active ? t.color : "#7A8BA8",
+                      background: active ? `${t.color}25` : "var(--border)",
+                      color: active ? t.color : "var(--text-muted)",
                       border: active ? `1px solid ${t.color}70` : "1px solid #1A2035",
                       boxShadow: active ? `0 0 8px ${t.color}30` : "none",
                     }}
@@ -140,7 +140,7 @@ export default function PokemonSetDetailClient({ cards, setId, initialPage = 1 }
           <div>
             <p
               className="text-xs font-semibold uppercase tracking-wide mb-2"
-              style={{ color: "#7A8BA8" }}
+              style={{ color: "var(--text-muted)" }}
             >
               Rarity
             </p>
@@ -149,8 +149,8 @@ export default function PokemonSetDetailClient({ cards, setId, initialPage = 1 }
                 onClick={() => { setSelectedRarity(""); setPage(1); }}
                 className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
                 style={{
-                  background: !selectedRarity ? "#00AAFF25" : "#1A2035",
-                  color: !selectedRarity ? "#00AAFF" : "#7A8BA8",
+                  background: !selectedRarity ? "#00AAFF25" : "var(--border)",
+                  color: !selectedRarity ? "var(--pkmn-accent)" : "var(--text-muted)",
                   border: !selectedRarity ? "1px solid #00AAFF60" : "1px solid #1A2035",
                 }}
               >
@@ -165,8 +165,8 @@ export default function PokemonSetDetailClient({ cards, setId, initialPage = 1 }
                     onClick={() => selectRarity(r)}
                     className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
                     style={{
-                      background: active ? `${color}25` : "#1A2035",
-                      color: active ? color : "#7A8BA8",
+                      background: active ? `${color}25` : "var(--border)",
+                      color: active ? color : "var(--text-muted)",
                       border: active ? `1px solid ${color}70` : "1px solid #1A2035",
                       boxShadow: active ? `0 0 8px ${color}30` : "none",
                     }}
@@ -181,7 +181,7 @@ export default function PokemonSetDetailClient({ cards, setId, initialPage = 1 }
       </div>
 
       {/* ── Results count ── */}
-      <p className="text-xs mb-4" style={{ color: "#7A8BA8" }}>
+      <p className="text-xs mb-4" style={{ color: "var(--text-muted)" }}>
         {filtered.length === cards.length
           ? `${cards.length} cards`
           : `${filtered.length} of ${cards.length} cards`}
@@ -191,7 +191,7 @@ export default function PokemonSetDetailClient({ cards, setId, initialPage = 1 }
       {pageCards.length === 0 ? (
         <div
           className="flex items-center justify-center py-24 text-sm"
-          style={{ color: "#7A8BA8" }}
+          style={{ color: "var(--text-muted)" }}
         >
           No cards match the selected filters.
         </div>
@@ -204,7 +204,7 @@ export default function PokemonSetDetailClient({ cards, setId, initialPage = 1 }
                 <div
                   className="relative rounded-xl overflow-hidden transition-all duration-300"
                   style={{
-                    background: "#0E1220",
+                    background: "var(--surface)",
                     border: `2px solid ${rarityColor}90`,
                     boxShadow: `0 0 16px ${rarityColor}25`,
                   }}
@@ -222,13 +222,13 @@ export default function PokemonSetDetailClient({ cards, setId, initialPage = 1 }
                   <div className="p-3">
                     <p
                       className="text-sm font-semibold truncate mb-1"
-                      style={{ color: "#F0F2FF" }}
+                      style={{ color: "var(--text-primary)" }}
                     >
                       {card.name}
                     </p>
                     <div className="flex items-center justify-between gap-1">
                       {card.types && card.types.length > 0 && (
-                        <span className="text-[11px] truncate" style={{ color: "#7A8BA8" }}>
+                        <span className="text-[11px] truncate" style={{ color: "var(--text-muted)" }}>
                           {card.types.join(" / ")}
                         </span>
                       )}
@@ -246,7 +246,7 @@ export default function PokemonSetDetailClient({ cards, setId, initialPage = 1 }
                       )}
                     </div>
                     {card.price && (
-                      <p className="text-xs font-bold mt-1.5" style={{ color: "#3ecf6a" }}>
+                      <p className="text-xs font-bold mt-1.5" style={{ color: "var(--price-color)" }}>
                         {card.priceCurrency === "EUR" ? "€" : "$"}{parseFloat(card.price).toFixed(2)}
                       </p>
                     )}
@@ -267,7 +267,7 @@ export default function PokemonSetDetailClient({ cards, setId, initialPage = 1 }
       <Pagination
         page={effectivePage}
         totalPages={totalPages}
-        accent="#00AAFF"
+        accent="var(--pkmn-accent)"
         onPage={changePage}
       />
     </div>

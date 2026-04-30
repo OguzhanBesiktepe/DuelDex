@@ -64,23 +64,23 @@ function favKey(card: FavoriteCard): string {
 function PriceDiff({ added, current, currency }: { added: number; current: number | null; currency: string }) {
   if (current === null) {
     return (
-      <span className="text-xs animate-pulse" style={{ color: "#7A8BA8" }}>
+      <span className="text-xs animate-pulse" style={{ color: "var(--text-muted)" }}>
         …
       </span>
     );
   }
   if (added === 0 && current === 0) {
-    return <span className="text-xs" style={{ color: "#7A8BA8" }}>N/A</span>;
+    return <span className="text-xs" style={{ color: "var(--text-muted)" }}>N/A</span>;
   }
   const diff = current - added;
   if (Math.abs(diff) < 0.01) {
-    return <span className="text-xs" style={{ color: "#7A8BA8" }}>—</span>;
+    return <span className="text-xs" style={{ color: "var(--text-muted)" }}>—</span>;
   }
   const positive = diff > 0;
   return (
     <span
       className="text-xs font-semibold"
-      style={{ color: positive ? "#3ecf6a" : "#CC1F1F" }}
+      style={{ color: positive ? "var(--price-color)" : "var(--primary-red)" }}
     >
       {positive ? "▲" : "▼"} {currency}{Math.abs(diff).toFixed(2)}
     </span>
@@ -220,9 +220,9 @@ export default function FavoritesPage() {
     return (
       <div
         className="flex min-h-screen items-center justify-center"
-        style={{ background: "#080B14" }}
+        style={{ background: "var(--background)" }}
       >
-        <p className="animate-pulse text-sm" style={{ color: "#7A8BA8" }}>
+        <p className="animate-pulse text-sm" style={{ color: "var(--text-muted)" }}>
           Loading favorites…
         </p>
       </div>
@@ -230,18 +230,18 @@ export default function FavoritesPage() {
   }
 
   return (
-    <div style={{ background: "#080B14", minHeight: "100vh" }}>
+    <div style={{ background: "var(--background)", minHeight: "100vh" }}>
       <div className="mx-auto max-w-4xl px-4 py-10">
 
         {/* Header */}
         <div className="mb-6">
           <h1
             className="text-3xl font-bold mb-1"
-            style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+            style={{ color: "var(--text-primary)", fontFamily: "var(--font-cinzel)" }}
           >
             My Favorites
           </h1>
-          <p className="text-sm" style={{ color: "#7A8BA8" }}>
+          <p className="text-sm" style={{ color: "var(--text-muted)" }}>
             {favorites.length === 0
               ? "No favorites yet."
               : `${favorites.length} card${favorites.length === 1 ? "" : "s"} saved`}
@@ -256,7 +256,7 @@ export default function FavoritesPage() {
             <div className="relative flex-1 min-w-[180px]">
               <span
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-xs pointer-events-none"
-                style={{ color: "#7A8BA8" }}
+                style={{ color: "var(--text-muted)" }}
               >
                 🔍
               </span>
@@ -267,16 +267,16 @@ export default function FavoritesPage() {
                 placeholder="Search favorites…"
                 className="w-full pl-8 pr-3 py-2 rounded-lg text-xs outline-none"
                 style={{
-                  background: "#0E1220",
+                  background: "var(--surface)",
                   border: "1px solid #1A2035",
-                  color: "#F0F2FF",
+                  color: "var(--text-primary)",
                 }}
               />
               {search && (
                 <button
                   onClick={() => setSearch("")}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-xs"
-                  style={{ color: "#7A8BA8" }}
+                  style={{ color: "var(--text-muted)" }}
                 >
                   ✕
                 </button>
@@ -286,7 +286,7 @@ export default function FavoritesPage() {
             {/* Game filter pills */}
             {(["all", "yugioh", "pokemon"] as GameFilter[]).map((g) => {
               const active = gameFilter === g;
-              const accent = g === "yugioh" ? "#FF7A00" : g === "pokemon" ? "#00AAFF" : "#7A8BA8";
+              const accent = g === "yugioh" ? "var(--ygo-accent)" : g === "pokemon" ? "var(--pkmn-accent)" : "var(--text-muted)";
               const label = g === "all" ? "All Games" : g === "yugioh" ? "Yu-Gi-Oh!" : "Pokémon";
               return (
                 <button
@@ -294,9 +294,9 @@ export default function FavoritesPage() {
                   onClick={() => setGameFilter(g)}
                   className="px-3 py-2 rounded-lg text-xs font-medium transition"
                   style={{
-                    background: active ? `${accent}22` : "#0E1220",
-                    border: `1px solid ${active ? accent : "#1A2035"}`,
-                    color: active ? accent : "#7A8BA8",
+                    background: active ? `${accent}22` : "var(--surface)",
+                    border: `1px solid ${active ? accent : "var(--border)"}`,
+                    color: active ? accent : "var(--text-muted)",
                   }}
                 >
                   {label}
@@ -310,21 +310,21 @@ export default function FavoritesPage() {
                 onClick={() => setSortOpen((o) => !o)}
                 className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium"
                 style={{
-                  background: "#0E1220",
+                  background: "var(--surface)",
                   border: "1px solid #1A2035",
-                  color: "#F0F2FF",
+                  color: "var(--text-primary)",
                   minWidth: 160,
                 }}
               >
-                <span style={{ color: "#7A8BA8" }}>Sort:</span>
-                <span className="flex-1 text-left" style={{ color: "#FF7A00" }}>{sortLabel}</span>
-                <span style={{ color: "#7A8BA8", fontSize: 10 }}>{sortOpen ? "▲" : "▼"}</span>
+                <span style={{ color: "var(--text-muted)" }}>Sort:</span>
+                <span className="flex-1 text-left" style={{ color: "var(--ygo-accent)" }}>{sortLabel}</span>
+                <span style={{ color: "var(--text-muted)", fontSize: 10 }}>{sortOpen ? "▲" : "▼"}</span>
               </button>
               {sortOpen && (
                 <div
                   className="absolute top-full right-0 mt-1 rounded-xl z-20 p-2"
                   style={{
-                    background: "#0E1220",
+                    background: "var(--surface)",
                     border: "1px solid #1A2035",
                     boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
                     minWidth: 190,
@@ -337,7 +337,7 @@ export default function FavoritesPage() {
                       className="w-full text-left px-3 py-2 rounded-lg text-xs transition"
                       style={{
                         background: sortKey === opt.value ? "#FF7A0018" : "transparent",
-                        color: sortKey === opt.value ? "#FF7A00" : "#7A8BA8",
+                        color: sortKey === opt.value ? "var(--ygo-accent)" : "var(--text-muted)",
                       }}
                     >
                       {opt.label}
@@ -353,24 +353,24 @@ export default function FavoritesPage() {
         {favorites.length === 0 && (
           <div
             className="rounded-2xl border p-10 text-center"
-            style={{ borderColor: "#1A2035", background: "#0E1220" }}
+            style={{ borderColor: "var(--border)", background: "var(--surface)" }}
           >
             <p className="text-4xl mb-4">♡</p>
-            <p className="text-sm mb-4" style={{ color: "#7A8BA8" }}>
+            <p className="text-sm mb-4" style={{ color: "var(--text-muted)" }}>
               Heart any card on its detail page to save it here.
             </p>
             <div className="flex justify-center gap-3">
               <Link
                 href="/yugioh/monsters"
                 className="rounded-lg px-4 py-2 text-sm font-semibold transition hover:opacity-90"
-                style={{ background: "#FF7A00", color: "#080B14" }}
+                style={{ background: "var(--ygo-accent)", color: "var(--background)" }}
               >
                 Browse Yu-Gi-Oh!
               </Link>
               <Link
                 href="/pokemon/pokemon"
                 className="rounded-lg px-4 py-2 text-sm font-semibold transition hover:opacity-90"
-                style={{ background: "#00AAFF", color: "#080B14" }}
+                style={{ background: "var(--pkmn-accent)", color: "var(--background)" }}
               >
                 Browse Pokémon
               </Link>
@@ -382,9 +382,9 @@ export default function FavoritesPage() {
         {favorites.length > 0 && displayed.length === 0 && (
           <div
             className="rounded-2xl border p-8 text-center"
-            style={{ borderColor: "#1A2035", background: "#0E1220" }}
+            style={{ borderColor: "var(--border)", background: "var(--surface)" }}
           >
-            <p className="text-sm" style={{ color: "#7A8BA8" }}>
+            <p className="text-sm" style={{ color: "var(--text-muted)" }}>
               No cards match your filters.
             </p>
           </div>
@@ -394,7 +394,7 @@ export default function FavoritesPage() {
         {displayed.length > 0 && (
           <div
             className="rounded-2xl border overflow-hidden"
-            style={{ borderColor: "#1A2035" }}
+            style={{ borderColor: "var(--border)" }}
           >
             {displayed.map((card, i) => {
               const key = favKey(card);
@@ -416,7 +416,7 @@ export default function FavoritesPage() {
                   href={cardHref}
                   className="flex items-center gap-4 px-4 py-3 transition hover:bg-white/[0.04] cursor-pointer"
                   style={{
-                    background: "#0E1220",
+                    background: "var(--surface)",
                     borderBottom: i < displayed.length - 1 ? "1px solid #1A2035" : "none",
                     display: "flex",
                   }}
@@ -435,7 +435,7 @@ export default function FavoritesPage() {
                   <div className="flex-1 min-w-0">
                     <p
                       className="text-sm font-semibold truncate"
-                      style={{ color: "#F0F2FF" }}
+                      style={{ color: "var(--text-primary)" }}
                     >
                       {card.cardName}
                     </p>
@@ -447,7 +447,7 @@ export default function FavoritesPage() {
                           className="text-xs px-1.5 py-0.5 rounded-full"
                           style={{
                             background: "rgba(255,122,0,0.1)",
-                            color: "#FF7A00",
+                            color: "var(--ygo-accent)",
                           }}
                         >
                           {card.setName}
@@ -473,7 +473,7 @@ export default function FavoritesPage() {
                             card.game === "yugioh"
                               ? "rgba(255,122,0,0.15)"
                               : "rgba(0,170,255,0.15)",
-                          color: card.game === "yugioh" ? "#FF7A00" : "#00AAFF",
+                          color: card.game === "yugioh" ? "var(--ygo-accent)" : "var(--pkmn-accent)",
                         }}
                       >
                         {card.game === "yugioh" ? "Yu-Gi-Oh!" : "Pokémon"}
@@ -483,10 +483,10 @@ export default function FavoritesPage() {
 
                   {/* Price when added */}
                   <div className="text-right shrink-0 hidden sm:block">
-                    <p className="text-xs" style={{ color: "#7A8BA8" }}>
+                    <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                       Added {card.dateAdded.toLocaleDateString()}
                     </p>
-                    <p className="text-sm font-semibold" style={{ color: "#3ecf6a" }}>
+                    <p className="text-sm font-semibold" style={{ color: "var(--price-color)" }}>
                       {card.priceWhenAdded > 0
                         ? `${currency}${card.priceWhenAdded.toFixed(2)}`
                         : "N/A"}
@@ -495,10 +495,10 @@ export default function FavoritesPage() {
 
                   {/* Current price */}
                   <div className="text-right shrink-0 w-16">
-                    <p className="text-xs" style={{ color: "#7A8BA8" }}>Now</p>
-                    <p className="text-sm font-semibold" style={{ color: "#F0F2FF" }}>
+                    <p className="text-xs" style={{ color: "var(--text-muted)" }}>Now</p>
+                    <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
                       {currentPrice === null ? (
-                        <span className="animate-pulse text-xs" style={{ color: "#7A8BA8" }}>…</span>
+                        <span className="animate-pulse text-xs" style={{ color: "var(--text-muted)" }}>…</span>
                       ) : currentPrice > 0 ? (
                         `${currency}${currentPrice.toFixed(2)}`
                       ) : (
@@ -522,7 +522,7 @@ export default function FavoritesPage() {
                     disabled={removing === key}
                     title="Remove from favorites"
                     className="shrink-0 text-lg transition hover:scale-110 disabled:opacity-40"
-                    style={{ color: "#CC1F1F" }}
+                    style={{ color: "var(--primary-red)" }}
                   >
                     {removing === key ? "…" : "♥"}
                   </button>

@@ -105,18 +105,18 @@ export default async function TrainerPage({
     (fullArt ? "&fullArt=1" : "");
 
   return (
-    <div style={{ background: "#080B14", minHeight: "100vh" }}>
+    <div style={{ background: "var(--background)", minHeight: "100vh" }}>
       <div className="max-w-screen-xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1
               className="text-2xl font-bold"
-              style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+              style={{ color: "var(--text-primary)", fontFamily: "var(--font-cinzel)" }}
             >
               Trainer Cards
             </h1>
-            <p className="text-sm mt-1" style={{ color: "#7A8BA8" }}>
+            <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>
               Pokémon TCG &mdash; {total.toLocaleString()} cards
             </p>
           </div>
@@ -126,7 +126,7 @@ export default async function TrainerPage({
         {/* Filters */}
         <div
           className="rounded-xl p-4 mb-6"
-          style={{ background: "#0E1220", border: "1px solid #1A2035" }}
+          style={{ background: "var(--surface)", border: "1px solid #1A2035" }}
         >
           <Suspense fallback={null}>
             <TrainerSubtypeFilter selected={selectedTrainerType} fullArt={fullArt} />
@@ -141,7 +141,7 @@ export default async function TrainerPage({
           totalPages={totalPages}
           total={total}
           countLabel="cards"
-          accent="#00AAFF"
+          accent="var(--pkmn-accent)"
           filterSuffix={filterQuery}
         />
       </div>

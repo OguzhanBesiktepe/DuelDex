@@ -44,7 +44,7 @@ function ygoPreorderLinks(setName: string): BuyLink[] {
       href: `https://www.tcgplayer.com/search/yugioh/product?q=${encodeURIComponent(setName)}`,
       logo: "/logos/TCGplayer_Logo.svg.png",
       alt: "TCGPlayer",
-      background: "#00AAFF",
+      background: "var(--pkmn-accent)",
     },
     {
       href: `https://www.cardmarket.com/en/YuGiOh/Products/Sealed-Products?searchString=${encodeURIComponent(setName)}`,
@@ -68,7 +68,7 @@ function pkmnPreorderLinks(setName: string): BuyLink[] {
       href: `https://www.tcgplayer.com/search/pokemon/product?q=${encodeURIComponent(setName)}`,
       logo: "/logos/TCGplayer_Logo.svg.png",
       alt: "TCGPlayer",
-      background: "#00AAFF",
+      background: "var(--pkmn-accent)",
     },
     {
       href: `https://www.cardmarket.com/en/Pokemon/Products/Sealed-Products?searchString=${encodeURIComponent(setName)}`,
@@ -237,7 +237,7 @@ function SetRow({
   return (
     <div
       className="flex flex-col gap-2 py-3 border-b last:border-b-0"
-      style={{ borderColor: "#1A2035" }}
+      style={{ borderColor: "var(--border)" }}
     >
       {/* Top row: image + info + badge */}
       <div className="flex items-center gap-3">
@@ -280,22 +280,22 @@ function SetRow({
 
         {/* Name + dates */}
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold truncate" style={{ color: "#F0F2FF" }}>
+          <p className="text-sm font-semibold truncate" style={{ color: "var(--text-primary)" }}>
             {set.name}
           </p>
           <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-0.5">
             {set.tcgDate && (
-              <p className="text-xs" style={{ color: "#7A8BA8" }}>
+              <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                 TCG · {formatDate(set.tcgDate)}
               </p>
             )}
             {set.ocgDate && (
-              <p className="text-xs" style={{ color: "#7A8BA8" }}>
+              <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                 OCG · {formatDate(set.ocgDate)}
               </p>
             )}
             {set.cardCount > 0 && (
-              <p className="text-xs" style={{ color: "#7A8BA8" }}>
+              <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                 {set.cardCount} cards
               </p>
             )}
@@ -307,7 +307,7 @@ function SetRow({
 
       {/* Pre-order buttons */}
       <div className="flex flex-col gap-1.5">
-        <span className="text-xs" style={{ color: "#7A8BA8" }}>Pre-order:</span>
+        <span className="text-xs" style={{ color: "var(--text-muted)" }}>Pre-order:</span>
         <div className="flex gap-2">
           {set.buyLinks.map((link) => (
             <a
@@ -345,7 +345,7 @@ export default async function SetReleaseCalendar() {
     <section className="max-w-screen-xl mx-auto px-4 py-10">
       <p
         className="text-xs font-bold uppercase tracking-[0.2em] mb-5"
-        style={{ color: "#7A8BA8" }}
+        style={{ color: "var(--text-muted)" }}
       >
         Upcoming Releases
       </p>
@@ -354,11 +354,11 @@ export default async function SetReleaseCalendar() {
         {ygoSets.length > 0 && (
           <div
             className="rounded-xl border p-5 flex flex-col gap-1"
-            style={{ background: "#0E1220", borderColor: "#1A2035" }}
+            style={{ background: "var(--surface)", borderColor: "var(--border)" }}
           >
             <span
               className="self-start text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-2"
-              style={{ background: "#FF7A0020", color: "#FF7A00", border: "1px solid #FF7A0040" }}
+              style={{ background: "#FF7A0020", color: "var(--ygo-accent)", border: "1px solid #FF7A0040" }}
             >
               Yu-Gi-Oh!
             </span>
@@ -371,11 +371,11 @@ export default async function SetReleaseCalendar() {
         {pkmnSets.length > 0 && (
           <div
             className="rounded-xl border p-5 flex flex-col gap-1"
-            style={{ background: "#0E1220", borderColor: "#1A2035" }}
+            style={{ background: "var(--surface)", borderColor: "var(--border)" }}
           >
             <span
               className="self-start text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-2"
-              style={{ background: "#00AAFF20", color: "#00AAFF", border: "1px solid #00AAFF40" }}
+              style={{ background: "#00AAFF20", color: "var(--pkmn-accent)", border: "1px solid #00AAFF40" }}
             >
               Pokémon TCG
             </span>

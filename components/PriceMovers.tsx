@@ -70,12 +70,12 @@ function MoverTile({ mover, showPct }: { mover: Mover; showPct: boolean }) {
       <div className="mt-2 px-0.5">
         <p
           className="truncate text-xs font-semibold leading-snug"
-          style={{ color: "#F0F2FF" }}
+          style={{ color: "var(--text-primary)" }}
         >
           {mover.name}
         </p>
         <div className="mt-1 flex items-center justify-between gap-1">
-          <span className="text-xs font-bold" style={{ color: "#3ecf6a" }}>
+          <span className="text-xs font-bold" style={{ color: "var(--price-color)" }}>
             {mover.currency === "EUR" ? "€" : "$"}{mover.price.toFixed(2)}
           </span>
           {showPct && (
@@ -85,7 +85,7 @@ function MoverTile({ mover, showPct }: { mover: Mover; showPct: boolean }) {
                 background: up
                   ? "rgba(62,207,106,0.15)"
                   : "rgba(204,31,31,0.15)",
-                color: up ? "#3ecf6a" : "#ff6b6b",
+                color: up ? "var(--price-color)" : "#ff6b6b",
                 border: `1px solid ${up ? "rgba(62,207,106,0.35)" : "rgba(204,31,31,0.35)"}`,
               }}
             >
@@ -125,7 +125,7 @@ function MoverRow({
         </p>
         <span
           className="text-xs uppercase tracking-[0.15em]"
-          style={{ color: "#7A8BA8" }}
+          style={{ color: "var(--text-muted)" }}
         >
           {sublabel}
         </span>
@@ -159,7 +159,7 @@ export default async function PriceMovers() {
     >
       <h2
         className="mb-8 text-lg font-bold uppercase tracking-widest"
-        style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+        style={{ color: "var(--text-primary)", fontFamily: "var(--font-cinzel)" }}
       >
         🔥 Market Today
       </h2>
@@ -167,7 +167,7 @@ export default async function PriceMovers() {
       <MoverRow
         label="Yu-Gi-Oh!"
         sublabel={ygoHistory ? "Price Movers" : "Top Cards"}
-        accent="#FF7A00"
+        accent="var(--ygo-accent)"
         movers={ygoMovers}
         hasHistory={ygoHistory}
         className={pkmnMovers.length > 0 ? "mb-10" : undefined}
@@ -175,7 +175,7 @@ export default async function PriceMovers() {
       <MoverRow
         label="Pokémon"
         sublabel={pkmnHistory ? "Price Movers" : "Top Cards"}
-        accent="#00AAFF"
+        accent="var(--pkmn-accent)"
         movers={pkmnMovers}
         hasHistory={pkmnHistory}
       />

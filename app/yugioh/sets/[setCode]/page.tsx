@@ -44,14 +44,14 @@ export default async function YGOSetDetailPage({
   });
 
   return (
-    <div style={{ background: "#080B14", minHeight: "100vh" }}>
+    <div style={{ background: "var(--background)", minHeight: "100vh" }}>
       <div className="max-w-screen-xl mx-auto px-4 py-8">
         <BackButton label="Back to All Sets" href="/yugioh/sets" />
 
         {/* Set header */}
         <div
           className="flex flex-col sm:flex-row gap-6 mt-4 mb-8 p-5 rounded-xl"
-          style={{ background: "#0E1220", border: "1px solid #1A2035" }}
+          style={{ background: "var(--surface)", border: "1px solid #1A2035" }}
         >
           {set.set_image && (
             <div
@@ -75,13 +75,13 @@ export default async function YGOSetDetailPage({
           <div className="flex flex-col justify-center min-w-0">
             <p
               className="text-xs font-semibold uppercase tracking-widest mb-1"
-              style={{ color: "#FF7A00" }}
+              style={{ color: "var(--ygo-accent)" }}
             >
               Yu-Gi-Oh!
             </p>
             <h1
               className="text-2xl sm:text-3xl font-bold mb-3"
-              style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+              style={{ color: "var(--text-primary)", fontFamily: "var(--font-cinzel)" }}
             >
               {set.set_name}
             </h1>
@@ -90,17 +90,17 @@ export default async function YGOSetDetailPage({
                 className="text-xs px-2 py-0.5 rounded font-mono"
                 style={{
                   background: "#FF7A0015",
-                  color: "#FF7A00",
+                  color: "var(--ygo-accent)",
                   border: "1px solid #FF7A0030",
                 }}
               >
                 {set.set_code}
               </span>
-              <span className="text-sm" style={{ color: "#7A8BA8" }}>
+              <span className="text-sm" style={{ color: "var(--text-muted)" }}>
                 {set.num_of_cards} cards
               </span>
               {set.tcg_date && (
-                <span className="text-sm" style={{ color: "#7A8BA8" }}>
+                <span className="text-sm" style={{ color: "var(--text-muted)" }}>
                   Released{" "}
                   {new Date(set.tcg_date).toLocaleDateString("en-US", {
                     year: "numeric",

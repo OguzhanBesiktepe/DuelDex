@@ -8,7 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState } from "react";
 import { POKEMON_STAGES } from "@/lib/pokemonTypes";
 
-const ACCENT = "#00AAFF";
+const ACCENT = "var(--pkmn-accent)";
 
 export default function PokemonStageFilter({ selected }: { selected: string }) {
   const router = useRouter();
@@ -40,24 +40,24 @@ export default function PokemonStageFilter({ selected }: { selected: string }) {
         onClick={() => setOpen((o) => !o)}
         className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium"
         style={{
-          background: "#0E1220",
-          border: `1px solid ${selected ? ACCENT + "60" : "#1A2035"}`,
-          color: "#F0F2FF",
+          background: "var(--surface)",
+          border: `1px solid ${selected ? ACCENT + "60" : "var(--border)"}`,
+          color: "var(--text-primary)",
           minWidth: 140,
         }}
       >
-        <span style={{ color: "#7A8BA8" }}>Stage:</span>
-        <span className="flex-1 text-left" style={{ color: selected ? ACCENT : "#F0F2FF" }}>
+        <span style={{ color: "var(--text-muted)" }}>Stage:</span>
+        <span className="flex-1 text-left" style={{ color: selected ? ACCENT : "var(--text-primary)" }}>
           {label}
         </span>
-        <span style={{ color: "#7A8BA8", fontSize: 10 }}>{open ? "▲" : "▼"}</span>
+        <span style={{ color: "var(--text-muted)", fontSize: 10 }}>{open ? "▲" : "▼"}</span>
       </button>
 
       {open && (
         <div
           className="absolute top-full left-0 mt-1 rounded-xl z-20 p-2"
           style={{
-            background: "#0E1220",
+            background: "var(--surface)",
             border: "1px solid #1A2035",
             boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
             minWidth: 150,
@@ -69,12 +69,12 @@ export default function PokemonStageFilter({ selected }: { selected: string }) {
               className="flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs text-left transition-colors"
               style={{
                 background: !selected ? `${ACCENT}18` : "transparent",
-                color: !selected ? ACCENT : "#7A8BA8",
+                color: !selected ? ACCENT : "var(--text-muted)",
               }}
             >
               All Stages
             </button>
-            <div style={{ height: 1, background: "#1A2035", margin: "4px 0" }} />
+            <div style={{ height: 1, background: "var(--border)", margin: "4px 0" }} />
             {POKEMON_STAGES.map((s) => (
               <button
                 key={s.value}
@@ -82,7 +82,7 @@ export default function PokemonStageFilter({ selected }: { selected: string }) {
                 className="flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs text-left transition-colors"
                 style={{
                   background: selected === s.value ? `${ACCENT}18` : "transparent",
-                  color: selected === s.value ? ACCENT : "#7A8BA8",
+                  color: selected === s.value ? ACCENT : "var(--text-muted)",
                 }}
               >
                 {s.label}

@@ -23,7 +23,7 @@ export default function HeroSection({ featured }: { featured: FeaturedSet }) {
   return (
     <section
       className="relative w-full overflow-hidden min-h-[500px] sm:min-h-[580px]"
-      style={{ background: "#080B14" }}
+      style={{ background: "var(--background)" }}
     >
       {/* Subtle radial bloom — background only */}
       <div
@@ -46,14 +46,14 @@ export default function HeroSection({ featured }: { featured: FeaturedSet }) {
 
           <h1
             className="mb-3 text-3xl font-bold leading-tight sm:text-4xl md:text-5xl"
-            style={{ color: "#F0F2FF", fontFamily: "Cinzel, serif" }}
+            style={{ color: "var(--text-primary)", fontFamily: "Cinzel, serif" }}
           >
             {featured.setName}
           </h1>
 
           <p
             className="mb-8 text-xs font-semibold uppercase tracking-widest"
-            style={{ color: "#7A8BA8" }}
+            style={{ color: "var(--text-muted)" }}
           >
             Featured Set
           </p>
@@ -61,7 +61,7 @@ export default function HeroSection({ featured }: { featured: FeaturedSet }) {
           <Link
             href={featured.setHref}
             className="inline-flex items-center gap-2 rounded-md px-7 py-3 text-sm font-bold transition-opacity hover:opacity-85"
-            style={{ background: featured.accentColor, color: "#080B14" }}
+            style={{ background: featured.accentColor, color: "var(--background)" }}
           >
             Browse This Set →
           </Link>

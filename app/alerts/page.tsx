@@ -152,22 +152,22 @@ export default function AlertsPage() {
   const symbol = (currency: "USD" | "EUR") => currency === "EUR" ? "€" : "$";
 
   return (
-    <div className="min-h-screen" style={{ background: "#080B14" }}>
+    <div className="min-h-screen" style={{ background: "var(--background)" }}>
       <div className="max-w-2xl mx-auto px-4 py-8">
         <h1
           className="text-2xl font-bold mb-1"
-          style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+          style={{ color: "var(--text-primary)", fontFamily: "var(--font-cinzel)" }}
         >
           My Alerts
         </h1>
-        <p className="text-sm mb-8" style={{ color: "#7A8BA8" }}>
+        <p className="text-sm mb-8" style={{ color: "var(--text-muted)" }}>
           Get notified when your cards move in price.
         </p>
 
         {/* ── Portfolio Auto-Alerts ── */}
-        <section className="rounded-xl p-5 mb-6" style={{ background: "#0E1220", border: "1px solid #1A2035" }}>
+        <section className="rounded-xl p-5 mb-6" style={{ background: "var(--surface)", border: "1px solid #1A2035" }}>
           <div className="flex items-center justify-between mb-1">
-            <h2 className="text-base font-bold" style={{ color: "#F0F2FF" }}>
+            <h2 className="text-base font-bold" style={{ color: "var(--text-primary)" }}>
               Portfolio Auto-Alerts
             </h2>
             {/* Toggle */}
@@ -175,7 +175,7 @@ export default function AlertsPage() {
               onClick={() => setPortfolioEnabled(!portfolioEnabled)}
               disabled={portfolioLoading}
               className="relative w-11 h-6 rounded-full transition-colors duration-200 disabled:opacity-50"
-              style={{ background: portfolioEnabled ? "#FF7A00" : "#1A2035" }}
+              style={{ background: portfolioEnabled ? "var(--ygo-accent)" : "var(--border)" }}
             >
               <span
                 className="absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-200"
@@ -183,13 +183,13 @@ export default function AlertsPage() {
               />
             </button>
           </div>
-          <p className="text-xs mb-4" style={{ color: "#7A8BA8" }}>
+          <p className="text-xs mb-4" style={{ color: "var(--text-muted)" }}>
             Automatically alert you when any card in your portfolio moves by the threshold below.
           </p>
 
           {portfolioEnabled && (
             <div className="mb-4">
-              <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: "#7A8BA8" }}>
+              <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: "var(--text-muted)" }}>
                 Threshold
               </p>
               <div className="flex gap-2 flex-wrap">
@@ -199,9 +199,9 @@ export default function AlertsPage() {
                     onClick={() => setPortfolioThreshold(p)}
                     className="px-4 py-2 rounded-lg text-sm font-bold transition-colors"
                     style={{
-                      background: portfolioThreshold === p ? "rgba(255,122,0,0.15)" : "#080B14",
-                      border: `1px solid ${portfolioThreshold === p ? "#FF7A00" : "#1A2035"}`,
-                      color: portfolioThreshold === p ? "#FF7A00" : "#7A8BA8",
+                      background: portfolioThreshold === p ? "rgba(255,122,0,0.15)" : "var(--background)",
+                      border: `1px solid ${portfolioThreshold === p ? "var(--ygo-accent)" : "var(--border)"}`,
+                      color: portfolioThreshold === p ? "var(--ygo-accent)" : "var(--text-muted)",
                     }}
                   >
                     ±{p}%
@@ -215,9 +215,9 @@ export default function AlertsPage() {
                     value={portfolioThreshold}
                     onChange={(e) => setPortfolioThreshold(Number(e.target.value))}
                     className="w-16 rounded-lg px-3 py-2 text-sm outline-none text-center"
-                    style={{ background: "#080B14", border: "1px solid #1A2035", color: "#F0F2FF" }}
+                    style={{ background: "var(--background)", border: "1px solid #1A2035", color: "var(--text-primary)" }}
                   />
-                  <span className="text-sm" style={{ color: "#7A8BA8" }}>%</span>
+                  <span className="text-sm" style={{ color: "var(--text-muted)" }}>%</span>
                 </div>
               </div>
             </div>
@@ -227,7 +227,7 @@ export default function AlertsPage() {
             onClick={handleSavePortfolio}
             disabled={portfolioSaving || portfolioLoading}
             className="w-full py-2.5 rounded-lg text-sm font-bold transition hover:opacity-90 disabled:opacity-40"
-            style={{ background: "#FF7A00", color: "#080B14" }}
+            style={{ background: "var(--ygo-accent)", color: "var(--background)" }}
           >
             {portfolioSaving ? "Saving…" : "Save Settings"}
           </button>
@@ -235,22 +235,22 @@ export default function AlertsPage() {
 
         {/* ── Push Notifications ── */}
         {pushSupported && (
-          <section className="rounded-xl p-5 mb-6" style={{ background: "#0E1220", border: "1px solid #1A2035" }}>
+          <section className="rounded-xl p-5 mb-6" style={{ background: "var(--surface)", border: "1px solid #1A2035" }}>
             <div className="flex items-center justify-between mb-1">
-              <h2 className="text-base font-bold" style={{ color: "#F0F2FF" }}>
+              <h2 className="text-base font-bold" style={{ color: "var(--text-primary)" }}>
                 Push Notifications
               </h2>
               <span
                 className="text-xs px-2 py-0.5 rounded-full font-semibold"
                 style={{
                   background: pushEnabled ? "rgba(62,207,106,0.15)" : "rgba(122,139,168,0.15)",
-                  color: pushEnabled ? "#3ecf6a" : "#7A8BA8",
+                  color: pushEnabled ? "var(--price-color)" : "var(--text-muted)",
                 }}
               >
                 {pushEnabled ? "Enabled" : "Disabled"}
               </span>
             </div>
-            <p className="text-xs mb-4" style={{ color: "#7A8BA8" }}>
+            <p className="text-xs mb-4" style={{ color: "var(--text-muted)" }}>
               Get instant notifications on this device — even when the app is closed.
             </p>
             {pushEnabled ? (
@@ -258,7 +258,7 @@ export default function AlertsPage() {
                 onClick={handleDisablePush}
                 disabled={pushLoading}
                 className="w-full py-2.5 rounded-lg text-sm font-semibold transition hover:bg-white/5 disabled:opacity-40"
-                style={{ color: "#CC1F1F", border: "1px solid rgba(204,31,31,0.3)" }}
+                style={{ color: "var(--primary-red)", border: "1px solid rgba(204,31,31,0.3)" }}
               >
                 {pushLoading ? "Disabling…" : "Disable Push Notifications"}
               </button>
@@ -267,7 +267,7 @@ export default function AlertsPage() {
                 onClick={handleEnablePush}
                 disabled={pushLoading}
                 className="w-full py-2.5 rounded-lg text-sm font-bold transition hover:opacity-90 disabled:opacity-40"
-                style={{ background: "#FF7A00", color: "#080B14" }}
+                style={{ background: "var(--ygo-accent)", color: "var(--background)" }}
               >
                 {pushLoading ? "Enabling…" : "Enable Push Notifications"}
               </button>
@@ -277,38 +277,38 @@ export default function AlertsPage() {
 
         {/* ── Manual Card Alerts ── */}
         <section>
-          <h2 className="text-base font-bold mb-3" style={{ color: "#F0F2FF" }}>
+          <h2 className="text-base font-bold mb-3" style={{ color: "var(--text-primary)" }}>
             Manual Card Alerts
           </h2>
 
           {alertsLoading ? (
             <div className="flex flex-col gap-3">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-20 rounded-xl animate-pulse" style={{ background: "#0E1220" }} />
+                <div key={i} className="h-20 rounded-xl animate-pulse" style={{ background: "var(--surface)" }} />
               ))}
             </div>
           ) : alerts.length === 0 ? (
             <div
               className="rounded-xl px-6 py-10 text-center"
-              style={{ background: "#0E1220", border: "1px solid #1A2035" }}
+              style={{ background: "var(--surface)", border: "1px solid #1A2035" }}
             >
               <p className="text-3xl mb-3">🔕</p>
-              <p className="text-sm font-semibold mb-1" style={{ color: "#F0F2FF" }}>No manual alerts yet</p>
-              <p className="text-xs mb-4" style={{ color: "#7A8BA8" }}>
+              <p className="text-sm font-semibold mb-1" style={{ color: "var(--text-primary)" }}>No manual alerts yet</p>
+              <p className="text-xs mb-4" style={{ color: "var(--text-muted)" }}>
                 Go to any card page and tap the bell icon to set a price alert.
               </p>
               <div className="flex gap-2 justify-center">
                 <Link
                   href="/yugioh/monsters"
                   className="inline-block px-4 py-2 rounded-lg text-sm font-bold transition hover:opacity-90"
-                  style={{ background: "#FF7A00", color: "#080B14" }}
+                  style={{ background: "var(--ygo-accent)", color: "var(--background)" }}
                 >
                   Browse Yu-Gi-Oh!
                 </Link>
                 <Link
                   href="/pokemon/pokemon"
                   className="inline-block px-4 py-2 rounded-lg text-sm font-bold transition hover:opacity-90"
-                  style={{ background: "#00AAFF", color: "#080B14" }}
+                  style={{ background: "var(--pkmn-accent)", color: "var(--background)" }}
                 >
                   Browse Pokémon
                 </Link>
@@ -330,8 +330,8 @@ export default function AlertsPage() {
                     key={alert.id}
                     className="flex items-center gap-3 rounded-xl px-4 py-3"
                     style={{
-                      background: "#0E1220",
-                      border: `1px solid ${alert.enabled ? "#1A2035" : "rgba(122,139,168,0.2)"}`,
+                      background: "var(--surface)",
+                      border: `1px solid ${alert.enabled ? "var(--border)" : "rgba(122,139,168,0.2)"}`,
                       opacity: alert.enabled ? 1 : 0.6,
                     }}
                   >
@@ -347,13 +347,13 @@ export default function AlertsPage() {
 
                     {/* Info */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold truncate" style={{ color: "#F0F2FF" }}>
+                      <p className="text-sm font-semibold truncate" style={{ color: "var(--text-primary)" }}>
                         {alert.cardName}
                       </p>
-                      <p className="text-xs" style={{ color: "#7A8BA8" }}>
+                      <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                         {alert.setCode ? `${alert.setCode} · ` : ""}{thresholdLabel} · {dirLabel}
                       </p>
-                      <p className="text-xs mt-0.5" style={{ color: "#3ecf6a" }}>
+                      <p className="text-xs mt-0.5" style={{ color: "var(--price-color)" }}>
                         Baseline: {sym}{alert.baselinePrice.toFixed(2)}
                       </p>
                     </div>
@@ -364,7 +364,7 @@ export default function AlertsPage() {
                       <button
                         onClick={() => setEditingAlert(alert)}
                         className="px-2.5 py-1.5 rounded-lg text-xs font-semibold transition hover:bg-white/5"
-                        style={{ color: "#7A8BA8", border: "1px solid #1A2035" }}
+                        style={{ color: "var(--text-muted)", border: "1px solid #1A2035" }}
                       >
                         Edit
                       </button>
@@ -374,7 +374,7 @@ export default function AlertsPage() {
                         onClick={() => handleToggleAlert(alert)}
                         disabled={togglingId === alert.id}
                         className="relative w-9 h-5 rounded-full transition-colors duration-200 disabled:opacity-50"
-                        style={{ background: alert.enabled ? "#FF7A00" : "#1A2035" }}
+                        style={{ background: alert.enabled ? "var(--ygo-accent)" : "var(--border)" }}
                       >
                         <span
                           className="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200"
@@ -387,7 +387,7 @@ export default function AlertsPage() {
                         onClick={() => handleDeleteAlert(alert.id)}
                         disabled={deletingId === alert.id}
                         className="px-2 py-1.5 rounded-lg text-xs transition hover:bg-white/5 disabled:opacity-40"
-                        style={{ color: "#CC1F1F" }}
+                        style={{ color: "var(--primary-red)" }}
                       >
                         {deletingId === alert.id ? "…" : "✕"}
                       </button>

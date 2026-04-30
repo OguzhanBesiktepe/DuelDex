@@ -111,9 +111,9 @@ export default function SetDetailClient({ cards, setCode, initialPage = 1 }: { c
               onClick={() => handleTypeFilter(f.value)}
               className="px-3 py-1.5 rounded-md text-sm font-medium transition-colors"
               style={{
-                background: typeFilter === f.value ? "#FF7A0022" : "#0E1220",
-                color: typeFilter === f.value ? "#FF7A00" : "#7A8BA8",
-                border: `1px solid ${typeFilter === f.value ? "#FF7A0044" : "#1A2035"}`,
+                background: typeFilter === f.value ? "#FF7A0022" : "var(--surface)",
+                color: typeFilter === f.value ? "var(--ygo-accent)" : "var(--text-muted)",
+                border: `1px solid ${typeFilter === f.value ? "#FF7A0044" : "var(--border)"}`,
               }}
             >
               {f.label}
@@ -122,7 +122,7 @@ export default function SetDetailClient({ cards, setCode, initialPage = 1 }: { c
         </div>
 
         {/* Divider */}
-        <div className="w-px h-5 hidden sm:block" style={{ background: "#1A2035" }} />
+        <div className="w-px h-5 hidden sm:block" style={{ background: "var(--border)" }} />
 
         {/* Sort */}
         <div className="flex gap-2">
@@ -132,9 +132,9 @@ export default function SetDetailClient({ cards, setCode, initialPage = 1 }: { c
               onClick={() => handleSort(s.value)}
               className="px-3 py-1.5 rounded-md text-sm font-medium transition-colors"
               style={{
-                background: sort === s.value ? "#FF7A0022" : "#0E1220",
-                color: sort === s.value ? "#FF7A00" : "#7A8BA8",
-                border: `1px solid ${sort === s.value ? "#FF7A0044" : "#1A2035"}`,
+                background: sort === s.value ? "#FF7A0022" : "var(--surface)",
+                color: sort === s.value ? "var(--ygo-accent)" : "var(--text-muted)",
+                border: `1px solid ${sort === s.value ? "#FF7A0044" : "var(--border)"}`,
               }}
             >
               {s.label}
@@ -142,7 +142,7 @@ export default function SetDetailClient({ cards, setCode, initialPage = 1 }: { c
           ))}
         </div>
 
-        <span className="ml-auto text-sm" style={{ color: "#7A8BA8" }}>
+        <span className="ml-auto text-sm" style={{ color: "var(--text-muted)" }}>
           {filtered.length} cards
         </span>
       </div>
@@ -153,7 +153,7 @@ export default function SetDetailClient({ cards, setCode, initialPage = 1 }: { c
       <Pagination
         page={effectivePage}
         totalPages={totalPages}
-        accent="#FF7A00"
+        accent="var(--ygo-accent)"
         onPage={changePage}
       />
     </div>

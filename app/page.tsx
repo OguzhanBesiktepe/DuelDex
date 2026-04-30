@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-// Converts "255, 122, 0" (Vibrant output) to "#FF7A00" (needed by HeroSection)
+// Converts "255, 122, 0" (Vibrant output) to "var(--ygo-accent)" (needed by HeroSection)
 function rgbStringToHex(rgb: string): string {
   const [r, g, b] = rgb.split(",").map((s) => parseInt(s.trim(), 10));
   return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
@@ -223,7 +223,7 @@ async function getFeaturedSet(): Promise<FeaturedSet> {
     setName: "Legend of Blue Eyes White Dragon",
     cardImages: ["https://images.ygoprodeck.com/images/cards/89631139.jpg"],
     setHref: "/yugioh/sets",
-    accentColor: "#FF7A00",
+    accentColor: "var(--ygo-accent)",
     accentRgb: "255, 122, 0",
   };
 }
@@ -234,7 +234,7 @@ export default async function HomePage() {
   const featured = await getFeaturedSet();
 
   return (
-    <main style={{ background: "#080B14", minHeight: "100vh" }}>
+    <main style={{ background: "var(--background)", minHeight: "100vh" }}>
       <HeroSection featured={featured} />
       <Suspense fallback={null}>
         <SetReleaseCalendar />

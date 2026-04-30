@@ -29,8 +29,8 @@ function YGOStar({ fill, size = 26 }: { fill: string; size?: number }) {
         cx="12"
         cy="12"
         r="11"
-        fill={dim ? "#0E1220" : "#CC5500"}
-        stroke={dim ? "#2A3550" : "#FF7A00"}
+        fill={dim ? "var(--surface)" : "#CC5500"}
+        stroke={dim ? "#2A3550" : "var(--ygo-accent)"}
         strokeWidth="1.5"
       />
       {/* Inner circle highlight */}
@@ -38,7 +38,7 @@ function YGOStar({ fill, size = 26 }: { fill: string; size?: number }) {
       {/* Star */}
       <polygon
         points={points}
-        fill={dim ? "#2A3550" : "#FFD700"}
+        fill={dim ? "#2A3550" : "var(--gold)"}
         stroke={dim ? "none" : "#FF8C00"}
         strokeWidth="0.5"
       />
@@ -70,7 +70,7 @@ export default function LevelFilter({ selected }: { selected: number | null }) {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-xs shrink-0" style={{ color: "#7A8BA8" }}>
+      <span className="text-xs shrink-0" style={{ color: "var(--text-muted)" }}>
         Level:
       </span>
 
@@ -112,7 +112,7 @@ export default function LevelFilter({ selected }: { selected: number | null }) {
       <span
         className="text-xs font-bold"
         style={{
-          color: "#FFD700",
+          color: "var(--gold)",
           minWidth: 16,
           visibility:
             hovered !== null || selected !== null ? "visible" : "hidden",

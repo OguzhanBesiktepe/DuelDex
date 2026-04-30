@@ -6,7 +6,7 @@
 // Fusion > Synchro > XYZ > Link > Ritual > Pendulum > Effect > Normal
 
 export function getYGOTypeColor(type: string): string {
-  if (!type) return "#7A8BA8";
+  if (!type) return "var(--text-muted)";
   if (type.includes("Fusion"))   return "#A040C0"; // purple
   if (type.includes("Synchro"))  return "#C0C0C0"; // silver/white
   if (type.includes("XYZ"))      return "#8B8B9E"; // dark slate (card is black)
@@ -18,7 +18,7 @@ export function getYGOTypeColor(type: string): string {
   if (type.includes("Normal"))   return "#C8A84B"; // tan/beige
   if (type === "Spell Card")     return "#1DA86A"; // green
   if (type === "Trap Card")      return "#C02898"; // pink/magenta
-  return "#7A8BA8";
+  return "var(--text-muted)";
 }
 
 // Colors for the 25 Yu-Gi-Oh monster races (shown as the sub-type badge).
@@ -45,11 +45,11 @@ const RACE_COLORS: Record<string, string> = {
   "Winged Beast":  "#5599DD", // sky blue
   "Psychic":       "#DD55AA", // hot pink
   "Cyberse":       "#00BBCC", // bright cyan
-  "Divine-Beast":  "#FFD700", // gold
-  "Creator God":   "#FFD700", // gold
+  "Divine-Beast":  "var(--gold)", // gold
+  "Creator God":   "var(--gold)", // gold
   "Wyrm":          "#44AABB", // blue-teal
 };
 
 export function getYGORaceColor(race: string): string {
-  return RACE_COLORS[race] ?? "#7A8BA8";
+  return RACE_COLORS[race] ?? "var(--text-muted)";
 }

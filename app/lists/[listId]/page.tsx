@@ -62,18 +62,18 @@ async function fetchCurrentPrice(
 
 function PriceDiff({ added, current, currency }: { added: number; current: number | null; currency: string }) {
   if (current === null) {
-    return <span className="text-xs animate-pulse" style={{ color: "#7A8BA8" }}>…</span>;
+    return <span className="text-xs animate-pulse" style={{ color: "var(--text-muted)" }}>…</span>;
   }
   if (added === 0 && current === 0) {
-    return <span className="text-xs" style={{ color: "#7A8BA8" }}>N/A</span>;
+    return <span className="text-xs" style={{ color: "var(--text-muted)" }}>N/A</span>;
   }
   const diff = current - added;
   if (Math.abs(diff) < 0.01) {
-    return <span className="text-xs" style={{ color: "#7A8BA8" }}>—</span>;
+    return <span className="text-xs" style={{ color: "var(--text-muted)" }}>—</span>;
   }
   const positive = diff > 0;
   return (
-    <span className="text-xs font-semibold" style={{ color: positive ? "#3ecf6a" : "#CC1F1F" }}>
+    <span className="text-xs font-semibold" style={{ color: positive ? "var(--price-color)" : "var(--primary-red)" }}>
       {positive ? "▲" : "▼"} {currency}{Math.abs(diff).toFixed(2)}
     </span>
   );
@@ -149,20 +149,20 @@ export default function ListDetailPage({
 
   if (authLoading || pageLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center" style={{ background: "#080B14" }}>
-        <p className="animate-pulse text-sm" style={{ color: "#7A8BA8" }}>Loading list…</p>
+      <div className="flex min-h-screen items-center justify-center" style={{ background: "var(--background)" }}>
+        <p className="animate-pulse text-sm" style={{ color: "var(--text-muted)" }}>Loading list…</p>
       </div>
     );
   }
 
   return (
-    <div style={{ background: "#080B14", minHeight: "100vh" }}>
+    <div style={{ background: "var(--background)", minHeight: "100vh" }}>
       <div className="mx-auto max-w-4xl px-4 py-10">
 
         <Link
           href={from === "/portfolio" ? "/portfolio" : "/lists"}
           className="inline-flex items-center gap-1 text-sm mb-6 transition hover:underline"
-          style={{ color: "#7A8BA8" }}
+          style={{ color: "var(--text-muted)" }}
         >
           {from === "/portfolio" ? "← Back to Portfolio" : "← Back to My Lists"}
         </Link>
@@ -170,11 +170,11 @@ export default function ListDetailPage({
         <div className="mb-6">
           <h1
             className="text-3xl font-bold mb-1"
-            style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+            style={{ color: "var(--text-primary)", fontFamily: "var(--font-cinzel)" }}
           >
             {list?.name}
           </h1>
-          <p className="text-sm" style={{ color: "#7A8BA8" }}>
+          <p className="text-sm" style={{ color: "var(--text-muted)" }}>
             {items.length} card{items.length === 1 ? "" : "s"}
           </p>
         </div>
@@ -183,25 +183,25 @@ export default function ListDetailPage({
         {items.length > 0 && (
           <div
             className="rounded-xl border p-4 mb-6 flex flex-wrap gap-x-8 gap-y-4"
-            style={{ background: "#0E1220", borderColor: "#1A2035" }}
+            style={{ background: "var(--surface)", borderColor: "var(--border)" }}
           >
             {/* USD block — YGO cards */}
             {totalAddedUSD > 0 && (
               <div className="flex flex-wrap gap-x-6 gap-y-2 items-end">
                 <div>
-                  <p className="text-xs mb-0.5" style={{ color: "#7A8BA8" }}>Added (USD)</p>
-                  <p className="text-xl font-bold" style={{ color: "#3ecf6a" }}>${totalAddedUSD.toFixed(2)}</p>
+                  <p className="text-xs mb-0.5" style={{ color: "var(--text-muted)" }}>Added (USD)</p>
+                  <p className="text-xl font-bold" style={{ color: "var(--price-color)" }}>${totalAddedUSD.toFixed(2)}</p>
                 </div>
                 <div>
-                  <p className="text-xs mb-0.5" style={{ color: "#7A8BA8" }}>Now (USD)</p>
-                  <p className="text-xl font-bold" style={{ color: "#F0F2FF" }}>
-                    {!allPricesLoaded ? <span className="text-sm animate-pulse" style={{ color: "#7A8BA8" }}>…</span> : `$${totalCurrentUSD.toFixed(2)}`}
+                  <p className="text-xs mb-0.5" style={{ color: "var(--text-muted)" }}>Now (USD)</p>
+                  <p className="text-xl font-bold" style={{ color: "var(--text-primary)" }}>
+                    {!allPricesLoaded ? <span className="text-sm animate-pulse" style={{ color: "var(--text-muted)" }}>…</span> : `$${totalCurrentUSD.toFixed(2)}`}
                   </p>
                 </div>
                 {allPricesLoaded && totalCurrentUSD > 0 && (
                   <div>
-                    <p className="text-xs mb-0.5" style={{ color: "#7A8BA8" }}>Change</p>
-                    <p className="text-xl font-bold" style={{ color: totalCurrentUSD >= totalAddedUSD ? "#3ecf6a" : "#CC1F1F" }}>
+                    <p className="text-xs mb-0.5" style={{ color: "var(--text-muted)" }}>Change</p>
+                    <p className="text-xl font-bold" style={{ color: totalCurrentUSD >= totalAddedUSD ? "var(--price-color)" : "var(--primary-red)" }}>
                       {totalCurrentUSD >= totalAddedUSD ? "▲" : "▼"} ${Math.abs(totalCurrentUSD - totalAddedUSD).toFixed(2)}
                     </p>
                   </div>
@@ -211,26 +211,26 @@ export default function ListDetailPage({
 
             {/* Divider between currencies */}
             {totalAddedUSD > 0 && totalAddedEUR > 0 && (
-              <div className="self-stretch border-l hidden sm:block" style={{ borderColor: "#1A2035" }} />
+              <div className="self-stretch border-l hidden sm:block" style={{ borderColor: "var(--border)" }} />
             )}
 
             {/* EUR block — Pokémon cards */}
             {totalAddedEUR > 0 && (
               <div className="flex flex-wrap gap-x-6 gap-y-2 items-end">
                 <div>
-                  <p className="text-xs mb-0.5" style={{ color: "#7A8BA8" }}>Added (EUR)</p>
-                  <p className="text-xl font-bold" style={{ color: "#3ecf6a" }}>€{totalAddedEUR.toFixed(2)}</p>
+                  <p className="text-xs mb-0.5" style={{ color: "var(--text-muted)" }}>Added (EUR)</p>
+                  <p className="text-xl font-bold" style={{ color: "var(--price-color)" }}>€{totalAddedEUR.toFixed(2)}</p>
                 </div>
                 <div>
-                  <p className="text-xs mb-0.5" style={{ color: "#7A8BA8" }}>Now (EUR)</p>
-                  <p className="text-xl font-bold" style={{ color: "#F0F2FF" }}>
-                    {!allPricesLoaded ? <span className="text-sm animate-pulse" style={{ color: "#7A8BA8" }}>…</span> : `€${totalCurrentEUR.toFixed(2)}`}
+                  <p className="text-xs mb-0.5" style={{ color: "var(--text-muted)" }}>Now (EUR)</p>
+                  <p className="text-xl font-bold" style={{ color: "var(--text-primary)" }}>
+                    {!allPricesLoaded ? <span className="text-sm animate-pulse" style={{ color: "var(--text-muted)" }}>…</span> : `€${totalCurrentEUR.toFixed(2)}`}
                   </p>
                 </div>
                 {allPricesLoaded && totalCurrentEUR > 0 && (
                   <div>
-                    <p className="text-xs mb-0.5" style={{ color: "#7A8BA8" }}>Change</p>
-                    <p className="text-xl font-bold" style={{ color: totalCurrentEUR >= totalAddedEUR ? "#3ecf6a" : "#CC1F1F" }}>
+                    <p className="text-xs mb-0.5" style={{ color: "var(--text-muted)" }}>Change</p>
+                    <p className="text-xl font-bold" style={{ color: totalCurrentEUR >= totalAddedEUR ? "var(--price-color)" : "var(--primary-red)" }}>
                       {totalCurrentEUR >= totalAddedEUR ? "▲" : "▼"} €{Math.abs(totalCurrentEUR - totalAddedEUR).toFixed(2)}
                     </p>
                   </div>
@@ -240,23 +240,23 @@ export default function ListDetailPage({
 
             {/* Fallback when all priceWhenAdded are 0 (old favorites before fix) */}
             {totalAddedUSD === 0 && totalAddedEUR === 0 && (
-              <p className="text-sm" style={{ color: "#7A8BA8" }}>No price data recorded when these cards were added.</p>
+              <p className="text-sm" style={{ color: "var(--text-muted)" }}>No price data recorded when these cards were added.</p>
             )}
           </div>
         )}
 
         {/* Empty state */}
         {items.length === 0 && (
-          <div className="rounded-2xl border p-10 text-center" style={{ borderColor: "#1A2035", background: "#0E1220" }}>
+          <div className="rounded-2xl border p-10 text-center" style={{ borderColor: "var(--border)", background: "var(--surface)" }}>
             <p className="text-4xl mb-4">📋</p>
-            <p className="text-sm mb-4" style={{ color: "#7A8BA8" }}>
+            <p className="text-sm mb-4" style={{ color: "var(--text-muted)" }}>
               This list is empty. Add cards from any card detail page.
             </p>
             <div className="flex justify-center gap-3">
-              <Link href="/yugioh/monsters" className="rounded-lg px-4 py-2 text-sm font-semibold transition hover:opacity-90" style={{ background: "#FF7A00", color: "#080B14" }}>
+              <Link href="/yugioh/monsters" className="rounded-lg px-4 py-2 text-sm font-semibold transition hover:opacity-90" style={{ background: "var(--ygo-accent)", color: "var(--background)" }}>
                 Browse Yu-Gi-Oh!
               </Link>
-              <Link href="/pokemon/pokemon" className="rounded-lg px-4 py-2 text-sm font-semibold transition hover:opacity-90" style={{ background: "#00AAFF", color: "#080B14" }}>
+              <Link href="/pokemon/pokemon" className="rounded-lg px-4 py-2 text-sm font-semibold transition hover:opacity-90" style={{ background: "var(--pkmn-accent)", color: "var(--background)" }}>
                 Browse Pokémon
               </Link>
             </div>
@@ -274,7 +274,7 @@ export default function ListDetailPage({
 
         {/* Items list */}
         {items.length > 0 && (
-          <div className="rounded-2xl border overflow-hidden" style={{ borderColor: "#1A2035" }}>
+          <div className="rounded-2xl border overflow-hidden" style={{ borderColor: "var(--border)" }}>
             {items.map((item, i) => {
               const key = itemKey(item);
               const currentPrice = currentPrices[key] ?? null;
@@ -290,7 +290,7 @@ export default function ListDetailPage({
                   href={cardHref}
                   className="flex items-center gap-4 px-4 py-3 transition hover:bg-white/[0.04] cursor-pointer"
                   style={{
-                    background: "#0E1220",
+                    background: "var(--surface)",
                     borderBottom: i < items.length - 1 ? "1px solid #1A2035" : "none",
                     display: "flex",
                   }}
@@ -307,14 +307,14 @@ export default function ListDetailPage({
 
                   {/* Name + badge */}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold truncate" style={{ color: "#F0F2FF" }}>
+                    <p className="text-sm font-semibold truncate" style={{ color: "var(--text-primary)" }}>
                       {item.cardName}
                     </p>
 
                     {/* Printing-specific badges */}
                     {item.setCode && item.setName ? (
                       <div className="flex flex-wrap gap-1 mt-1">
-                        <span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: "rgba(255,122,0,0.1)", color: "#FF7A00" }}>
+                        <span className="text-xs px-1.5 py-0.5 rounded-full" style={{ background: "rgba(255,122,0,0.1)", color: "var(--ygo-accent)" }}>
                           {item.setName}
                         </span>
                         {item.setRarity && rarityColor && (
@@ -328,7 +328,7 @@ export default function ListDetailPage({
                         className="text-xs px-1.5 py-0.5 rounded-full mt-1 inline-block"
                         style={{
                           background: item.game === "yugioh" ? "rgba(255,122,0,0.15)" : "rgba(0,170,255,0.15)",
-                          color: item.game === "yugioh" ? "#FF7A00" : "#00AAFF",
+                          color: item.game === "yugioh" ? "var(--ygo-accent)" : "var(--pkmn-accent)",
                         }}
                       >
                         {item.game === "yugioh" ? "Yu-Gi-Oh!" : "Pokémon"}
@@ -338,20 +338,20 @@ export default function ListDetailPage({
 
                   {/* Price when added */}
                   <div className="text-right shrink-0 hidden sm:block">
-                    <p className="text-xs" style={{ color: "#7A8BA8" }}>
+                    <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                       Added {item.dateAdded.toLocaleDateString()}
                     </p>
-                    <p className="text-sm font-semibold" style={{ color: "#3ecf6a" }}>
+                    <p className="text-sm font-semibold" style={{ color: "var(--price-color)" }}>
                       {item.priceWhenAdded > 0 ? `${currency}${item.priceWhenAdded.toFixed(2)}` : "N/A"}
                     </p>
                   </div>
 
                   {/* Current price */}
                   <div className="text-right shrink-0 hidden md:block w-20">
-                    <p className="text-xs" style={{ color: "#7A8BA8" }}>Now</p>
-                    <p className="text-sm font-semibold" style={{ color: "#F0F2FF" }}>
+                    <p className="text-xs" style={{ color: "var(--text-muted)" }}>Now</p>
+                    <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
                       {currentPrice === null ? (
-                        <span className="animate-pulse text-xs" style={{ color: "#7A8BA8" }}>…</span>
+                        <span className="animate-pulse text-xs" style={{ color: "var(--text-muted)" }}>…</span>
                       ) : currentPrice > 0 ? `${currency}${currentPrice.toFixed(2)}` : "N/A"}
                     </p>
                   </div>
@@ -367,7 +367,7 @@ export default function ListDetailPage({
                     disabled={removing === key}
                     title="Remove from list"
                     className="shrink-0 rounded-lg px-2 py-1 text-xs transition hover:bg-red-900/20 disabled:opacity-40"
-                    style={{ color: "#CC1F1F", border: "1px solid rgba(204,31,31,0.3)" }}
+                    style={{ color: "var(--primary-red)", border: "1px solid rgba(204,31,31,0.3)" }}
                   >
                     {removing === key ? "…" : "Remove"}
                   </button>

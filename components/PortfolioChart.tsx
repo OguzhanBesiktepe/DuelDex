@@ -135,14 +135,14 @@ function TimelineTooltip({
   return (
     <div
       className="rounded-lg border px-3 py-2 text-xs max-w-[200px]"
-      style={{ background: "#0E1220", borderColor: "#1A2035" }}
+      style={{ background: "var(--surface)", borderColor: "var(--border)" }}
     >
-      <p className="mb-1.5 font-semibold" style={{ color: "#F0F2FF" }}>
+      <p className="mb-1.5 font-semibold" style={{ color: "var(--text-primary)" }}>
         {label}
       </p>
       {payload.map((p) =>
         p.value == null ? null : (
-          <p key={p.name} style={{ color: p.name === "costBasis" ? "#7A8BA8" : "#3ecf6a" }}>
+          <p key={p.name} style={{ color: p.name === "costBasis" ? "var(--text-muted)" : "var(--price-color)" }}>
             {p.name === "costBasis" ? "Cost Basis" : "Current Value"}:{" "}
             <span className="font-semibold">
               {currency}
@@ -153,9 +153,9 @@ function TimelineTooltip({
       )}
       {point?.cards && point.cards.length > 0 && (
         <div className="mt-1.5 pt-1.5" style={{ borderTop: "1px solid #1A2035" }}>
-          <p style={{ color: "#7A8BA8" }}>Added:</p>
+          <p style={{ color: "var(--text-muted)" }}>Added:</p>
           {point.cards.map((c, i) => (
-            <p key={i} className="truncate" style={{ color: "#F0F2FF" }}>
+            <p key={i} className="truncate" style={{ color: "var(--text-primary)" }}>
               • {c}
             </p>
           ))}
@@ -239,7 +239,7 @@ export default function PortfolioChart({
   const exportPNG = useCallback(async () => {
     if (!chartRef.current) return;
     const { toPng } = await import("html-to-image");
-    const dataUrl = await toPng(chartRef.current, { backgroundColor: "#0E1220" });
+    const dataUrl = await toPng(chartRef.current, { backgroundColor: "var(--surface)" });
     const a = document.createElement("a");
     a.href = dataUrl;
     a.download = `${listName.replace(/\s+/g, "_")}_chart.png`;
@@ -251,7 +251,7 @@ export default function PortfolioChart({
   return (
     <div
       className="rounded-2xl border mb-6"
-      style={{ background: "#0E1220", borderColor: "#1A2035" }}
+      style={{ background: "var(--surface)", borderColor: "var(--border)" }}
     >
       {/* ── Header + controls ───────────────────────────────────────────────── */}
       <div
@@ -260,7 +260,7 @@ export default function PortfolioChart({
       >
         <h2
           className="text-sm font-semibold"
-          style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+          style={{ color: "var(--text-primary)", fontFamily: "var(--font-cinzel)" }}
         >
           Portfolio Chart
         </h2>
@@ -270,7 +270,7 @@ export default function PortfolioChart({
           {hasUSD && hasEUR && (
             <div
               className="flex rounded-lg overflow-hidden border"
-              style={{ borderColor: "#1A2035" }}
+              style={{ borderColor: "var(--border)" }}
             >
               {(["usd", "eur"] as const).map((t) => (
                 <button
@@ -278,8 +278,8 @@ export default function PortfolioChart({
                   onClick={() => setTab(t)}
                   className="px-3 py-1 text-xs font-semibold transition"
                   style={{
-                    background: activeTab === t ? "#FF7A00" : "#080B14",
-                    color: activeTab === t ? "#080B14" : "#7A8BA8",
+                    background: activeTab === t ? "var(--ygo-accent)" : "var(--background)",
+                    color: activeTab === t ? "var(--background)" : "var(--text-muted)",
                   }}
                 >
                   {t.toUpperCase()}
@@ -291,7 +291,7 @@ export default function PortfolioChart({
           {/* Timeline / Breakdown toggle */}
           <div
             className="flex rounded-lg overflow-hidden border"
-            style={{ borderColor: "#1A2035" }}
+            style={{ borderColor: "var(--border)" }}
           >
             {(["timeline", "breakdown"] as const).map((v) => (
               <button
@@ -299,8 +299,8 @@ export default function PortfolioChart({
                 onClick={() => setView(v)}
                 className="px-3 py-1 text-xs font-semibold capitalize transition"
                 style={{
-                  background: view === v ? "#1A2035" : "#080B14",
-                  color: view === v ? "#F0F2FF" : "#7A8BA8",
+                  background: view === v ? "var(--border)" : "var(--background)",
+                  color: view === v ? "var(--text-primary)" : "var(--text-muted)",
                 }}
               >
                 {v}
@@ -312,7 +312,7 @@ export default function PortfolioChart({
           {view === "timeline" && (
             <div
               className="flex rounded-lg overflow-hidden border"
-              style={{ borderColor: "#1A2035" }}
+              style={{ borderColor: "var(--border)" }}
             >
               {(["30d", "90d", "all"] as const).map((r) => (
                 <button
@@ -320,8 +320,8 @@ export default function PortfolioChart({
                   onClick={() => setDateRange(r)}
                   className="px-3 py-1 text-xs font-semibold transition"
                   style={{
-                    background: dateRange === r ? "#1A2035" : "#080B14",
-                    color: dateRange === r ? "#F0F2FF" : "#7A8BA8",
+                    background: dateRange === r ? "var(--border)" : "var(--background)",
+                    color: dateRange === r ? "var(--text-primary)" : "var(--text-muted)",
                   }}
                 >
                   {r === "all" ? "All" : r}
@@ -334,7 +334,7 @@ export default function PortfolioChart({
           <button
             onClick={exportPNG}
             className="px-3 py-1 text-xs font-semibold rounded-lg transition hover:opacity-80"
-            style={{ background: "#080B14", color: "#7A8BA8", border: "1px solid #1A2035" }}
+            style={{ background: "var(--background)", color: "var(--text-muted)", border: "1px solid #1A2035" }}
             title="Save chart as PNG image"
           >
             ↓ PNG
@@ -342,7 +342,7 @@ export default function PortfolioChart({
           <button
             onClick={exportCSV}
             className="px-3 py-1 text-xs font-semibold rounded-lg transition hover:opacity-80"
-            style={{ background: "#080B14", color: "#7A8BA8", border: "1px solid #1A2035" }}
+            style={{ background: "var(--background)", color: "var(--text-muted)", border: "1px solid #1A2035" }}
             title="Export as CSV (Excel)"
           >
             ↓ CSV
@@ -351,10 +351,10 @@ export default function PortfolioChart({
       </div>
 
       {/* ── Chart area (captured for PNG) ───────────────────────────────────── */}
-      <div ref={chartRef} className="px-4 pt-4 pb-2" style={{ background: "#0E1220" }}>
+      <div ref={chartRef} className="px-4 pt-4 pb-2" style={{ background: "var(--surface)" }}>
         {view === "timeline" ? (
           timelineData.length < 2 ? (
-            <p className="text-center text-xs py-10" style={{ color: "#7A8BA8" }}>
+            <p className="text-center text-xs py-10" style={{ color: "var(--text-muted)" }}>
               Add cards on different dates to build a timeline.
             </p>
           ) : (
@@ -363,23 +363,23 @@ export default function PortfolioChart({
                 <AreaChart data={timelineData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="costGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#7A8BA8" stopOpacity={0.2} />
-                      <stop offset="95%" stopColor="#7A8BA8" stopOpacity={0} />
+                      <stop offset="5%" stopColor="var(--text-muted)" stopOpacity={0.2} />
+                      <stop offset="95%" stopColor="var(--text-muted)" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="currentGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3ecf6a" stopOpacity={0.25} />
-                      <stop offset="95%" stopColor="#3ecf6a" stopOpacity={0} />
+                      <stop offset="5%" stopColor="var(--price-color)" stopOpacity={0.25} />
+                      <stop offset="95%" stopColor="var(--price-color)" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1A2035" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                   <XAxis
                     dataKey="date"
-                    tick={{ fill: "#7A8BA8", fontSize: 10 }}
+                    tick={{ fill: "var(--text-muted)", fontSize: 10 }}
                     tickLine={false}
                     axisLine={false}
                   />
                   <YAxis
-                    tick={{ fill: "#7A8BA8", fontSize: 10 }}
+                    tick={{ fill: "var(--text-muted)", fontSize: 10 }}
                     tickLine={false}
                     axisLine={false}
                     tickFormatter={(v) => `${currency}${v}`}
@@ -393,7 +393,7 @@ export default function PortfolioChart({
                   <Area
                     type="monotone"
                     dataKey="costBasis"
-                    stroke="#7A8BA8"
+                    stroke="var(--text-muted)"
                     fill="url(#costGrad)"
                     strokeWidth={2}
                     dot={false}
@@ -402,11 +402,11 @@ export default function PortfolioChart({
                   <Area
                     type="monotone"
                     dataKey="currentValue"
-                    stroke="#3ecf6a"
+                    stroke="var(--price-color)"
                     fill="url(#currentGrad)"
                     strokeWidth={2}
-                    dot={{ fill: "#3ecf6a", r: 5, strokeWidth: 0 }}
-                    activeDot={{ r: 6, fill: "#3ecf6a" }}
+                    dot={{ fill: "var(--price-color)", r: 5, strokeWidth: 0 }}
+                    activeDot={{ r: 6, fill: "var(--price-color)" }}
                     name="currentValue"
                     connectNulls={false}
                   />
@@ -414,18 +414,18 @@ export default function PortfolioChart({
               </ResponsiveContainer>
 
               {/* Legend */}
-              <div className="flex gap-5 px-1 pb-2 pt-1 text-xs" style={{ color: "#7A8BA8" }}>
+              <div className="flex gap-5 px-1 pb-2 pt-1 text-xs" style={{ color: "var(--text-muted)" }}>
                 <span className="flex items-center gap-1.5">
                   <span
                     className="inline-block rounded"
-                    style={{ width: 20, height: 2, background: "#7A8BA8" }}
+                    style={{ width: 20, height: 2, background: "var(--text-muted)" }}
                   />
                   Cost Basis
                 </span>
                 <span className="flex items-center gap-1.5">
                   <span
                     className="inline-block rounded-full"
-                    style={{ width: 8, height: 8, background: "#3ecf6a" }}
+                    style={{ width: 8, height: 8, background: "var(--price-color)" }}
                   />
                   Current Value
                 </span>
@@ -433,7 +433,7 @@ export default function PortfolioChart({
             </>
           )
         ) : breakdownData.length === 0 ? (
-          <p className="text-center text-xs py-10" style={{ color: "#7A8BA8" }}>
+          <p className="text-center text-xs py-10" style={{ color: "var(--text-muted)" }}>
             No cards in this currency.
           </p>
         ) : (
@@ -446,10 +446,10 @@ export default function PortfolioChart({
               data={breakdownData}
               margin={{ top: 4, right: 16, left: 8, bottom: 4 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#1A2035" horizontal={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
               <XAxis
                 type="number"
-                tick={{ fill: "#7A8BA8", fontSize: 10 }}
+                tick={{ fill: "var(--text-muted)", fontSize: 10 }}
                 tickLine={false}
                 axisLine={false}
                 tickFormatter={(v) => `${currency}${v}`}
@@ -457,7 +457,7 @@ export default function PortfolioChart({
               <YAxis
                 type="category"
                 dataKey="name"
-                tick={{ fill: "#7A8BA8", fontSize: 10 }}
+                tick={{ fill: "var(--text-muted)", fontSize: 10 }}
                 tickLine={false}
                 axisLine={false}
                 width={130}
@@ -471,36 +471,36 @@ export default function PortfolioChart({
                   return (
                     <div
                       className="rounded-lg border px-3 py-2 text-xs"
-                      style={{ background: "#0E1220", borderColor: "#1A2035" }}
+                      style={{ background: "var(--surface)", borderColor: "var(--border)" }}
                     >
-                      <p className="font-semibold mb-1" style={{ color: "#F0F2FF" }}>
+                      <p className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>
                         {d.fullName}
                       </p>
                       {d.setName && (
-                        <p className="mb-1" style={{ color: "#7A8BA8" }}>
+                        <p className="mb-1" style={{ color: "var(--text-muted)" }}>
                           {d.setName}
                         </p>
                       )}
-                      <p style={{ color: "#7A8BA8" }}>
+                      <p style={{ color: "var(--text-muted)" }}>
                         Added {d.dateAdded}
                       </p>
-                      <p style={{ color: "#7A8BA8" }}>
+                      <p style={{ color: "var(--text-muted)" }}>
                         Paid:{" "}
-                        <span style={{ color: "#F0F2FF" }}>
+                        <span style={{ color: "var(--text-primary)" }}>
                           {currency}
                           {d.paid.toFixed(2)}
                         </span>
                       </p>
-                      <p style={{ color: "#7A8BA8" }}>
+                      <p style={{ color: "var(--text-muted)" }}>
                         Now:{" "}
-                        <span style={{ color: "#F0F2FF" }}>
+                        <span style={{ color: "var(--text-primary)" }}>
                           {currency}
                           {d.current.toFixed(2)}
                         </span>
                       </p>
                       <p
                         className="font-semibold"
-                        style={{ color: gain >= 0 ? "#3ecf6a" : "#CC1F1F" }}
+                        style={{ color: gain >= 0 ? "var(--price-color)" : "var(--primary-red)" }}
                       >
                         {gain >= 0 ? "▲" : "▼"} {currency}
                         {Math.abs(gain).toFixed(2)}
@@ -511,17 +511,17 @@ export default function PortfolioChart({
               />
               <Legend
                 formatter={(v) => (
-                  <span style={{ color: "#7A8BA8", fontSize: 11 }}>
+                  <span style={{ color: "var(--text-muted)", fontSize: 11 }}>
                     {v === "paid" ? "Paid" : "Current"}
                   </span>
                 )}
               />
               {/* "Paid" bar — always steel-grey */}
-              <Bar dataKey="paid" name="paid" fill="#1A2035" radius={[0, 4, 4, 0]} barSize={14} />
+              <Bar dataKey="paid" name="paid" fill="var(--border)" radius={[0, 4, 4, 0]} barSize={14} />
               {/* "Current" bar — green if gain, red if loss */}
               <Bar dataKey="current" name="current" radius={[0, 4, 4, 0]} barSize={14}>
                 {breakdownData.map((d, i) => (
-                  <Cell key={i} fill={d.gain >= 0 ? "#3ecf6a" : "#CC1F1F"} />
+                  <Cell key={i} fill={d.gain >= 0 ? "var(--price-color)" : "var(--primary-red)"} />
                 ))}
               </Bar>
             </BarChart>

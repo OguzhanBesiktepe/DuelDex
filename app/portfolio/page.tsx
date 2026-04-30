@@ -76,9 +76,9 @@ function StatCard({
   return (
     <div
       className="rounded-xl border p-4 flex flex-col gap-1"
-      style={{ background: "#0E1220", borderColor: "#1A2035" }}
+      style={{ background: "var(--surface)", borderColor: "var(--border)" }}
     >
-      <p className="text-xs" style={{ color: "#7A8BA8" }}>
+      <p className="text-xs" style={{ color: "var(--text-muted)" }}>
         {label}
       </p>
       <p
@@ -86,16 +86,16 @@ function StatCard({
         style={{
           color:
             positive === undefined
-              ? "#F0F2FF"
+              ? "var(--text-primary)"
               : positive
-                ? "#3ecf6a"
-                : "#CC1F1F",
+                ? "var(--price-color)"
+                : "var(--primary-red)",
         }}
       >
         {value}
       </p>
       {sub && (
-        <p className="text-xs" style={{ color: "#7A8BA8" }}>
+        <p className="text-xs" style={{ color: "var(--text-muted)" }}>
           {sub}
         </p>
       )}
@@ -171,9 +171,9 @@ export default function PortfolioPage() {
     return (
       <div
         className="flex min-h-screen items-center justify-center"
-        style={{ background: "#080B14" }}
+        style={{ background: "var(--background)" }}
       >
-        <p className="animate-pulse text-sm" style={{ color: "#7A8BA8" }}>
+        <p className="animate-pulse text-sm" style={{ color: "var(--text-muted)" }}>
           Loading portfolio…
         </p>
       </div>
@@ -227,18 +227,18 @@ export default function PortfolioPage() {
   const hasEUR = pkmAll.length > 0;
 
   return (
-    <div style={{ background: "#080B14", minHeight: "100vh" }}>
+    <div style={{ background: "var(--background)", minHeight: "100vh" }}>
       <div className="mx-auto max-w-4xl px-4 py-10">
 
         {/* Header */}
         <div className="mb-6">
           <h1
             className="text-3xl font-bold mb-1"
-            style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+            style={{ color: "var(--text-primary)", fontFamily: "var(--font-cinzel)" }}
           >
             Portfolio Analytics
           </h1>
-          <p className="text-sm" style={{ color: "#7A8BA8" }}>
+          <p className="text-sm" style={{ color: "var(--text-muted)" }}>
             {lists.length} list{lists.length === 1 ? "" : "s"} · {totalCards} card{totalCards === 1 ? "" : "s"}
           </p>
         </div>
@@ -247,17 +247,17 @@ export default function PortfolioPage() {
         {!hasAnyCards && (
           <div
             className="rounded-2xl border p-10 text-center"
-            style={{ borderColor: "#1A2035", background: "#0E1220" }}
+            style={{ borderColor: "var(--border)", background: "var(--surface)" }}
           >
             <p className="text-4xl mb-4">📊</p>
-            <p className="text-sm mb-4" style={{ color: "#7A8BA8" }}>
+            <p className="text-sm mb-4" style={{ color: "var(--text-muted)" }}>
               No cards in any list yet. Add cards to a list to start tracking your portfolio.
             </p>
             <div className="flex justify-center gap-3">
               <Link
                 href="/lists"
                 className="rounded-lg px-4 py-2 text-sm font-semibold transition hover:opacity-90"
-                style={{ background: "#FF7A00", color: "#080B14" }}
+                style={{ background: "var(--ygo-accent)", color: "var(--background)" }}
               >
                 My Lists
               </Link>
@@ -341,9 +341,9 @@ export default function PortfolioPage() {
             {!allPricesLoaded && (
               <div
                 className="rounded-2xl border p-8 mb-6 text-center"
-                style={{ background: "#0E1220", borderColor: "#1A2035" }}
+                style={{ background: "var(--surface)", borderColor: "var(--border)" }}
               >
-                <p className="animate-pulse text-sm" style={{ color: "#7A8BA8" }}>
+                <p className="animate-pulse text-sm" style={{ color: "var(--text-muted)" }}>
                   Fetching current prices… chart will appear shortly
                 </p>
               </div>
@@ -353,16 +353,16 @@ export default function PortfolioPage() {
             <div className="mb-4">
               <h2
                 className="text-sm font-semibold mb-3"
-                style={{ color: "#7A8BA8", textTransform: "uppercase", letterSpacing: "0.1em" }}
+                style={{ color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.1em" }}
               >
                 My Lists
               </h2>
               <div
                 className="rounded-2xl border overflow-hidden"
-                style={{ borderColor: "#1A2035" }}
+                style={{ borderColor: "var(--border)" }}
               >
                 {listSummaries.length === 0 && (
-                  <p className="px-5 py-4 text-sm" style={{ color: "#7A8BA8" }}>
+                  <p className="px-5 py-4 text-sm" style={{ color: "var(--text-muted)" }}>
                     No lists yet.
                   </p>
                 )}
@@ -372,7 +372,7 @@ export default function PortfolioPage() {
                     href={`/lists/${s.list.id}?from=/portfolio`}
                     className="flex items-center gap-4 px-5 py-4 transition hover:bg-white/[0.04]"
                     style={{
-                      background: "#0E1220",
+                      background: "var(--surface)",
                       borderBottom:
                         i < listSummaries.length - 1
                           ? "1px solid #1A2035"
@@ -384,11 +384,11 @@ export default function PortfolioPage() {
                     <div className="flex-1 min-w-0">
                       <p
                         className="text-sm font-semibold truncate"
-                        style={{ color: "#F0F2FF" }}
+                        style={{ color: "var(--text-primary)" }}
                       >
                         {s.list.name}
                       </p>
-                      <p className="text-xs" style={{ color: "#7A8BA8" }}>
+                      <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                         {s.itemCount} card{s.itemCount === 1 ? "" : "s"}
                       </p>
                     </div>
@@ -396,12 +396,12 @@ export default function PortfolioPage() {
                     {/* USD stats */}
                     {s.hasUSD && (
                       <div className="text-right shrink-0 hidden sm:block">
-                        <p className="text-xs" style={{ color: "#7A8BA8" }}>
+                        <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                           USD
                         </p>
                         <p
                           className="text-sm font-semibold"
-                          style={{ color: "#3ecf6a" }}
+                          style={{ color: "var(--price-color)" }}
                         >
                           ${s.investedUSD.toFixed(2)}
                         </p>
@@ -409,7 +409,7 @@ export default function PortfolioPage() {
                           <p
                             className="text-xs font-semibold"
                             style={{
-                              color: s.gainUSD >= 0 ? "#3ecf6a" : "#CC1F1F",
+                              color: s.gainUSD >= 0 ? "var(--price-color)" : "var(--primary-red)",
                             }}
                           >
                             {s.gainUSD >= 0 ? "▲" : "▼"} $
@@ -422,12 +422,12 @@ export default function PortfolioPage() {
                     {/* EUR stats */}
                     {s.hasEUR && (
                       <div className="text-right shrink-0 hidden sm:block">
-                        <p className="text-xs" style={{ color: "#7A8BA8" }}>
+                        <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                           EUR
                         </p>
                         <p
                           className="text-sm font-semibold"
-                          style={{ color: "#3ecf6a" }}
+                          style={{ color: "var(--price-color)" }}
                         >
                           €{s.investedEUR.toFixed(2)}
                         </p>
@@ -435,7 +435,7 @@ export default function PortfolioPage() {
                           <p
                             className="text-xs font-semibold"
                             style={{
-                              color: s.gainEUR >= 0 ? "#3ecf6a" : "#CC1F1F",
+                              color: s.gainEUR >= 0 ? "var(--price-color)" : "var(--primary-red)",
                             }}
                           >
                             {s.gainEUR >= 0 ? "▲" : "▼"} €
@@ -446,7 +446,7 @@ export default function PortfolioPage() {
                     )}
 
                     {/* Arrow */}
-                    <span className="text-sm shrink-0" style={{ color: "#1A2035" }}>
+                    <span className="text-sm shrink-0" style={{ color: "var(--border)" }}>
                       →
                     </span>
                   </Link>

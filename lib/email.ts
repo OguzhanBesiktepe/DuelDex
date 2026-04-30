@@ -33,7 +33,7 @@ export async function sendPriceAlertEmail(payload: AlertEmailPayload): Promise<b
   const symbol = currency === "EUR" ? "€" : "$";
   const isUp = pctChange >= 0;
   const arrow = isUp ? "▲" : "▼";
-  const arrowColor = isUp ? "#3ecf6a" : "#CC1F1F";
+  const arrowColor = isUp ? "var(--price-color)" : "var(--primary-red)";
   const absPct = Math.abs(pctChange).toFixed(1);
   const diff = Math.abs(newPrice - oldPrice).toFixed(2);
   const cardUrl = `${APP_URL}/${game === "yugioh" ? "yugioh" : "pokemon"}/card/${cardId}`;

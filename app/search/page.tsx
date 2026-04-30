@@ -16,9 +16,9 @@ export default async function SearchPage({
 
   if (!query) {
     return (
-      <div style={{ background: "#080B14", minHeight: "100vh" }}>
+      <div style={{ background: "var(--background)", minHeight: "100vh" }}>
         <div className="max-w-screen-xl mx-auto px-4 py-16 text-center">
-          <p className="text-lg" style={{ color: "#7A8BA8" }}>
+          <p className="text-lg" style={{ color: "var(--text-muted)" }}>
             Enter a card name in the search bar above.
           </p>
         </div>
@@ -62,16 +62,16 @@ export default async function SearchPage({
   const totalResults = ygoCards.length + pkmnCards.length;
 
   return (
-    <div style={{ background: "#080B14", minHeight: "100vh" }}>
+    <div style={{ background: "var(--background)", minHeight: "100vh" }}>
       <div className="max-w-screen-xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1
             className="text-2xl font-bold"
-            style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+            style={{ color: "var(--text-primary)", fontFamily: "var(--font-cinzel)" }}
           >
             Search Results
           </h1>
-          <p className="text-sm mt-1" style={{ color: "#7A8BA8" }}>
+          <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>
             {totalResults === 0
               ? `No results for "${query}"`
               : `${totalResults} result${totalResults !== 1 ? "s" : ""} for "${query}"`}
@@ -83,7 +83,7 @@ export default async function SearchPage({
             <h2
               className="text-base font-semibold mb-4 pb-2"
               style={{
-                color: "#FF7A00",
+                color: "var(--ygo-accent)",
                 borderBottom: "1px solid #1A2035",
                 fontFamily: "var(--font-cinzel)",
               }}
@@ -99,7 +99,7 @@ export default async function SearchPage({
             <h2
               className="text-base font-semibold mb-4 pb-2"
               style={{
-                color: "#00AAFF",
+                color: "var(--pkmn-accent)",
                 borderBottom: "1px solid #1A2035",
                 fontFamily: "var(--font-cinzel)",
               }}
@@ -112,7 +112,7 @@ export default async function SearchPage({
 
         {totalResults === 0 && (
           <div className="py-24 text-center">
-            <p className="text-sm" style={{ color: "#7A8BA8" }}>
+            <p className="text-sm" style={{ color: "var(--text-muted)" }}>
               Try a different name — partial matches work (e.g. &quot;blue eyes&quot; or &quot;charizard&quot;).
             </p>
           </div>

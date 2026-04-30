@@ -61,17 +61,17 @@ export default async function YGOSetsPage() {
   const sets = allSets.filter(isMajorSet);
 
   return (
-    <div style={{ background: "#080B14", minHeight: "100vh" }}>
+    <div style={{ background: "var(--background)", minHeight: "100vh" }}>
       <div className="max-w-screen-xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1
               className="text-2xl font-bold"
-              style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+              style={{ color: "var(--text-primary)", fontFamily: "var(--font-cinzel)" }}
             >
               Yu-Gi-Oh! Sets
             </h1>
-            <p className="text-sm mt-1" style={{ color: "#7A8BA8" }}>
+            <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>
               {sets.length} sets
             </p>
           </div>

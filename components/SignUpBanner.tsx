@@ -9,28 +9,28 @@ import { useAuth } from "@/lib/auth-context";
 const FEATURES = [
   {
     icon: "♥",
-    iconColor: "#CC1F1F",
+    iconColor: "var(--primary-red)",
     title: "Favorite Cards",
     description:
       "Save any card from either game and watch its price update automatically every day.",
   },
   {
     icon: "📋",
-    iconColor: "#FF7A00",
+    iconColor: "var(--ygo-accent)",
     title: "Custom Lists",
     description:
       "Build watchlists by deck, set, or strategy. Add specific printings, not just card names.",
   },
   {
     icon: "📊",
-    iconColor: "#3ecf6a",
+    iconColor: "var(--price-color)",
     title: "Portfolio Analytics",
     description:
       "Interactive charts show your collection's value over time — timeline and per-card breakdown.",
   },
   {
     icon: "💰",
-    iconColor: "#FFD700",
+    iconColor: "var(--gold)",
     title: "Price Tracking",
     description:
       "See exactly what you paid vs. what it's worth now. Export to PNG or CSV at any time.",
@@ -52,17 +52,17 @@ export default function SignUpBanner() {
       <div className="text-center mb-10">
         <p
           className="text-xs font-bold uppercase tracking-[0.25em] mb-3"
-          style={{ color: "#FF7A00" }}
+          style={{ color: "var(--ygo-accent)" }}
         >
           Free Account
         </p>
         <h2
           className="text-2xl sm:text-3xl font-bold mb-3"
-          style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+          style={{ color: "var(--text-primary)", fontFamily: "var(--font-cinzel)" }}
         >
           Know What Your Collection Is Worth
         </h2>
-        <p className="text-sm max-w-md mx-auto" style={{ color: "#7A8BA8" }}>
+        <p className="text-sm max-w-md mx-auto" style={{ color: "var(--text-muted)" }}>
           Track prices across Yu-Gi-Oh! and Pokémon, build lists, and see your
           portfolio's performance — all in one place.
         </p>
@@ -74,7 +74,7 @@ export default function SignUpBanner() {
           <div
             key={f.title}
             className="rounded-xl border p-5 flex flex-col gap-3"
-            style={{ background: "#0E1220", borderColor: "#1A2035" }}
+            style={{ background: "var(--surface)", borderColor: "var(--border)" }}
           >
             <span
               className="text-2xl w-10 h-10 flex items-center justify-center rounded-lg"
@@ -85,11 +85,11 @@ export default function SignUpBanner() {
             <div>
               <p
                 className="text-sm font-bold mb-1"
-                style={{ color: "#F0F2FF" }}
+                style={{ color: "var(--text-primary)" }}
               >
                 {f.title}
               </p>
-              <p className="text-xs leading-relaxed" style={{ color: "#7A8BA8" }}>
+              <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
                 {f.description}
               </p>
             </div>
@@ -102,7 +102,7 @@ export default function SignUpBanner() {
         <Link
           href="/signin"
           className="rounded-lg px-8 py-3 text-sm font-bold transition-opacity hover:opacity-90"
-          style={{ background: "#FF7A00", color: "#080B14" }}
+          style={{ background: "var(--ygo-accent)", color: "var(--background)" }}
         >
           Sign Up for Free →
         </Link>

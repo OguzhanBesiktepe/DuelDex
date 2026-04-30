@@ -72,9 +72,9 @@ export default function YGOSetsBrowser({ sets }: { sets: YGOSet[] }) {
           placeholder="Search sets..."
           className="flex-1 rounded-md px-3 py-2 text-sm outline-none"
           style={{
-            background: "#0E1220",
+            background: "var(--surface)",
             border: "1px solid #1A2035",
-            color: "#F0F2FF",
+            color: "var(--text-primary)",
           }}
         />
         <div className="flex gap-2 shrink-0">
@@ -84,9 +84,9 @@ export default function YGOSetsBrowser({ sets }: { sets: YGOSet[] }) {
               onClick={() => handleSortChange(opt)}
               className="px-3 py-2 rounded-md text-sm font-medium transition-colors"
               style={{
-                background: sort === opt ? "#FF7A0022" : "#0E1220",
-                color: sort === opt ? "#FF7A00" : "#7A8BA8",
-                border: `1px solid ${sort === opt ? "#FF7A0044" : "#1A2035"}`,
+                background: sort === opt ? "#FF7A0022" : "var(--surface)",
+                color: sort === opt ? "var(--ygo-accent)" : "var(--text-muted)",
+                border: `1px solid ${sort === opt ? "#FF7A0044" : "var(--border)"}`,
               }}
             >
               {opt === "newest" ? "Newest First" : "A–Z"}
@@ -96,7 +96,7 @@ export default function YGOSetsBrowser({ sets }: { sets: YGOSet[] }) {
       </div>
 
       {filtered.length === 0 && (
-        <p className="py-16 text-center text-sm" style={{ color: "#7A8BA8" }}>
+        <p className="py-16 text-center text-sm" style={{ color: "var(--text-muted)" }}>
           No sets found.
         </p>
       )}
@@ -109,7 +109,7 @@ export default function YGOSetsBrowser({ sets }: { sets: YGOSet[] }) {
             href={`/yugioh/sets/${encodeURIComponent(set.set_code)}`}
             className="group flex items-center justify-between gap-4 px-4 py-3 rounded-lg transition-all duration-200"
             style={{
-              background: "#0E1220",
+              background: "var(--surface)",
               border: "1px solid #1A2035",
             }}
             onMouseEnter={(e) => {
@@ -117,24 +117,24 @@ export default function YGOSetsBrowser({ sets }: { sets: YGOSet[] }) {
               (e.currentTarget as HTMLElement).style.background = "#0E1525";
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.borderColor = "#1A2035";
-              (e.currentTarget as HTMLElement).style.background = "#0E1220";
+              (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
+              (e.currentTarget as HTMLElement).style.background = "var(--surface)";
             }}
           >
             <span
               className="text-sm font-semibold leading-tight"
-              style={{ color: "#F0F2FF", flex: 1, minWidth: 0 }}
+              style={{ color: "var(--text-primary)", flex: 1, minWidth: 0 }}
             >
               {set.set_name}
             </span>
 
             <div className="flex items-center gap-3 shrink-0">
               {set.tcg_date && (
-                <span className="text-xs hidden sm:block" style={{ color: "#7A8BA8" }}>
+                <span className="text-xs hidden sm:block" style={{ color: "var(--text-muted)" }}>
                   {new Date(set.tcg_date).getFullYear()}
                 </span>
               )}
-              <span className="text-xs" style={{ color: "#7A8BA8" }}>
+              <span className="text-xs" style={{ color: "var(--text-muted)" }}>
                 {set.num_of_cards} cards
               </span>
               <span className="text-xs font-mono" style={{ color: "#4A5568" }}>
@@ -154,7 +154,7 @@ export default function YGOSetsBrowser({ sets }: { sets: YGOSet[] }) {
         totalPages={totalPages}
         total={filtered.length}
         countLabel="sets"
-        accent="#FF7A00"
+        accent="var(--ygo-accent)"
         onPage={(p) => setPage(p)}
       />
     </div>

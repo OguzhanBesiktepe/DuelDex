@@ -90,9 +90,9 @@ export default function CardImageZoom({
               onClick={prev}
               className="w-7 h-7 rounded-full flex items-center justify-center text-sm transition-colors"
               style={{
-                background: "#0E1220",
+                background: "var(--surface)",
                 border: "1px solid #1A2035",
-                color: "#7A8BA8",
+                color: "var(--text-muted)",
               }}
               aria-label="Previous artwork"
             >
@@ -109,7 +109,7 @@ export default function CardImageZoom({
                   style={{
                     width: i === index ? 18 : 6,
                     height: 6,
-                    background: i === index ? "#FF7A00" : "#1A2035",
+                    background: i === index ? "var(--ygo-accent)" : "var(--border)",
                   }}
                   aria-label={`Art ${i + 1}`}
                 />
@@ -120,9 +120,9 @@ export default function CardImageZoom({
               onClick={next}
               className="w-7 h-7 rounded-full flex items-center justify-center text-sm transition-colors"
               style={{
-                background: "#0E1220",
+                background: "var(--surface)",
                 border: "1px solid #1A2035",
-                color: "#7A8BA8",
+                color: "var(--text-muted)",
               }}
               aria-label="Next artwork"
             >
@@ -132,7 +132,7 @@ export default function CardImageZoom({
         )}
 
         {total > 1 && (
-          <p className="text-xs" style={{ color: "#7A8BA8" }}>
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
             Art {index + 1} of {total}
           </p>
         )}
@@ -150,7 +150,7 @@ export default function CardImageZoom({
         >
           <button
             className="absolute top-5 right-5 text-2xl leading-none"
-            style={{ color: "#7A8BA8" }}
+            style={{ color: "var(--text-muted)" }}
             onClick={() => setOpen(false)}
             aria-label="Close"
           >
@@ -162,9 +162,9 @@ export default function CardImageZoom({
             <button
               className="absolute left-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center text-xl"
               style={{
-                background: "#0E1220",
+                background: "var(--surface)",
                 border: "1px solid #1A2035",
-                color: "#F0F2FF",
+                color: "var(--text-primary)",
               }}
               onClick={(e) => {
                 e.stopPropagation();
@@ -200,9 +200,9 @@ export default function CardImageZoom({
             <button
               className="absolute right-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center text-xl"
               style={{
-                background: "#0E1220",
+                background: "var(--surface)",
                 border: "1px solid #1A2035",
-                color: "#F0F2FF",
+                color: "var(--text-primary)",
               }}
               onClick={(e) => {
                 e.stopPropagation();
@@ -217,7 +217,7 @@ export default function CardImageZoom({
           {total > 1 && (
             <p
               className="absolute bottom-6 text-xs"
-              style={{ color: "#7A8BA8" }}
+              style={{ color: "var(--text-muted)" }}
             >
               Art {index + 1} of {total} — use ← → keys to navigate
             </p>

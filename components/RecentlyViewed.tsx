@@ -38,7 +38,7 @@ export default function RecentlyViewed() {
     <section className="max-w-screen-xl mx-auto px-4 py-10">
       <p
         className="text-xs font-bold uppercase tracking-[0.2em] mb-5"
-        style={{ color: "#7A8BA8" }}
+        style={{ color: "var(--text-muted)" }}
       >
         Recently Viewed
       </p>
@@ -58,17 +58,17 @@ export default function RecentlyViewed() {
                 src={card.image}
                 alt={card.name}
                 className="rounded-md w-full object-cover transition-opacity duration-200 group-hover:opacity-70"
-                style={{ aspectRatio: "3/4", background: "#0E1220" }}
+                style={{ aspectRatio: "3/4", background: "var(--surface)" }}
               />
               <p
                 className="text-xs font-medium text-center leading-tight line-clamp-2"
-                style={{ color: "#7A8BA8" }}
+                style={{ color: "var(--text-muted)" }}
               >
                 {card.name}
               </p>
               <span
                 className="text-xs text-center font-bold uppercase tracking-wider"
-                style={{ color: card.game === "yugioh" ? "#FF7A00" : "#00AAFF" }}
+                style={{ color: card.game === "yugioh" ? "var(--ygo-accent)" : "var(--pkmn-accent)" }}
               >
                 {card.game === "yugioh" ? "YGO" : "PKM"}
               </span>

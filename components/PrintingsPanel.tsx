@@ -239,9 +239,9 @@ export default function PrintingsPanel({
 
       {/* Market Prices */}
       {hasPrices && (
-        <div className="rounded-xl p-4" style={{ background: "#0E1220", border: "1px solid #1A2035" }}>
+        <div className="rounded-xl p-4" style={{ background: "var(--surface)", border: "1px solid #1A2035" }}>
           <div className="flex items-center justify-between mb-3">
-            <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: "#7A8BA8" }}>
+            <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--text-muted)" }}>
               Market Prices
             </p>
             {selectedSet && (() => {
@@ -256,20 +256,20 @@ export default function PrintingsPanel({
           <div className="flex flex-wrap gap-6">
             {displayTCG > 0 && (
               <div>
-                <p className="text-xs mb-0.5" style={{ color: "#7A8BA8" }}>TCGPlayer</p>
-                <p className="text-xl font-bold" style={{ color: "#3ecf6a" }}>${displayTCG.toFixed(2)}</p>
+                <p className="text-xs mb-0.5" style={{ color: "var(--text-muted)" }}>TCGPlayer</p>
+                <p className="text-xl font-bold" style={{ color: "var(--price-color)" }}>${displayTCG.toFixed(2)}</p>
               </div>
             )}
             {!tcgIsPerPrinting && aggEbay > 0 && (
               <div>
-                <p className="text-xs mb-0.5" style={{ color: "#7A8BA8" }}>eBay</p>
-                <p className="text-xl font-bold" style={{ color: "#F0F2FF" }}>${aggEbay.toFixed(2)}</p>
+                <p className="text-xs mb-0.5" style={{ color: "var(--text-muted)" }}>eBay</p>
+                <p className="text-xl font-bold" style={{ color: "var(--text-primary)" }}>${aggEbay.toFixed(2)}</p>
               </div>
             )}
             {!tcgIsPerPrinting && aggCardmarket > 0 && (
               <div>
-                <p className="text-xs mb-0.5" style={{ color: "#7A8BA8" }}>Cardmarket</p>
-                <p className="text-xl font-bold" style={{ color: "#F0F2FF" }}>${aggCardmarket.toFixed(2)}</p>
+                <p className="text-xs mb-0.5" style={{ color: "var(--text-muted)" }}>Cardmarket</p>
+                <p className="text-xl font-bold" style={{ color: "var(--text-primary)" }}>${aggCardmarket.toFixed(2)}</p>
               </div>
             )}
           </div>
@@ -281,7 +281,7 @@ export default function PrintingsPanel({
         <div>
           {/* Header + sort */}
           <div className="flex items-center justify-between mb-2 md:mb-3">
-            <p className="text-xs md:text-sm font-semibold uppercase tracking-wide" style={{ color: "#7A8BA8" }}>
+            <p className="text-xs md:text-sm font-semibold uppercase tracking-wide" style={{ color: "var(--text-muted)" }}>
               Printings ({sets.length})
             </p>
             <div className="flex items-center gap-1">
@@ -289,25 +289,25 @@ export default function PrintingsPanel({
                 onClick={() => setSortDir("asc")}
                 className="px-2.5 py-1 rounded text-xs font-medium transition-colors"
                 style={{
-                  background: sortDir === "asc" ? "#FF7A0022" : "#0E1220",
-                  color: sortDir === "asc" ? "#FF7A00" : "#7A8BA8",
-                  border: `1px solid ${sortDir === "asc" ? "#FF7A0044" : "#1A2035"}`,
+                  background: sortDir === "asc" ? "#FF7A0022" : "var(--surface)",
+                  color: sortDir === "asc" ? "var(--ygo-accent)" : "var(--text-muted)",
+                  border: `1px solid ${sortDir === "asc" ? "#FF7A0044" : "var(--border)"}`,
                 }}
               >↑ Low</button>
               <button
                 onClick={() => setSortDir("desc")}
                 className="px-2.5 py-1 rounded text-xs font-medium transition-colors"
                 style={{
-                  background: sortDir === "desc" ? "#FF7A0022" : "#0E1220",
-                  color: sortDir === "desc" ? "#FF7A00" : "#7A8BA8",
-                  border: `1px solid ${sortDir === "desc" ? "#FF7A0044" : "#1A2035"}`,
+                  background: sortDir === "desc" ? "#FF7A0022" : "var(--surface)",
+                  color: sortDir === "desc" ? "var(--ygo-accent)" : "var(--text-muted)",
+                  border: `1px solid ${sortDir === "desc" ? "#FF7A0044" : "var(--border)"}`,
                 }}
               >↓ High</button>
               {selected !== null && (
                 <button
                   onClick={() => setSelected(null)}
                   className="px-2.5 py-1 rounded text-xs font-medium"
-                  style={{ background: "#0E1220", color: "#7A8BA8", border: "1px solid #1A2035" }}
+                  style={{ background: "var(--surface)", color: "var(--text-muted)", border: "1px solid #1A2035" }}
                 >✕ Clear</button>
               )}
             </div>
@@ -329,20 +329,20 @@ export default function PrintingsPanel({
                   onClick={() => setSelected(isSelected ? null : i)}
                   className="flex items-center justify-between text-xs md:text-sm px-3 md:px-4 py-2 md:py-3 rounded md:rounded-lg w-full text-left transition-colors"
                   style={{
-                    background: isSelected ? `${rc}15` : "#0E1220",
-                    border: `1px solid ${isSelected ? `${rc}60` : "#1A2035"}`,
+                    background: isSelected ? `${rc}15` : "var(--surface)",
+                    border: `1px solid ${isSelected ? `${rc}60` : "var(--border)"}`,
                   }}
                 >
                   {/* Set name */}
-                  <span style={{ color: "#F0F2FF" }} className="truncate flex-1">
+                  <span style={{ color: "var(--text-primary)" }} className="truncate flex-1">
                     {s.set_name}
                   </span>
 
                   {/* Right side: rarity · price · ♥ · + */}
                   <div className="flex gap-2 md:gap-3 shrink-0 ml-2 items-center">
-                    <span style={{ color: isSelected ? rc : "#7A8BA8" }}>{s.set_rarity}</span>
+                    <span style={{ color: isSelected ? rc : "var(--text-muted)" }}>{s.set_rarity}</span>
                     {rowPrice > 0 && (
-                      <span className="font-semibold" style={{ color: isSelected ? rc : "#3ecf6a" }}>
+                      <span className="font-semibold" style={{ color: isSelected ? rc : "var(--price-color)" }}>
                         ${rowPrice.toFixed(2)}
                       </span>
                     )}
@@ -354,7 +354,7 @@ export default function PrintingsPanel({
                         title={isFav ? "Remove from favorites" : "Favorite this printing"}
                         className="transition-transform hover:scale-110"
                         style={{
-                          color: isFav ? "#CC1F1F" : "#3A4A60",
+                          color: isFav ? "var(--primary-red)" : "#3A4A60",
                           opacity: togglingFavCode === s.set_code ? 0.4 : 1,
                           cursor: "pointer",
                           fontSize: "0.95rem",
@@ -372,7 +372,7 @@ export default function PrintingsPanel({
                         title="Add to list"
                         className="transition-transform hover:scale-110 font-bold"
                         style={{
-                          color: isListOpen ? "#FF7A00" : "#3A4A60",
+                          color: isListOpen ? "var(--ygo-accent)" : "#3A4A60",
                           cursor: "pointer",
                           fontSize: "0.95rem",
                           lineHeight: 1,
@@ -392,7 +392,7 @@ export default function PrintingsPanel({
                         title={hasAlert ? "Edit price alert" : "Set price alert"}
                         className="transition-transform hover:scale-110"
                         style={{
-                          color: hasAlert ? "#FF7A00" : "#3A4A60",
+                          color: hasAlert ? "var(--ygo-accent)" : "#3A4A60",
                           cursor: "pointer",
                           fontSize: "0.85rem",
                           lineHeight: 1,
@@ -408,7 +408,7 @@ export default function PrintingsPanel({
           </div>
 
           {selected !== null && (
-            <p className="mt-2 text-xs" style={{ color: "#7A8BA8" }}>
+            <p className="mt-2 text-xs" style={{ color: "var(--text-muted)" }}>
               Click a printing to update TCGPlayer price above. eBay &amp; Cardmarket show card-wide averages.
             </p>
           )}
@@ -428,17 +428,17 @@ export default function PrintingsPanel({
               top: dropPos.top,
               right: dropPos.right,
               width: 240,
-              background: "#0E1220",
+              background: "var(--surface)",
               border: "1px solid #1A2035",
               boxShadow: "0 8px 32px rgba(0,0,0,0.6)",
             }}
           >
             {/* Dropdown header */}
             <div className="px-3 py-2.5" style={{ borderBottom: "1px solid #1A2035" }}>
-              <p className="text-xs font-semibold truncate" style={{ color: "#F0F2FF" }}>
+              <p className="text-xs font-semibold truncate" style={{ color: "var(--text-primary)" }}>
                 {openForSet.set_name}
               </p>
-              <p className="text-xs" style={{ color: "#7A8BA8" }}>
+              <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                 {openForSet.set_rarity}
                 {parseFloat(openForSet.set_price) > 0 && ` · $${parseFloat(openForSet.set_price).toFixed(2)}`}
               </p>
@@ -446,11 +446,11 @@ export default function PrintingsPanel({
 
             {/* List items */}
             {listsLoading ? (
-              <p className="px-3 py-3 text-xs animate-pulse" style={{ color: "#7A8BA8" }}>
+              <p className="px-3 py-3 text-xs animate-pulse" style={{ color: "var(--text-muted)" }}>
                 Loading lists…
               </p>
             ) : lists.length === 0 && !creatingList ? (
-              <p className="px-3 py-3 text-xs" style={{ color: "#7A8BA8" }}>
+              <p className="px-3 py-3 text-xs" style={{ color: "var(--text-muted)" }}>
                 No lists yet. Create one below.
               </p>
             ) : (
@@ -464,11 +464,11 @@ export default function PrintingsPanel({
                       onClick={() => handleAddToList(list.id)}
                       disabled={alreadyIn || isAdding}
                       className="flex items-center justify-between w-full px-3 py-2.5 text-xs text-left transition hover:bg-white/5 disabled:opacity-60"
-                      style={{ color: "#F0F2FF" }}
+                      style={{ color: "var(--text-primary)" }}
                     >
                       <span className="truncate">{list.name}</span>
-                      {alreadyIn && <span style={{ color: "#3ecf6a" }}>✓ Added</span>}
-                      {isAdding && <span className="animate-pulse" style={{ color: "#7A8BA8" }}>Adding…</span>}
+                      {alreadyIn && <span style={{ color: "var(--price-color)" }}>✓ Added</span>}
+                      {isAdding && <span className="animate-pulse" style={{ color: "var(--text-muted)" }}>Adding…</span>}
                     </button>
                   );
                 })}
@@ -489,21 +489,21 @@ export default function PrintingsPanel({
                     }}
                     placeholder="List name…"
                     className="w-full rounded-md px-2 py-1.5 text-xs outline-none"
-                    style={{ background: "#080B14", border: "1px solid #1A2035", color: "#F0F2FF" }}
+                    style={{ background: "var(--background)", border: "1px solid #1A2035", color: "var(--text-primary)" }}
                   />
                   <div className="flex gap-1.5">
                     <button
                       onClick={handleCreateAndAdd}
                       disabled={!newListName.trim()}
                       className="flex-1 rounded py-1.5 text-xs font-bold transition hover:opacity-90 disabled:opacity-40"
-                      style={{ background: "#FF7A00", color: "#080B14" }}
+                      style={{ background: "var(--ygo-accent)", color: "var(--background)" }}
                     >
                       Create &amp; Add
                     </button>
                     <button
                       onClick={() => { setCreatingList(false); setNewListName(""); }}
                       className="rounded px-2 py-1.5 text-xs transition hover:bg-white/5"
-                      style={{ color: "#7A8BA8", border: "1px solid #1A2035" }}
+                      style={{ color: "var(--text-muted)", border: "1px solid #1A2035" }}
                     >
                       Cancel
                     </button>
@@ -513,7 +513,7 @@ export default function PrintingsPanel({
                 <button
                   onClick={() => setCreatingList(true)}
                   className="flex items-center gap-1.5 w-full px-3 py-2.5 text-xs transition hover:bg-white/5"
-                  style={{ color: "#00AAFF" }}
+                  style={{ color: "var(--pkmn-accent)" }}
                 >
                   + Create new list
                 </button>

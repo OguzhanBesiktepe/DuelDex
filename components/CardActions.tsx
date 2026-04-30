@@ -186,14 +186,14 @@ export default function CardActions({
 
   // 8 sparkle dots evenly spaced around a circle (angles in degrees)
   const SPARKLES = [
-    { angle: 0,   color: "#CC1F1F" },
-    { angle: 45,  color: "#FF7A00" },
-    { angle: 90,  color: "#FFD700" },
-    { angle: 135, color: "#FF7A00" },
-    { angle: 180, color: "#CC1F1F" },
-    { angle: 225, color: "#FF7A00" },
-    { angle: 270, color: "#FFD700" },
-    { angle: 315, color: "#FF7A00" },
+    { angle: 0,   color: "var(--primary-red)" },
+    { angle: 45,  color: "var(--ygo-accent)" },
+    { angle: 90,  color: "var(--gold)" },
+    { angle: 135, color: "var(--ygo-accent)" },
+    { angle: 180, color: "var(--primary-red)" },
+    { angle: 225, color: "var(--ygo-accent)" },
+    { angle: 270, color: "var(--gold)" },
+    { angle: 315, color: "var(--ygo-accent)" },
   ];
 
   return (
@@ -229,9 +229,9 @@ export default function CardActions({
         title={favorited ? "Remove from favorites" : "Add to favorites"}
         className="relative flex items-center justify-center gap-2 flex-1 px-4 py-2.5 rounded-lg text-sm font-bold transition-all disabled:opacity-40 overflow-visible"
         style={{
-          background: favorited ? "rgba(204,31,31,0.15)" : "#0E1220",
-          border: `1px solid ${favorited ? "#CC1F1F" : "#1A2035"}`,
-          color: favorited ? "#CC1F1F" : "#7A8BA8",
+          background: favorited ? "rgba(204,31,31,0.15)" : "var(--surface)",
+          border: `1px solid ${favorited ? "var(--primary-red)" : "var(--border)"}`,
+          color: favorited ? "var(--primary-red)" : "var(--text-muted)",
         }}
       >
         {/* Heart icon with pop animation */}
@@ -275,9 +275,9 @@ export default function CardActions({
           onClick={handleOpenListDropdown}
           className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-bold transition-all"
           style={{
-            background: "#0E1220",
+            background: "var(--surface)",
             border: "1px solid #1A2035",
-            color: "#7A8BA8",
+            color: "var(--text-muted)",
           }}
         >
           <span>+</span> Add to List
@@ -286,13 +286,13 @@ export default function CardActions({
         {listDropdownOpen && (
           <div
             className="absolute left-0 top-full mt-1 w-64 rounded-xl border shadow-2xl z-50 overflow-hidden"
-            style={{ background: "#0E1220", borderColor: "#1A2035" }}
+            style={{ background: "var(--surface)", borderColor: "var(--border)" }}
           >
             {/* Loading state */}
             {listsLoading && (
               <p
                 className="px-4 py-3 text-sm"
-                style={{ color: "#7A8BA8" }}
+                style={{ color: "var(--text-muted)" }}
               >
                 Loading lists…
               </p>
@@ -310,17 +310,17 @@ export default function CardActions({
                       onClick={() => handleAddToList(list.id)}
                       disabled={alreadyIn || isAdding}
                       className="flex items-center justify-between w-full px-4 py-2.5 text-sm text-left transition hover:bg-white/5 disabled:opacity-60"
-                      style={{ color: "#F0F2FF" }}
+                      style={{ color: "var(--text-primary)" }}
                     >
                       <span className="truncate">{list.name}</span>
                       {/* Show checkmark if card is already in this list */}
                       {alreadyIn && (
-                        <span style={{ color: "#3ecf6a" }}>✓ Added</span>
+                        <span style={{ color: "var(--price-color)" }}>✓ Added</span>
                       )}
                       {isAdding && (
                         <span
                           className="text-xs animate-pulse"
-                          style={{ color: "#7A8BA8" }}
+                          style={{ color: "var(--text-muted)" }}
                         >
                           Adding…
                         </span>
@@ -335,7 +335,7 @@ export default function CardActions({
             {!listsLoading && lists.length === 0 && !creatingList && (
               <p
                 className="px-4 py-3 text-sm"
-                style={{ color: "#7A8BA8" }}
+                style={{ color: "var(--text-muted)" }}
               >
                 No lists yet. Create one below.
               </p>
@@ -343,7 +343,7 @@ export default function CardActions({
 
             <div
               className="border-t"
-              style={{ borderColor: "#1A2035" }}
+              style={{ borderColor: "var(--border)" }}
             >
               {/* Inline new list creator */}
               {creatingList ? (
@@ -362,9 +362,9 @@ export default function CardActions({
                     placeholder="List name…"
                     className="w-full rounded-md px-3 py-2 text-sm outline-none"
                     style={{
-                      background: "#080B14",
+                      background: "var(--background)",
                       border: "1px solid #1A2035",
-                      color: "#F0F2FF",
+                      color: "var(--text-primary)",
                     }}
                   />
                   <div className="flex gap-2">
@@ -372,14 +372,14 @@ export default function CardActions({
                       onClick={handleCreateList}
                       disabled={!newListName.trim()}
                       className="flex-1 rounded-md py-2 text-sm font-bold transition hover:opacity-90 disabled:opacity-40"
-                      style={{ background: "#FF7A00", color: "#080B14" }}
+                      style={{ background: "var(--ygo-accent)", color: "var(--background)" }}
                     >
                       Create
                     </button>
                     <button
                       onClick={() => { setCreatingList(false); setNewListName(""); }}
                       className="rounded-md px-3 py-2 text-sm transition hover:bg-white/5"
-                      style={{ color: "#7A8BA8", border: "1px solid #1A2035" }}
+                      style={{ color: "var(--text-muted)", border: "1px solid #1A2035" }}
                     >
                       Cancel
                     </button>
@@ -390,7 +390,7 @@ export default function CardActions({
                 <button
                   onClick={() => setCreatingList(true)}
                   className="flex items-center gap-2 w-full px-4 py-2.5 text-sm transition hover:bg-white/5"
-                  style={{ color: "#00AAFF" }}
+                  style={{ color: "var(--pkmn-accent)" }}
                 >
                   <span>+</span> Create new list
                 </button>
@@ -401,7 +401,7 @@ export default function CardActions({
                 href="/lists"
                 onClick={() => setListDropdownOpen(false)}
                 className="flex items-center gap-2 px-4 py-2 text-xs transition hover:bg-white/5"
-                style={{ color: "#7A8BA8", borderTop: "1px solid #1A2035" }}
+                style={{ color: "var(--text-muted)", borderTop: "1px solid #1A2035" }}
               >
                 View all my lists →
               </Link>

@@ -19,7 +19,7 @@ export function MarketplaceLinks({ links }: MarketplaceLinksProps) {
 
   return (
     <div className="w-full flex flex-col gap-2">
-      <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#7A8BA8" }}>
+      <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--text-muted)" }}>
         Available for purchase:
       </p>
       <div className="flex gap-2">
@@ -32,7 +32,7 @@ export function MarketplaceLinks({ links }: MarketplaceLinksProps) {
             title={`Buy on ${link.alt}`}
             className="flex flex-1 items-center justify-center py-3 rounded-lg transition-opacity hover:opacity-80"
             style={{
-              background: link.background ?? "#0E1220",
+              background: link.background ?? "var(--surface)",
               border: link.background ? "none" : "1px solid #1A2035",
             }}
           >

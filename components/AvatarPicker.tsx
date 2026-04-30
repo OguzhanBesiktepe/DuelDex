@@ -113,13 +113,13 @@ export default function AvatarPicker({
         <button
           onClick={onClose}
           className="text-sm transition hover:opacity-70"
-          style={{ color: "#7A8BA8" }}
+          style={{ color: "var(--text-muted)" }}
         >
           ← Back
         </button>
         <span
           className="text-sm font-semibold"
-          style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+          style={{ color: "var(--text-primary)", fontFamily: "var(--font-cinzel)" }}
         >
           Change Avatar
         </span>
@@ -135,29 +135,29 @@ export default function AvatarPicker({
             className="rounded-full object-cover"
             style={{ width: 80, height: 80, border: "2px solid #1A2035" }}
           />
-          <p className="text-xs" style={{ color: "#7A8BA8" }}>
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
             {previewLabel}
           </p>
         </div>
 
-        <div style={{ height: 1, background: "#1A2035" }} />
+        <div style={{ height: 1, background: "var(--border)" }} />
 
         {/* Option: Use initials — shown when on Google photo or custom photo */}
         {(usingGoogle || usingCustomPhoto) && (
           <div className="flex flex-col gap-2">
-            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#7A8BA8" }}>
+            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
               Initials avatar
             </p>
             <button
               onClick={() => save(INITIALS_SENTINEL)}
               disabled={saving}
               className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-semibold transition hover:opacity-90 disabled:opacity-50"
-              style={{ background: "#080B14", border: "1px solid #1A2035", color: "#F0F2FF" }}
+              style={{ background: "var(--background)", border: "1px solid #1A2035", color: "var(--text-primary)" }}
             >
               <img src={diceBearUrl} alt="Initials" className="rounded-full shrink-0" style={{ width: 32, height: 32 }} />
               <span>Use initials avatar</span>
             </button>
-            <p className="text-xs" style={{ color: "#7A8BA8" }}>
+            <p className="text-xs" style={{ color: "var(--text-muted)" }}>
               Auto-generated from your name — no image needed.
             </p>
           </div>
@@ -166,14 +166,14 @@ export default function AvatarPicker({
         {/* Option: Use Google photo — shown when user explicitly switched away from it */}
         {googlePhotoUrl && (usingInitials || usingCustomPhoto) && (
           <div className="flex flex-col gap-2">
-            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#7A8BA8" }}>
+            <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
               Google photo
             </p>
             <button
               onClick={() => save(null)}
               disabled={saving}
               className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-semibold transition hover:opacity-90 disabled:opacity-50"
-              style={{ background: "#080B14", border: "1px solid #1A2035", color: "#F0F2FF" }}
+              style={{ background: "var(--background)", border: "1px solid #1A2035", color: "var(--text-primary)" }}
             >
               <img src={googlePhotoUrl} alt="Google" referrerPolicy="no-referrer" className="rounded-full shrink-0 object-cover" style={{ width: 32, height: 32 }} />
               <span>Use Google photo</span>
@@ -181,25 +181,25 @@ export default function AvatarPicker({
           </div>
         )}
 
-        <div style={{ height: 1, background: "#1A2035" }} />
+        <div style={{ height: 1, background: "var(--border)" }} />
 
         {/* Custom upload */}
         <div className="flex flex-col gap-2">
-          <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#7A8BA8" }}>
+          <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
             Upload your own photo
           </p>
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={saving}
             className="w-full flex items-center justify-center gap-2 rounded-lg py-3 text-sm font-semibold transition hover:opacity-90 disabled:opacity-50"
-            style={{ background: "#080B14", border: "1px solid #1A2035", color: "#F0F2FF" }}
+            style={{ background: "var(--background)", border: "1px solid #1A2035", color: "var(--text-primary)" }}
           >
             📁 Choose from device
           </button>
           {uploadError && (
-            <p className="text-xs" style={{ color: "#CC1F1F" }}>{uploadError}</p>
+            <p className="text-xs" style={{ color: "var(--primary-red)" }}>{uploadError}</p>
           )}
-          <p className="text-xs" style={{ color: "#7A8BA8" }}>
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
             Any image — auto-resized to 200×200px. JPG, PNG, WebP all work.
           </p>
           <input
@@ -213,7 +213,7 @@ export default function AvatarPicker({
         </div>
 
         {saving && (
-          <p className="text-xs animate-pulse text-center" style={{ color: "#7A8BA8" }}>
+          <p className="text-xs animate-pulse text-center" style={{ color: "var(--text-muted)" }}>
             Saving…
           </p>
         )}

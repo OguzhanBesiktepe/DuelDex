@@ -16,7 +16,7 @@ export default function BackButton({ label, href }: BackButtonProps) {
   const router = useRouter();
 
   const style = {
-    color: "#7A8BA8",
+    color: "var(--text-muted)",
     background: "none",
     border: "none",
     padding: 0,

@@ -74,7 +74,7 @@ export default function HeroCard({
         >
           <button
             className="absolute top-5 right-5 text-2xl leading-none"
-            style={{ color: "#7A8BA8" }}
+            style={{ color: "var(--text-muted)" }}
             onClick={() => setOpen(false)}
             aria-label="Close"
           >

@@ -68,13 +68,13 @@ export default function CardItem({
       <div
         className="relative rounded-xl overflow-hidden transition-all duration-300"
         style={{
-          background: "#0E1220",
+          background: "var(--surface)",
           border: `2px solid ${rarityColor}90`,
           boxShadow: `0 0 16px ${rarityColor}25`,
         }}
       >
         {/* Card image */}
-        <div className="relative w-full aspect-[3/4] bg-[#080B14]">
+        <div className="relative w-full aspect-[3/4]" style={{ background: "var(--surface)" }}>
           {imgSrc ? (
             <Image
               src={imgSrc}
@@ -100,7 +100,7 @@ export default function CardItem({
         <div className="p-3">
           <p
             className="text-sm font-semibold truncate mb-1"
-            style={{ color: "#F0F2FF", fontFamily: "var(--font-inter)" }}
+            style={{ color: "var(--text-primary)", fontFamily: "var(--font-inter)" }}
           >
             {name}
           </p>
@@ -132,16 +132,16 @@ export default function CardItem({
           {(hasRange || fallbackPrice) && (
             <div className="mt-1.5">
               {isRange ? (
-                <p className="text-xs font-semibold leading-tight" style={{ color: "#3ecf6a" }}>
+                <p className="text-xs font-semibold leading-tight" style={{ color: "var(--price-color)" }}>
                   ${minPrice!.toFixed(2)} – ${maxPrice!.toFixed(2)}
                 </p>
               ) : (
                 <div className="flex items-center gap-1 flex-wrap">
-                  <p className="text-sm font-bold" style={{ color: "#3ecf6a" }}>
+                  <p className="text-sm font-bold" style={{ color: "var(--price-color)" }}>
                     {currencySymbol}{(hasRange ? minPrice! : fallbackPrice!).toFixed(2)}
                   </p>
                   {!hasRange && priceLabel && (
-                    <span className="text-[10px]" style={{ color: "#7A8BA8" }}>
+                    <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>
                       {priceLabel}
                     </span>
                   )}

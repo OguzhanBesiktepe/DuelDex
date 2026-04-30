@@ -65,9 +65,9 @@ export default function PokemonSetsBrowser({ sets }: { sets: PokemonSet[] }) {
           placeholder="Search sets..."
           className="flex-1 rounded-md px-3 py-2 text-sm outline-none"
           style={{
-            background: "#0E1220",
+            background: "var(--surface)",
             border: "1px solid #1A2035",
-            color: "#F0F2FF",
+            color: "var(--text-primary)",
           }}
         />
         <div className="flex gap-2 shrink-0">
@@ -77,9 +77,9 @@ export default function PokemonSetsBrowser({ sets }: { sets: PokemonSet[] }) {
               onClick={() => handleSortChange(opt)}
               className="px-3 py-2 rounded-md text-sm font-medium transition-colors"
               style={{
-                background: sort === opt ? "#00AAFF22" : "#0E1220",
-                color: sort === opt ? "#00AAFF" : "#7A8BA8",
-                border: `1px solid ${sort === opt ? "#00AAFF44" : "#1A2035"}`,
+                background: sort === opt ? "#00AAFF22" : "var(--surface)",
+                color: sort === opt ? "var(--pkmn-accent)" : "var(--text-muted)",
+                border: `1px solid ${sort === opt ? "#00AAFF44" : "var(--border)"}`,
               }}
             >
               {opt === "newest" ? "Newest First" : "A–Z"}
@@ -89,7 +89,7 @@ export default function PokemonSetsBrowser({ sets }: { sets: PokemonSet[] }) {
       </div>
 
       {filtered.length === 0 && (
-        <p className="py-16 text-center text-sm" style={{ color: "#7A8BA8" }}>
+        <p className="py-16 text-center text-sm" style={{ color: "var(--text-muted)" }}>
           No sets found.
         </p>
       )}
@@ -102,7 +102,7 @@ export default function PokemonSetsBrowser({ sets }: { sets: PokemonSet[] }) {
             href={`/pokemon/sets/${encodeURIComponent(set.id)}`}
             className="group flex items-center justify-between gap-4 px-4 py-3 rounded-lg transition-all duration-200"
             style={{
-              background: "#0E1220",
+              background: "var(--surface)",
               border: "1px solid #1A2035",
             }}
             onMouseEnter={(e) => {
@@ -110,8 +110,8 @@ export default function PokemonSetsBrowser({ sets }: { sets: PokemonSet[] }) {
               (e.currentTarget as HTMLElement).style.background = "#0E1525";
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.borderColor = "#1A2035";
-              (e.currentTarget as HTMLElement).style.background = "#0E1220";
+              (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
+              (e.currentTarget as HTMLElement).style.background = "var(--surface)";
             }}
           >
             <div className="flex items-center gap-3 min-w-0">
@@ -120,7 +120,7 @@ export default function PokemonSetsBrowser({ sets }: { sets: PokemonSet[] }) {
                   className="hidden sm:block text-xs px-2 py-0.5 rounded shrink-0"
                   style={{
                     background: "#00AAFF15",
-                    color: "#00AAFF",
+                    color: "var(--pkmn-accent)",
                     border: "1px solid #00AAFF30",
                     fontSize: "10px",
                   }}
@@ -130,7 +130,7 @@ export default function PokemonSetsBrowser({ sets }: { sets: PokemonSet[] }) {
               )}
               <span
                 className="text-sm font-semibold leading-tight truncate"
-                style={{ color: "#F0F2FF" }}
+                style={{ color: "var(--text-primary)" }}
               >
                 {set.name}
               </span>
@@ -138,12 +138,12 @@ export default function PokemonSetsBrowser({ sets }: { sets: PokemonSet[] }) {
 
             <div className="flex items-center gap-3 shrink-0">
               {set.releaseDate && (
-                <span className="text-xs hidden sm:block" style={{ color: "#7A8BA8" }}>
+                <span className="text-xs hidden sm:block" style={{ color: "var(--text-muted)" }}>
                   {new Date(set.releaseDate).getFullYear()}
                 </span>
               )}
               {set.cardCount?.total != null && (
-                <span className="text-xs" style={{ color: "#7A8BA8" }}>
+                <span className="text-xs" style={{ color: "var(--text-muted)" }}>
                   {set.cardCount.total} cards
                 </span>
               )}
@@ -164,7 +164,7 @@ export default function PokemonSetsBrowser({ sets }: { sets: PokemonSet[] }) {
         totalPages={totalPages}
         total={filtered.length}
         countLabel="sets"
-        accent="#00AAFF"
+        accent="var(--pkmn-accent)"
         onPage={(p) => setPage(p)}
       />
     </div>

@@ -22,8 +22,8 @@ const TYPE_COLOR_MAP: Record<string, string> = Object.fromEntries(
 );
 
 export function getPokemonTypeColor(type: string | undefined): string {
-  if (!type) return "#7A8BA8";
-  return TYPE_COLOR_MAP[type] ?? "#7A8BA8";
+  if (!type) return "var(--text-muted)";
+  return TYPE_COLOR_MAP[type] ?? "var(--text-muted)";
 }
 
 export const POKEMON_STAGES = [
@@ -40,8 +40,8 @@ export const POKEMON_STAGES = [
 ];
 
 export const TRAINER_SUBTYPES = [
-  { label: "Item",      value: "Item",      color: "#FF7A00" },
-  { label: "Supporter", value: "Supporter", color: "#00AAFF" },
-  { label: "Stadium",   value: "Stadium",   color: "#3ecf6a" },
+  { label: "Item",      value: "Item",      color: "var(--ygo-accent)" },
+  { label: "Supporter", value: "Supporter", color: "var(--pkmn-accent)" },
+  { label: "Stadium",   value: "Stadium",   color: "var(--price-color)" },
   { label: "Tool",      value: "Tool",      color: "#AB47BC" },
 ];

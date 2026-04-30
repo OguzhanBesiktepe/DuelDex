@@ -61,8 +61,8 @@ export default function TrainerSubtypeFilter({
           onClick={clearAll}
           className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
           style={{
-            background: noneActive ? "#00AAFF25" : "#1A2035",
-            color: noneActive ? "#00AAFF" : "#7A8BA8",
+            background: noneActive ? "#00AAFF25" : "var(--border)",
+            color: noneActive ? "var(--pkmn-accent)" : "var(--text-muted)",
             border: noneActive ? "1px solid #00AAFF60" : "1px solid #1A2035",
           }}
         >
@@ -77,8 +77,8 @@ export default function TrainerSubtypeFilter({
               onClick={() => select(t.value)}
               className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
               style={{
-                background: active ? `${t.color}25` : "#1A2035",
-                color: active ? t.color : "#7A8BA8",
+                background: active ? `${t.color}25` : "var(--border)",
+                color: active ? t.color : "var(--text-muted)",
                 border: active ? `1px solid ${t.color}70` : "1px solid #1A2035",
                 boxShadow: active ? `0 0 8px ${t.color}30` : "none",
               }}
@@ -89,15 +89,15 @@ export default function TrainerSubtypeFilter({
         })}
 
         {/* Divider */}
-        <span style={{ color: "#1A2035", fontSize: 18, lineHeight: 1 }}>|</span>
+        <span style={{ color: "var(--border)", fontSize: 18, lineHeight: 1 }}>|</span>
 
         {/* Full Art toggle */}
         <button
           onClick={toggleFullArt}
           className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
           style={{
-            background: fullArt ? `${FULL_ART_COLOR}25` : "#1A2035",
-            color: fullArt ? FULL_ART_COLOR : "#7A8BA8",
+            background: fullArt ? `${FULL_ART_COLOR}25` : "var(--border)",
+            color: fullArt ? FULL_ART_COLOR : "var(--text-muted)",
             border: fullArt ? `1px solid ${FULL_ART_COLOR}70` : "1px solid #1A2035",
             boxShadow: fullArt ? `0 0 8px ${FULL_ART_COLOR}30` : "none",
           }}

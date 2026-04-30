@@ -39,7 +39,7 @@ export default function PokemonTypeFilter({ selected }: { selected: string[] }) 
 
   return (
     <div className="mb-4">
-      <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: "#7A8BA8" }}>
+      <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: "var(--text-muted)" }}>
         Energy Type
       </p>
       <div className="flex flex-wrap gap-2">
@@ -47,8 +47,8 @@ export default function PokemonTypeFilter({ selected }: { selected: string[] }) 
           onClick={clearAll}
           className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
           style={{
-            background: allSelected ? "#00AAFF25" : "#1A2035",
-            color: allSelected ? "#00AAFF" : "#7A8BA8",
+            background: allSelected ? "#00AAFF25" : "var(--border)",
+            color: allSelected ? "var(--pkmn-accent)" : "var(--text-muted)",
             border: allSelected ? "1px solid #00AAFF60" : "1px solid #1A2035",
           }}
         >
@@ -62,8 +62,8 @@ export default function PokemonTypeFilter({ selected }: { selected: string[] }) 
               onClick={() => toggle(t.value)}
               className="px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1"
               style={{
-                background: active ? `${t.color}25` : "#1A2035",
-                color: active ? t.color : "#7A8BA8",
+                background: active ? `${t.color}25` : "var(--border)",
+                color: active ? t.color : "var(--text-muted)",
                 border: active ? `1px solid ${t.color}70` : "1px solid #1A2035",
                 boxShadow: active ? `0 0 8px ${t.color}30` : "none",
               }}

@@ -99,9 +99,9 @@ export default function ListsPage() {
     return (
       <div
         className="flex min-h-screen items-center justify-center"
-        style={{ background: "#080B14" }}
+        style={{ background: "var(--background)" }}
       >
-        <p className="animate-pulse text-sm" style={{ color: "#7A8BA8" }}>
+        <p className="animate-pulse text-sm" style={{ color: "var(--text-muted)" }}>
           Loading lists…
         </p>
       </div>
@@ -109,18 +109,18 @@ export default function ListsPage() {
   }
 
   return (
-    <div style={{ background: "#080B14", minHeight: "100vh" }}>
+    <div style={{ background: "var(--background)", minHeight: "100vh" }}>
       <div className="mx-auto max-w-4xl px-4 py-10">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1
               className="text-3xl font-bold mb-1"
-              style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+              style={{ color: "var(--text-primary)", fontFamily: "var(--font-cinzel)" }}
             >
               My Lists
             </h1>
-            <p className="text-sm" style={{ color: "#7A8BA8" }}>
+            <p className="text-sm" style={{ color: "var(--text-muted)" }}>
               {lists.length === 0
                 ? "No lists yet."
                 : `${lists.length} list${lists.length === 1 ? "" : "s"}`}
@@ -131,7 +131,7 @@ export default function ListsPage() {
           <button
             onClick={() => setCreating(true)}
             className="rounded-lg px-4 py-2 text-sm font-bold transition hover:opacity-90"
-            style={{ background: "#FF7A00", color: "#080B14" }}
+            style={{ background: "var(--ygo-accent)", color: "var(--background)" }}
           >
             + New List
           </button>
@@ -141,7 +141,7 @@ export default function ListsPage() {
         {creating && (
           <div
             className="rounded-xl border p-4 mb-6 flex gap-3 items-center"
-            style={{ background: "#0E1220", borderColor: "#1A2035" }}
+            style={{ background: "var(--surface)", borderColor: "var(--border)" }}
           >
             <input
               autoFocus
@@ -157,16 +157,16 @@ export default function ListsPage() {
               placeholder="List name (e.g. Pokémon Deck, Grail Cards…)"
               className="flex-1 rounded-lg px-3 py-2 text-sm outline-none"
               style={{
-                background: "#080B14",
+                background: "var(--background)",
                 border: "1px solid #1A2035",
-                color: "#F0F2FF",
+                color: "var(--text-primary)",
               }}
             />
             <button
               onClick={handleCreateList}
               disabled={!newListName.trim()}
               className="rounded-lg px-4 py-2 text-sm font-bold transition hover:opacity-90 disabled:opacity-40"
-              style={{ background: "#FF7A00", color: "#080B14" }}
+              style={{ background: "var(--ygo-accent)", color: "var(--background)" }}
             >
               Create
             </button>
@@ -176,7 +176,7 @@ export default function ListsPage() {
                 setNewListName("");
               }}
               className="rounded-lg px-3 py-2 text-sm transition hover:bg-white/5"
-              style={{ color: "#7A8BA8" }}
+              style={{ color: "var(--text-muted)" }}
             >
               Cancel
             </button>
@@ -187,16 +187,16 @@ export default function ListsPage() {
         {lists.length === 0 && !creating && (
           <div
             className="rounded-2xl border p-10 text-center"
-            style={{ borderColor: "#1A2035", background: "#0E1220" }}
+            style={{ borderColor: "var(--border)", background: "var(--surface)" }}
           >
             <p className="text-4xl mb-4">📋</p>
-            <p className="text-sm mb-4" style={{ color: "#7A8BA8" }}>
+            <p className="text-sm mb-4" style={{ color: "var(--text-muted)" }}>
               Create a list to track decks, wishlists, or anything else.
             </p>
             <button
               onClick={() => setCreating(true)}
               className="rounded-lg px-5 py-2.5 text-sm font-bold transition hover:opacity-90"
-              style={{ background: "#FF7A00", color: "#080B14" }}
+              style={{ background: "var(--ygo-accent)", color: "var(--background)" }}
             >
               + Create your first list
             </button>
@@ -210,13 +210,13 @@ export default function ListsPage() {
               <div
                 key={list.id}
                 className="rounded-2xl border p-5 flex flex-col gap-3 transition hover:border-white/10"
-                style={{ background: "#0E1220", borderColor: "#1A2035" }}
+                style={{ background: "var(--surface)", borderColor: "var(--border)" }}
               >
                 {/* List name */}
                 <Link href={`/lists/${list.id}`}>
                   <h2
                     className="text-lg font-bold truncate hover:underline"
-                    style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+                    style={{ color: "var(--text-primary)", fontFamily: "var(--font-cinzel)" }}
                   >
                     {list.name}
                   </h2>
@@ -225,16 +225,16 @@ export default function ListsPage() {
                 {/* Stats row */}
                 <div className="flex gap-6">
                   <div>
-                    <p className="text-xs" style={{ color: "#7A8BA8" }}>Cards</p>
-                    <p className="text-lg font-bold" style={{ color: "#F0F2FF" }}>
+                    <p className="text-xs" style={{ color: "var(--text-muted)" }}>Cards</p>
+                    <p className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>
                       {list.itemCount}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs" style={{ color: "#7A8BA8" }}>
+                    <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                       Total Value (at time added)
                     </p>
-                    <p className="text-lg font-bold" style={{ color: "#3ecf6a" }}>
+                    <p className="text-lg font-bold" style={{ color: "var(--price-color)" }}>
                       {list.totalValue > 0
                         ? `$${list.totalValue.toFixed(2)}`
                         : "N/A"}
@@ -242,7 +242,7 @@ export default function ListsPage() {
                   </div>
                 </div>
 
-                <p className="text-xs" style={{ color: "#7A8BA8" }}>
+                <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                   Created {list.createdAt.toLocaleDateString()}
                 </p>
 
@@ -251,7 +251,7 @@ export default function ListsPage() {
                   <Link
                     href={`/lists/${list.id}`}
                     className="flex-1 text-center rounded-lg py-2 text-sm font-semibold transition hover:opacity-90"
-                    style={{ background: "#1A2035", color: "#F0F2FF" }}
+                    style={{ background: "var(--border)", color: "var(--text-primary)" }}
                   >
                     View List →
                   </Link>
@@ -259,7 +259,7 @@ export default function ListsPage() {
                     onClick={() => handleDeleteList(list.id)}
                     disabled={deleting === list.id}
                     className="rounded-lg px-3 py-2 text-sm transition hover:bg-red-900/20 disabled:opacity-40"
-                    style={{ color: "#CC1F1F", border: "1px solid rgba(204,31,31,0.3)" }}
+                    style={{ color: "var(--primary-red)", border: "1px solid rgba(204,31,31,0.3)" }}
                   >
                     {deleting === list.id ? "…" : "Delete"}
                   </button>

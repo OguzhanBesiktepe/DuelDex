@@ -49,9 +49,9 @@ export default function AlertButton({
         title={hasAlert ? "Edit price alert" : "Set price alert"}
         className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-bold transition-all"
         style={{
-          background: hasAlert ? "rgba(255,122,0,0.1)" : "#0E1220",
-          border: `1px solid ${hasAlert ? "rgba(255,122,0,0.4)" : "#1A2035"}`,
-          color: hasAlert ? "#FF7A00" : "#7A8BA8",
+          background: hasAlert ? "rgba(255,122,0,0.1)" : "var(--surface)",
+          border: `1px solid ${hasAlert ? "rgba(255,122,0,0.4)" : "var(--border)"}`,
+          color: hasAlert ? "var(--ygo-accent)" : "var(--text-muted)",
         }}
       >
         <span>{hasAlert ? "🔔" : "🔕"}</span>

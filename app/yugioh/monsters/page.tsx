@@ -129,17 +129,17 @@ export default async function MonstersPage({
     (selectedLevel ? `&level=${selectedLevel}` : "");
 
   return (
-    <div style={{ background: "#080B14", minHeight: "100vh" }}>
+    <div style={{ background: "var(--background)", minHeight: "100vh" }}>
       <div className="max-w-screen-xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1
               className="text-2xl font-bold"
-              style={{ color: "#F0F2FF", fontFamily: "var(--font-cinzel)" }}
+              style={{ color: "var(--text-primary)", fontFamily: "var(--font-cinzel)" }}
             >
               Monster Cards
             </h1>
-            <p className="text-sm mt-1" style={{ color: "#7A8BA8" }}>
+            <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>
               Yu-Gi-Oh! &mdash; {total.toLocaleString()} cards
             </p>
           </div>
@@ -167,7 +167,7 @@ export default async function MonstersPage({
           totalPages={totalPages}
           total={total}
           countLabel="cards"
-          accent="#FF7A00"
+          accent="var(--ygo-accent)"
           filterSuffix={filterQuery}
         />
       </div>

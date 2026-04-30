@@ -48,11 +48,11 @@ export default function RarityFilter({ selected }: RarityFilterProps) {
   return (
     <div
       className="rounded-xl p-4 mb-4"
-      style={{ background: "#0E1220", border: "1px solid #1A2035" }}
+      style={{ background: "var(--surface)", border: "1px solid #1A2035" }}
     >
       <p
         className="text-xs font-semibold uppercase tracking-wide mb-3"
-        style={{ color: "#7A8BA8" }}
+        style={{ color: "var(--text-muted)" }}
       >
         Filter by Rarity
       </p>
@@ -61,8 +61,8 @@ export default function RarityFilter({ selected }: RarityFilterProps) {
           onClick={clearAll}
           className="px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
           style={{
-            background: allSelected ? "#6B7280" : "#1A2035",
-            color: allSelected ? "#080B14" : "#7A8BA8",
+            background: allSelected ? "#6B7280" : "var(--border)",
+            color: allSelected ? "var(--background)" : "var(--text-muted)",
             border: allSelected ? "1px solid #6B7280" : "1px solid #1A2035",
           }}
         >
@@ -77,8 +77,8 @@ export default function RarityFilter({ selected }: RarityFilterProps) {
               onClick={() => toggle(group.label)}
               className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
               style={{
-                background: active ? `${group.color}25` : "#1A2035",
-                color: active ? group.color : "#7A8BA8",
+                background: active ? `${group.color}25` : "var(--border)",
+                color: active ? group.color : "var(--text-muted)",
                 border: active
                   ? `1px solid ${group.color}80`
                   : "1px solid #1A2035",
