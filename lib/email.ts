@@ -50,8 +50,8 @@ export async function sendPriceAlertEmail(payload: AlertEmailPayload): Promise<b
 
 <!-- Header -->
 <div style="text-align:center;margin-bottom:28px;">
-  <span style="font-size:22px;font-weight:900;color:#FF7A00;letter-spacing:3px;">DUELDEX</span>
-  <p style="margin:4px 0 0;font-size:12px;color:#7A8BA8;letter-spacing:1px;">PRICE ALERT</p>
+  <img src="${APP_URL}/Logo.png" alt="DuelDex" width="140" style="display:inline-block;height:auto;" />
+  <p style="margin:8px 0 0;font-size:12px;color:#7A8BA8;letter-spacing:1px;">PRICE ALERT</p>
 </div>
 
 <!-- Card panel -->
