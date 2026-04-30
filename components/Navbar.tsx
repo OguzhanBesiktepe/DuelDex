@@ -187,9 +187,14 @@ export default function Navbar() {
   );
 
   return (
+    <>
     <nav
-      className="sticky top-0 z-50 w-full border-b"
-      style={{ background: "var(--surface)", borderColor: "var(--border)" }}
+      className="sticky top-0 z-50 w-full relative"
+      style={{
+        background: "rgba(14, 18, 32, 0.82)",
+        backdropFilter: "blur(18px)",
+        WebkitBackdropFilter: "blur(18px)",
+      }}
     >
       <div className="mx-auto flex max-w-7xl items-center gap-6 px-4 py-3">
         {/* Logo — on mobile: persistent orange ring signals it's tappable;
@@ -218,8 +223,11 @@ export default function Navbar() {
             onMouseEnter={() => setYgoOpen(true)}
             onMouseLeave={() => setYgoOpen(false)}
           >
-            <button className="flex items-center gap-1 rounded-md px-3 py-2 text-base font-semibold text-gray-100 transition hover:text-white">
-              Yu-Gi-Oh! <span className="text-xs">▾</span>
+            <button
+              className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-bold tracking-wider transition hover:opacity-75"
+              style={{ color: "var(--ygo-accent)", fontFamily: "var(--font-cinzel)" }}
+            >
+              Yu-Gi-Oh! <span className="text-xs opacity-60">▾</span>
             </button>
             {ygoOpen && (
               <div
@@ -263,8 +271,11 @@ export default function Navbar() {
             onMouseEnter={() => setPkmnOpen(true)}
             onMouseLeave={() => setPkmnOpen(false)}
           >
-            <button className="flex items-center gap-1 rounded-md px-3 py-2 text-base font-semibold text-gray-100 transition hover:text-white">
-              Pokémon <span className="text-xs">▾</span>
+            <button
+              className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-bold tracking-wider transition hover:opacity-75"
+              style={{ color: "var(--pkmn-accent)", fontFamily: "var(--font-cinzel)" }}
+            >
+              Pokémon <span className="text-xs opacity-60">▾</span>
             </button>
             {pkmnOpen && (
               <div
@@ -529,7 +540,7 @@ export default function Navbar() {
             )}
           </div>
 
-          <p className="pb-1 pt-3 text-xs font-semibold uppercase tracking-widest text-gray-500">
+          <p className="pb-1 pt-3 text-xs font-bold tracking-wider" style={{ color: "var(--ygo-accent)", fontFamily: "var(--font-cinzel)" }}>
             Yu-Gi-Oh!
           </p>
           {ygoLinks.map((link) => (
@@ -560,7 +571,7 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          <p className="pb-1 pt-3 text-xs font-semibold uppercase tracking-widest text-gray-500">
+          <p className="pb-1 pt-3 text-xs font-bold tracking-wider" style={{ color: "var(--pkmn-accent)", fontFamily: "var(--font-cinzel)" }}>
             Pokémon
           </p>
           {pokemonLinks.map((link) => (
@@ -602,9 +613,14 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* ── Profile slide-out panel ────────────────────────────────────────────
-           Rendered at the nav root so it overlays the full page.
-           Uses CSS transitions for smooth slide in/out from the right.      */}
+      {/* Gradient accent line at bottom of navbar */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-px pointer-events-none"
+        style={{
+          background: "linear-gradient(90deg, #FF7A00 0%, rgba(255,122,0,0) 35%, rgba(0,170,255,0) 65%, #00AAFF 100%)",
+        }}
+      />
+    </nav>
 
       {/* Backdrop — clicking it closes the panel */}
       <div
@@ -767,6 +783,6 @@ export default function Navbar() {
           )
         )}
       </div>
-    </nav>
+    </>
   );
 }
