@@ -171,6 +171,16 @@ export default function ChatWidget() {
           );
         }
 
+        // Fallback: if stream completed with no content, show an error
+        if (!accumulated.trim()) {
+          accumulated = "I didn't receive a response. Please check that the AI service is configured and try again.";
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantId ? { ...m, content: accumulated } : m,
+            ),
+          );
+        }
+
         // Persist complete history
         setMessages((prev) => {
           saveHistory(prev);

@@ -37,7 +37,23 @@ Rules:
 - Only include the <cards> block when you have specific card recommendations with real data from tools
 - Investment advice: always add a brief disclaimer that TCG prices are volatile`;
 
+const encoder = new TextEncoder();
+
+function errorStream(message: string): Response {
+  const stream = new ReadableStream({
+    start(controller) {
+      controller.enqueue(encoder.encode(message));
+      controller.close();
+    },
+  });
+  return new Response(stream, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
+}
+
 export async function POST(req: NextRequest) {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return errorStream("AI service is not configured yet. Add ANTHROPIC_API_KEY in Vercel settings.");
+  }
+
   try {
     const body = await req.json();
     const { messages, userId } = body as {
@@ -289,16 +305,36 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return result.toTextStreamResponse();
+    // Pipe textStream manually so mid-stream errors surface as readable text
+    const stream = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const delta of result.textStream) {
+            controller.enqueue(encoder.encode(delta));
+          }
+          controller.close();
+        } catch (streamErr) {
+          console.error("[chat stream]", streamErr);
+          const msg =
+            (streamErr as { status?: number }).status === 429
+              ? "AI service is busy. Please try again in a moment."
+              : "Something went wrong while generating a response. Please try again.";
+          controller.enqueue(encoder.encode(msg));
+          controller.close();
+        }
+      },
+    });
+
+    return new Response(stream, {
+      headers: { "Content-Type": "text/plain; charset=utf-8" },
+    });
   } catch (err: unknown) {
-    const status = (err as { status?: number }).status;
-    if (status === 429) {
-      return NextResponse.json(
-        { error: "ai_rate_limit", message: "AI service is busy. Please try again in a moment." },
-        { status: 503 },
-      );
-    }
     console.error("[chat]", err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    const status = (err as { status?: number }).status;
+    const msg =
+      status === 429
+        ? "AI service is busy. Please try again in a moment."
+        : "Something went wrong. Please try again.";
+    return errorStream(msg);
   }
 }
