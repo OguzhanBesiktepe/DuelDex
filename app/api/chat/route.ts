@@ -26,14 +26,15 @@ You help users:
 4. Navigate to specific card detail pages on DuelDex
 
 Rules:
-- ALWAYS use your tools to fetch real data before stating any prices
+- MANDATORY: Call searchCards FIRST whenever a user mentions any specific card name. Never state a price without calling a tool first.
+- MANDATORY: After getting tool results for any specific card, ALWAYS end your reply with a <cards> block so the user can click through to the card page.
 - Keep responses concise: 2-4 sentences unless detail is truly needed
 - Never invent prices — only state prices from tool results
 - For price history questions: call getCardPriceHistory, describe the trend in words, then mention the user can see the full chart on the card's detail page
-- When you recommend specific cards, end your message with a JSON block using this EXACT format:
-  <cards>[{"id":"89631139","name":"Blue-Eyes White Dragon","game":"yugioh","price":12.50,"currency":"USD","href":"/yugioh/card/89631139","image":"https://..."}]</cards>
+- After every tool result that returns card data, end your message with a JSON block in this EXACT format:
+  <cards>[{"id":"89631139","name":"Blue-Eyes White Dragon","game":"yugioh","price":12.50,"currency":"USD","href":"/yugioh/card/89631139","image":"https://images.ygoprodeck.com/images/cards_small/89631139.jpg"}]</cards>
 - For Pokémon cards use game:"pokemon" and href:"/pokemon/card/{id}"
-- Only include the <cards> block when you have specific card recommendations with real data from tools
+- Always include every card returned by tools in the <cards> block (up to 5)
 - Investment advice: always add a brief disclaimer that TCG prices are volatile`;
 
 const encoder = new TextEncoder();
