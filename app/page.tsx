@@ -104,7 +104,7 @@ async function fetchFeaturedYGO(): Promise<FeaturedSet | null> {
 
     const colorSource = cardImages[Math.floor(cardImages.length / 2)] ?? null;
     const accentRgb = colorSource
-      ? await extractCardColor(colorSource, "255, 122, 0")
+      ? await extractCardColor(colorSource.url, "255, 122, 0")
       : "255, 122, 0";
 
     return {
@@ -193,7 +193,7 @@ async function fetchFeaturedPokemon(): Promise<FeaturedSet | null> {
 
     const colorSource = cardImages[Math.floor(cardImages.length / 2)] ?? null;
     const accentRgb = colorSource
-      ? await extractCardColor(colorSource, "0, 170, 255")
+      ? await extractCardColor(colorSource.url, "0, 170, 255")
       : "0, 170, 255";
 
     return {
