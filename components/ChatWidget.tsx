@@ -77,8 +77,17 @@ export default function ChatWidget() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [anonCount, setAnonCount] = useState(0);
+  const [isDesktop, setIsDesktop] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    setIsDesktop(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   // Load history on mount
   useEffect(() => {
@@ -241,19 +250,19 @@ export default function ChatWidget() {
         />
       )}
 
-      {/* Chat drawer */}
+      {/* Chat drawer — bottom sheet on mobile, floating panel on desktop */}
       <div
-        className="fixed bottom-24 right-6 flex flex-col rounded-2xl overflow-hidden shadow-2xl transition-all duration-300"
+        className="fixed flex flex-col overflow-hidden shadow-2xl transition-all duration-300"
         style={{
-          width: "min(380px, calc(100vw - 48px))",
-          height: "min(560px, calc(100vh - 140px))",
+          ...(isDesktop
+            ? { right: 24, bottom: 96, width: 380, height: "min(560px, calc(100dvh - 140px))" }
+            : { left: 12, right: 12, bottom: 88, height: "min(75dvh, calc(100dvh - 120px))" }),
+          borderRadius: 20,
           background: "var(--surface)",
           border: "1px solid var(--border)",
           zIndex: 45,
           opacity: isOpen ? 1 : 0,
-          transform: isOpen
-            ? "translateY(0) scale(1)"
-            : "translateY(12px) scale(0.97)",
+          transform: isOpen ? "translateY(0) scale(1)" : "translateY(16px) scale(0.97)",
           pointerEvents: isOpen ? "auto" : "none",
         }}
       >
