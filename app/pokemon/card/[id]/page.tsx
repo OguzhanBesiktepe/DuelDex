@@ -9,6 +9,7 @@ import BackButton from "@/components/BackButton";
 import CardActions from "@/components/CardActions";
 import { MarketplaceLinks } from "@/components/MarketplaceButton";
 import RecordView from "@/components/RecordView";
+import PriceHistoryChart from "@/components/PriceHistoryChart";
 
 export default async function PokemonCardPage({
   params,
@@ -298,6 +299,7 @@ export default async function PokemonCardPage({
                 </div>
               </div>
             )}
+            <PriceHistoryChart cardId={id} game="pokemon" />
           </div>
         </div>
       </div>

@@ -2,6 +2,7 @@
 // includes all alternate art images. Also renders pricing, printings, and user action buttons.
 
 import { fetchYGOCardById, fetchYGOCardAltArts, ygoImage } from "@/lib/yugioh";
+import PriceHistoryChart from "@/components/PriceHistoryChart";
 import BackButton from "@/components/BackButton";
 import { notFound } from "next/navigation";
 import CardImageZoom from "@/components/CardImageZoom";
@@ -222,6 +223,8 @@ export default async function YGOCardPage({
               cardId={String(card.id)}
               cardImage={card.card_images[0]?.id ? ygoImage(card.card_images[0].id, true) : ""}
             />
+
+            <PriceHistoryChart cardId={String(card.id)} game="yugioh" />
           </div>
         </div>
       </div>

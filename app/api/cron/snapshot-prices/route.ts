@@ -161,9 +161,20 @@ async function processYGO(date: string): Promise<number> {
 
   // Write new snapshot + movers — if quota is exceeded these will also fail,
   // but at least we tried and the error surfaces in the response
+  // Write per-card price history alongside snapshot + movers
+  const historyWrites = today.map((c) =>
+    db
+      .collection("price_history")
+      .doc("yugioh")
+      .collection(c.cardId)
+      .doc(date)
+      .set({ price: c.price, currency: c.currency ?? "USD", name: c.name, date }),
+  );
+
   await Promise.all([
     db.collection("price_snapshots").doc("yugioh").set({ date, cards: today } as SnapshotDoc),
     db.collection("price_movers").doc("yugioh").set(moversDoc),
+    ...historyWrites,
   ]);
 
   return today.length;
@@ -258,9 +269,19 @@ async function processPokemon(date: string): Promise<number> {
 
   const moversDoc = computeMovers(today, prev);
 
+  const historyWrites = today.map((c) =>
+    db
+      .collection("price_history")
+      .doc("pokemon")
+      .collection(c.cardId)
+      .doc(date)
+      .set({ price: c.price, currency: c.currency ?? "USD", name: c.name, date }),
+  );
+
   await Promise.all([
     db.collection("price_snapshots").doc("pokemon").set({ date, cards: today } as SnapshotDoc),
     db.collection("price_movers").doc("pokemon").set(moversDoc),
+    ...historyWrites,
   ]);
 
   return today.length;

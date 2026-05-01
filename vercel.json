@@ -1,6 +1,10 @@
 {
   "crons": [
     {
+      "path": "/api/cron/monitor-ban-list",
+      "schedule": "0 5 * * 0"
+    },
+    {
       "path": "/api/cron/snapshot-prices",
       "schedule": "0 6 * * *"
     },
