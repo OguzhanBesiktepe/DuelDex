@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/lib/auth-context";
 import { useState, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import ChatMessageBubble, { type ChatMessage } from "./ChatMessageBubble";
 
@@ -259,24 +260,35 @@ export default function ChatWidget() {
         {/* Header */}
         <div
           className="flex items-center justify-between px-4 py-3 shrink-0"
-          style={{ borderBottom: "1px solid var(--border)" }}
+          style={{
+            borderBottom: "1px solid var(--border)",
+            background: "linear-gradient(135deg, rgba(255,122,0,0.08) 0%, rgba(0,170,255,0.06) 100%)",
+          }}
         >
-          <div className="flex items-center gap-2">
-            <span style={{ color: "var(--ygo-accent)", fontSize: 16 }}>✦</span>
+          <div className="flex items-center gap-2.5">
+            <Image src="/Logo.png" alt="DuelDex" width={28} height={28} className="rounded-md" />
+            <div>
+              <p
+                className="text-sm font-bold leading-none tracking-wide"
+                style={{ fontFamily: "var(--font-cinzel, serif)", color: "var(--text-primary)" }}
+              >
+                DuelDex AI
+              </p>
+              <p className="text-[10px] leading-none mt-0.5" style={{ color: "var(--text-muted)" }}>
+                TCG Price Assistant
+              </p>
+            </div>
             <span
-              className="text-sm font-bold tracking-wide"
-              style={{
-                fontFamily: "var(--font-cinzel, serif)",
-                color: "var(--text-primary)",
-              }}
+              className="ml-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full"
+              style={{ background: "var(--ygo-accent)", color: "#080B14" }}
             >
-              DuelDex AI
+              AI
             </span>
           </div>
           <button
             onClick={clearChat}
-            className="text-xs px-2 py-0.5 rounded transition hover:bg-white/5"
-            style={{ color: "var(--text-muted)" }}
+            className="text-xs px-2 py-1 rounded-lg transition hover:bg-white/5"
+            style={{ color: "var(--text-muted)", border: "1px solid var(--border)" }}
           >
             Clear
           </button>
