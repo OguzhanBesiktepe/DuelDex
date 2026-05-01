@@ -1,13 +1,12 @@
 // Streaming AI chat API — powers the DuelDex AI chat widget.
 //
 // Uses Vercel AI SDK (streamText) with Claude Haiku for cost-efficient streaming.
-// Tools allow the AI to fetch live card prices, price history, movers, and ban list changes.
+// Tools use jsonSchema() instead of Zod to avoid Zod v4/v3 compatibility issues.
 // Rate-limited per authenticated user (20 msg/day) via Firestore transactions.
 
 import { NextRequest, NextResponse } from "next/server";
-import { streamText, tool, stepCountIs } from "ai";
+import { streamText, tool, isLoopFinished, stepCountIs, jsonSchema } from "ai";
 import { createAnthropic } from "@ai-sdk/anthropic";
-import { z } from "zod";
 import { checkAndIncrementUsage } from "@/lib/chat-ratelimit";
 import { getAdminDb } from "@/lib/firebase-admin";
 import { searchYGOCards } from "@/lib/yugioh";
@@ -67,21 +66,18 @@ export async function POST(req: NextRequest) {
 
     // Server-side rate limit for authenticated users
     if (userId) {
-      const { allowed, remaining } = await checkAndIncrementUsage(userId);
+      const { allowed } = await checkAndIncrementUsage(userId);
       if (!allowed) {
         return NextResponse.json(
           {
             error: "usage_exceeded",
-            message:
-              "You've reached your 20 messages/day limit. Resets at midnight UTC.",
+            message: "You've reached your 20 messages/day limit. Resets at midnight UTC.",
           },
           { status: 429 },
         );
       }
-      void remaining; // used by caller if needed
     }
 
-    // Keep last 10 messages to control context costs
     const recentMessages = messages.slice(-10) as {
       role: "user" | "assistant";
       content: string;
@@ -91,22 +87,27 @@ export async function POST(req: NextRequest) {
       model: anthropic("claude-haiku-4-5-20251001"),
       system: SYSTEM_PROMPT,
       messages: recentMessages,
-      stopWhen: stepCountIs(3),
+      stopWhen: [isLoopFinished(), stepCountIs(5)],
       maxOutputTokens: 600,
       temperature: 0.3,
+      onError: (err) => console.error("[chat streamText]", err),
       tools: {
         searchCards: tool({
           description:
             "Search for TCG cards by name. Returns cards with current prices and page links. Use this when a user asks about a specific card.",
-          inputSchema: z.object({
-            query: z.string().describe("Card name or partial name to search for"),
-            game: z
-              .enum(["yugioh", "pokemon", "both"])
-              .optional()
-              .default("both")
-              .describe("Which game to search"),
+          inputSchema: jsonSchema<{ query: string; game?: "yugioh" | "pokemon" | "both" }>({
+            type: "object",
+            properties: {
+              query: { type: "string", description: "Card name or partial name to search for" },
+              game: {
+                type: "string",
+                enum: ["yugioh", "pokemon", "both"],
+                description: "Which game to search. Defaults to both.",
+              },
+            },
+            required: ["query"],
           }),
-          execute: async ({ query, game }) => {
+          execute: async ({ query, game = "both" }) => {
             const results: {
               id: string;
               name: string;
@@ -157,9 +158,13 @@ export async function POST(req: NextRequest) {
         getCardPrice: tool({
           description:
             "Get the current price for a specific card by its ID. Use after searchCards to get an accurate price.",
-          inputSchema: z.object({
-            cardId: z.string().describe("The card ID (numeric for YGO, e.g. swsh1-1 for Pokémon)"),
-            game: z.enum(["yugioh", "pokemon"]),
+          inputSchema: jsonSchema<{ cardId: string; game: "yugioh" | "pokemon" }>({
+            type: "object",
+            properties: {
+              cardId: { type: "string", description: "The card ID (numeric for YGO, e.g. swsh1-1 for Pokémon)" },
+              game: { type: "string", enum: ["yugioh", "pokemon"] },
+            },
+            required: ["cardId", "game"],
           }),
           execute: async ({ cardId, game }) => {
             if (game === "yugioh") {
@@ -203,13 +208,17 @@ export async function POST(req: NextRequest) {
         getPriceMovers: tool({
           description:
             "Get today's top price movers — cards with the biggest price changes. Use for trend and investment questions.",
-          inputSchema: z.object({
-            game: z
-              .enum(["yugioh", "pokemon", "both"])
-              .optional()
-              .default("both"),
+          inputSchema: jsonSchema<{ game?: "yugioh" | "pokemon" | "both" }>({
+            type: "object",
+            properties: {
+              game: {
+                type: "string",
+                enum: ["yugioh", "pokemon", "both"],
+                description: "Which game's movers to fetch. Defaults to both.",
+              },
+            },
           }),
-          execute: async ({ game }) => {
+          execute: async ({ game = "both" }) => {
             const db = getAdminDb();
             const out: {
               game: string;
@@ -239,12 +248,16 @@ export async function POST(req: NextRequest) {
         getCardPriceHistory: tool({
           description:
             "Get historical price data for a specific card over the past N days. Use for price trend and investment questions about a specific card.",
-          inputSchema: z.object({
-            cardId: z.string(),
-            game: z.enum(["yugioh", "pokemon"]),
-            days: z.number().optional().default(30).describe("Number of days of history to fetch (max 30)"),
+          inputSchema: jsonSchema<{ cardId: string; game: "yugioh" | "pokemon"; days?: number }>({
+            type: "object",
+            properties: {
+              cardId: { type: "string" },
+              game: { type: "string", enum: ["yugioh", "pokemon"] },
+              days: { type: "number", description: "Number of days of history to fetch (max 30). Defaults to 30." },
+            },
+            required: ["cardId", "game"],
           }),
-          execute: async ({ cardId, game, days }) => {
+          execute: async ({ cardId, game, days = 30 }) => {
             const db = getAdminDb();
             try {
               const snap = await db
@@ -288,7 +301,10 @@ export async function POST(req: NextRequest) {
         getBanListChanges: tool({
           description:
             "Get the latest Yu-Gi-Oh! TCG ban list changes. Use when users ask about YGO investment, banned cards, or what's affecting prices.",
-          inputSchema: z.object({}),
+          inputSchema: jsonSchema<Record<string, never>>({
+            type: "object",
+            properties: {},
+          }),
           execute: async () => {
             const db = getAdminDb();
             try {
