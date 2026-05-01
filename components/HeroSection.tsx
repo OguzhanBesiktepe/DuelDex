@@ -9,14 +9,19 @@ import styles from "./HeroSection.module.css";
 export type FeaturedSet = {
   gameLabel: string;
   setName: string;
-  cardImages: string[];
+  cardImages: { url: string; href?: string }[];
   setHref: string;
   accentColor: string;
   accentRgb: string;
 };
 
+function Wrap({ href, className, children }: { href?: string; className?: string; children: React.ReactNode }) {
+  if (href) return <Link href={href} className={className}>{children}</Link>;
+  return <div className={className}>{children}</div>;
+}
+
 export default function HeroSection({ featured }: { featured: FeaturedSet }) {
-  const leftImg = featured.cardImages[0] ?? null;
+  const leftImg  = featured.cardImages[0] ?? null;
   const centerImg = featured.cardImages[1] ?? featured.cardImages[0] ?? null;
   const rightImg = featured.cardImages[2] ?? null;
 
@@ -70,91 +75,44 @@ export default function HeroSection({ featured }: { featured: FeaturedSet }) {
         {/* Mobile — three-card fan */}
         <div className="relative md:hidden" style={{ height: 200, marginTop: "2rem", width: "100%" }}>
           {leftImg && (
-            <div className={styles.mobileFanLeft}>
+            <Wrap href={leftImg.href} className={styles.mobileFanLeft}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={leftImg}
-                alt={featured.setName}
-                className={`${styles.card} ${styles.cardSide}`}
-                style={{ width: 110, height: "auto", boxShadow: "0 16px 32px rgba(0,0,0,0.65)" }}
-              />
-            </div>
+              <img src={leftImg.url} alt={featured.setName} className={`${styles.card} ${styles.cardSide}`} style={{ width: 110, height: "auto", boxShadow: "0 16px 32px rgba(0,0,0,0.65)" }} />
+            </Wrap>
           )}
           {centerImg && (
-            <div className={styles.mobileFanCenter}>
+            <Wrap href={centerImg.href} className={styles.mobileFanCenter}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={centerImg}
-                alt={featured.setName}
-                className={`${styles.card} ${styles.cardCenter}`}
-                style={{ width: 140, height: "auto", boxShadow: "0 24px 48px rgba(0,0,0,0.72)" }}
-              />
-            </div>
+              <img src={centerImg.url} alt={featured.setName} className={`${styles.card} ${styles.cardCenter}`} style={{ width: 140, height: "auto", boxShadow: "0 24px 48px rgba(0,0,0,0.72)" }} />
+            </Wrap>
           )}
           {rightImg && (
-            <div className={styles.mobileFanRight}>
+            <Wrap href={rightImg.href} className={styles.mobileFanRight}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={rightImg}
-                alt={featured.setName}
-                className={`${styles.card} ${styles.cardSide}`}
-                style={{ width: 110, height: "auto", boxShadow: "0 16px 32px rgba(0,0,0,0.65)" }}
-              />
-            </div>
+              <img src={rightImg.url} alt={featured.setName} className={`${styles.card} ${styles.cardSide}`} style={{ width: 110, height: "auto", boxShadow: "0 16px 32px rgba(0,0,0,0.65)" }} />
+            </Wrap>
           )}
         </div>
 
         {/* Desktop — three staggered floating cards */}
         <div className="relative hidden shrink-0 md:block" style={{ width: 560, height: 500 }}>
-          {/* Left card */}
           {leftImg && (
-            <div className={styles.hwLeft}>
+            <Wrap href={leftImg.href} className={styles.hwLeft}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={leftImg}
-                alt={featured.setName}
-                className={`${styles.card} ${styles.cardSide}`}
-                style={{
-                  width: 230,
-                  height: "auto",
-                  boxShadow: "0 24px 48px rgba(0,0,0,0.65)",
-                }}
-              />
-            </div>
+              <img src={leftImg.url} alt={featured.setName} className={`${styles.card} ${styles.cardSide}`} style={{ width: 230, height: "auto", boxShadow: "0 24px 48px rgba(0,0,0,0.65)" }} />
+            </Wrap>
           )}
-
-          {/* Center card */}
           {centerImg && (
-            <div className={styles.hwCenter}>
+            <Wrap href={centerImg.href} className={styles.hwCenter}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={centerImg}
-                alt={featured.setName}
-                className={`${styles.card} ${styles.cardCenter}`}
-                style={{
-                  width: 270,
-                  height: "auto",
-                  boxShadow: "0 36px 64px rgba(0,0,0,0.72)",
-                }}
-              />
-            </div>
+              <img src={centerImg.url} alt={featured.setName} className={`${styles.card} ${styles.cardCenter}`} style={{ width: 270, height: "auto", boxShadow: "0 36px 64px rgba(0,0,0,0.72)" }} />
+            </Wrap>
           )}
-
-          {/* Right card */}
           {rightImg && (
-            <div className={styles.hwRight}>
+            <Wrap href={rightImg.href} className={styles.hwRight}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={rightImg}
-                alt={featured.setName}
-                className={`${styles.card} ${styles.cardSide}`}
-                style={{
-                  width: 230,
-                  height: "auto",
-                  boxShadow: "0 24px 48px rgba(0,0,0,0.65)",
-                }}
-              />
-            </div>
+              <img src={rightImg.url} alt={featured.setName} className={`${styles.card} ${styles.cardSide}`} style={{ width: 230, height: "auto", boxShadow: "0 24px 48px rgba(0,0,0,0.65)" }} />
+            </Wrap>
           )}
         </div>
       </div>

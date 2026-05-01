@@ -11,13 +11,13 @@ import Pagination from "@/components/Pagination";
 const PER_PAGE = 24;
 
 const TRAINER_HERO_IMAGES: [
-  { src: string; alt: string },
-  { src: string; alt: string },
-  { src: string; alt: string },
+  { src: string; alt: string; href?: string },
+  { src: string; alt: string; href?: string },
+  { src: string; alt: string; href?: string },
 ] = [
-  { src: "https://assets.tcgdex.net/en/base/base1/88/high.webp", alt: "Professor Oak" },
-  { src: "https://assets.tcgdex.net/en/base/base1/71/high.webp", alt: "Computer Search" },
-  { src: "https://assets.tcgdex.net/en/base/base1/91/high.webp", alt: "Bill" },
+  { src: "https://assets.tcgdex.net/en/base/base1/88/high.webp", alt: "Professor Oak",    href: "/pokemon/card/base1-88" },
+  { src: "https://assets.tcgdex.net/en/base/base1/71/high.webp", alt: "Computer Search",  href: "/pokemon/card/base1-71" },
+  { src: "https://assets.tcgdex.net/en/base/base1/91/high.webp", alt: "Bill",             href: "/pokemon/card/base1-91" },
 ];
 
 export const dynamic = "force-dynamic";

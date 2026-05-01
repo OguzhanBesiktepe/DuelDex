@@ -14,6 +14,38 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAdminDb } from "@/lib/firebase-admin";
 import { getBestTcgPrice, getCardMarketPrice } from "@/lib/pokemon";
 
+// ── Rarity filters ─────────────────────────────────────────────────────────────
+
+const YGO_NOTABLE_RARITIES = new Set([
+  "Super Rare",
+  "Ultra Rare",
+  "Ultimate Rare",
+  "Secret Rare",
+  "Prismatic Secret Rare",
+  "Ghost Rare",
+  "Starlight Rare",
+  "Quarter Century Secret Rare",
+  "Collector's Rare",
+  "Gold Rare",
+  "Platinum Rare",
+  "Ghost/Gold Rare",
+  "Extra Secret Rare",
+  "10000 Secret Rare",
+  "Premium Gold Rare",
+]);
+
+function isYGONotable(sets?: { set_rarity: string }[]): boolean {
+  return sets?.some((s) => YGO_NOTABLE_RARITIES.has(s.set_rarity)) ?? false;
+}
+
+// Pokémon: exclude the three lowest tiers; everything else (Rare Holo and up) is notable
+const PKMN_EXCLUDED_RARITIES = new Set(["Common", "Uncommon", "Rare", "None", "Promo"]);
+
+function isPkmnNotable(rarity?: string): boolean {
+  if (!rarity) return false;
+  return !PKMN_EXCLUDED_RARITIES.has(rarity);
+}
+
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
@@ -97,9 +129,11 @@ async function processYGO(date: string): Promise<number> {
     name: string;
     card_images: { image_url_small: string }[];
     card_prices: { tcgplayer_price: string }[];
+    card_sets?: { set_rarity: string }[];
   }[] = data.data ?? [];
 
   const today: CardSnapshot[] = rawCards
+    .filter((c) => isYGONotable(c.card_sets))
     .map((c) => ({
       cardId: String(c.id),
       name: c.name,
@@ -193,7 +227,7 @@ async function processPokemon(date: string): Promise<number> {
   }
 
   const today: CardSnapshot[] = cardDetails
-    .filter((c) => c?.id)
+    .filter((c) => c?.id && isPkmnNotable(c.rarity))
     .map((c) => {
       const tcgPrice = getBestTcgPrice(c);
       const cmPrice = getCardMarketPrice(c);

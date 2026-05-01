@@ -11,13 +11,13 @@ import { fetchYGOCards, ygoImage } from "@/lib/yugioh";
 import Pagination from "@/components/Pagination";
 
 const SPELL_HERO_IMAGES: [
-  { src: string; alt: string },
-  { src: string; alt: string },
-  { src: string; alt: string },
+  { src: string; alt: string; href?: string },
+  { src: string; alt: string; href?: string },
+  { src: string; alt: string; href?: string },
 ] = [
-  { src: ygoImage(83764718), alt: "Monster Reborn" },
-  { src: ygoImage(55144522), alt: "Pot of Greed" },
-  { src: ygoImage(12580477), alt: "Raigeki" },
+  { src: ygoImage(83764718), alt: "Monster Reborn", href: "/yugioh/card/83764718" },
+  { src: ygoImage(55144522), alt: "Pot of Greed",   href: "/yugioh/card/55144522" },
+  { src: ygoImage(12580477), alt: "Raigeki",        href: "/yugioh/card/12580477" },
 ];
 
 export default async function SpellsPage({
@@ -106,7 +106,7 @@ export default async function SpellsPage({
           <TypeFilter options={SPELL_TYPES} selected={selectedSubtypes} />
         </Suspense>
 
-        <CardGrid cards={mapped} game="yugioh" />
+        <CardGrid cards={mapped} game="yugioh" from="/yugioh/spells" />
 
         <Pagination
           page={effectivePage}

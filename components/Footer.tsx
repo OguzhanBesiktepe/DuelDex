@@ -3,6 +3,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { MarketplaceLinks } from "@/components/MarketplaceButton";
 
 const YGO_LINKS = [
   { href: "/yugioh/monsters", label: "Monster Cards" },
@@ -17,11 +18,6 @@ const POKEMON_LINKS = [
   { href: "/pokemon/sets", label: "Browse Sets" },
 ];
 
-const BUY_LINKS = [
-  { href: "https://www.tcgplayer.com", label: "TCGPlayer" },
-  { href: "https://www.cardmarket.com", label: "Cardmarket" },
-  { href: "https://www.ebay.com/", label: "eBay" },
-];
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -141,21 +137,13 @@ export default function Footer() {
               >
                 Where to Buy
               </h3>
-              <ul className="flex flex-col gap-2">
-                {BUY_LINKS.map((l) => (
-                  <li key={l.href}>
-                    <a
-                      href={l.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm transition-colors hover:text-white"
-                      style={{ color: "var(--text-muted)" }}
-                    >
-                      {l.label} ↗
-                    </a>
-                  </li>
-                ))}
-              </ul>
+              <MarketplaceLinks
+                links={[
+                  { href: "https://www.tcgplayer.com", logo: "/logos/TCGplayer_Logo.svg.png", alt: "TCGPlayer", background: "var(--pkmn-accent)" },
+                  { href: "https://www.cardmarket.com", logo: "/logos/cardmarket.png", alt: "Cardmarket", background: "#FFFFFF" },
+                  { href: "https://www.ebay.com", logo: "/logos/ebay.png", alt: "eBay", background: "#F0F0F0", logoHeight: 30 },
+                ]}
+              />
             </div>
 
             <div className="flex flex-col gap-2">

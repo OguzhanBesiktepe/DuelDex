@@ -77,6 +77,7 @@ async function fetchFeaturedYGO(): Promise<FeaturedSet | null> {
 
     const cardsData = await cardsRes.json();
     const cards: {
+      id: number;
       card_images: { id: number; image_url: string }[];
       card_sets?: { set_name: string; set_rarity: string }[];
     }[] = cardsData.data ?? [];
@@ -92,11 +93,11 @@ async function fetchFeaturedYGO(): Promise<FeaturedSet | null> {
     const pool = rareCards.length > 0 ? rareCards : cards;
     const shuffled = [...pool].sort(() => Math.random() - 0.5);
 
-    const cardImages: string[] = [];
+    const cardImages: { url: string; href?: string }[] = [];
     for (const card of shuffled) {
       const url = card.card_images?.[0]?.image_url;
       if (url) {
-        cardImages.push(url);
+        cardImages.push({ url, href: `/yugioh/card/${card.id}?from=%2F` });
         if (cardImages.length === 3) break;
       }
     }
@@ -134,7 +135,11 @@ async function fetchFeaturedPokemon(): Promise<FeaturedSet | null> {
       cardCount?: { total: number; official?: number };
     }[] = await setsRes.json();
 
-    const mainSets = sets.filter((s) => (s.cardCount?.total ?? 0) >= 50);
+    const mainSets = sets.filter(
+      (s) =>
+        (s.cardCount?.total ?? 0) >= 50 &&
+        !s.name.toLowerCase().includes("jumbo"),
+    );
     const set = mainSets[Math.floor(Math.random() * mainSets.length)];
     if (!set) return null;
 
@@ -168,10 +173,10 @@ async function fetchFeaturedPokemon(): Promise<FeaturedSet | null> {
     }
 
     const shuffled = [...pool].sort(() => Math.random() - 0.5);
-    const cardImages: string[] = [];
+    const cardImages: { url: string; href?: string }[] = [];
     for (const card of shuffled) {
       if (card.image) {
-        cardImages.push(`${card.image}/high.webp`);
+        cardImages.push({ url: `${card.image}/high.webp`, href: card.id ? `/pokemon/card/${card.id}?from=%2F` : undefined });
         if (cardImages.length === 3) break;
       }
     }
@@ -179,8 +184,8 @@ async function fetchFeaturedPokemon(): Promise<FeaturedSet | null> {
     if (cardImages.length < 3) {
       for (const card of cards) {
         const url = card.image ? `${card.image}/high.webp` : null;
-        if (url && !cardImages.includes(url)) {
-          cardImages.push(url);
+        if (url && !cardImages.some((c) => c.url === url)) {
+          cardImages.push({ url, href: card.id ? `/pokemon/card/${card.id}?from=%2F` : undefined });
           if (cardImages.length === 3) break;
         }
       }
@@ -221,7 +226,7 @@ async function getFeaturedSet(): Promise<FeaturedSet> {
   return {
     gameLabel: "Yu-Gi-Oh!",
     setName: "Legend of Blue Eyes White Dragon",
-    cardImages: ["https://images.ygoprodeck.com/images/cards/89631139.jpg"],
+    cardImages: [{ url: "https://images.ygoprodeck.com/images/cards/89631139.jpg", href: "/yugioh/card/89631139?from=%2F" }],
     setHref: "/yugioh/sets",
     accentColor: "var(--ygo-accent)",
     accentRgb: "255, 122, 0",

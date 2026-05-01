@@ -13,13 +13,13 @@ import Pagination from "@/components/Pagination";
 const PER_PAGE = 24;
 
 const POKEMON_HERO_IMAGES: [
-  { src: string; alt: string },
-  { src: string; alt: string },
-  { src: string; alt: string },
+  { src: string; alt: string; href?: string },
+  { src: string; alt: string; href?: string },
+  { src: string; alt: string; href?: string },
 ] = [
-  { src: "https://assets.tcgdex.net/en/base/base1/4/high.webp", alt: "Charizard" },
-  { src: "https://assets.tcgdex.net/en/base/base1/10/high.webp", alt: "Mewtwo" },
-  { src: "https://assets.tcgdex.net/en/base/base1/58/high.webp", alt: "Pikachu" },
+  { src: "https://assets.tcgdex.net/en/base/base1/4/high.webp",  alt: "Charizard", href: "/pokemon/card/base1-4"  },
+  { src: "https://assets.tcgdex.net/en/base/base1/10/high.webp", alt: "Mewtwo",    href: "/pokemon/card/base1-10" },
+  { src: "https://assets.tcgdex.net/en/base/base1/58/high.webp", alt: "Pikachu",   href: "/pokemon/card/base1-58" },
 ];
 
 export const dynamic = "force-dynamic";

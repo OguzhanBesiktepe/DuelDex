@@ -31,7 +31,7 @@ export default function RecentlyViewed() {
     } catch {}
   }, []);
 
-  const visible = cards.slice(0, limit);
+  const visible = cards.filter((c) => c.image).slice(0, limit);
   if (visible.length === 0) return null;
 
   return (
@@ -80,7 +80,7 @@ export default function RecentlyViewed() {
         <div
           className="pointer-events-none absolute top-0 right-0 h-full w-16"
           style={{
-            background: "linear-gradient(to right, transparent, #080B14)",
+            background: "linear-gradient(to right, transparent, var(--background))",
           }}
         />
       </div>

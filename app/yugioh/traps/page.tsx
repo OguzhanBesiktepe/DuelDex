@@ -10,13 +10,25 @@ import { fetchYGOCards, ygoImage } from "@/lib/yugioh";
 import Pagination from "@/components/Pagination";
 
 const TRAP_HERO_IMAGES: [
-  { src: string; alt: string },
-  { src: string; alt: string },
-  { src: string; alt: string },
+  { src: string; alt: string; href?: string },
+  { src: string; alt: string; href?: string },
+  { src: string; alt: string; href?: string }
 ] = [
-  { src: ygoImage(44095762), alt: "Mirror Force" },
-  { src: ygoImage(41420027), alt: "Solemn Judgment" },
-  { src: ygoImage(62279055), alt: "Magical Cylinder" },
+  {
+    src: ygoImage(44095762),
+    alt: "Mirror Force",
+    href: "/yugioh/card/44095762",
+  },
+  {
+    src: ygoImage(41420027),
+    alt: "Solemn Judgment",
+    href: "/yugioh/card/41420027",
+  },
+  {
+    src: ygoImage(62279055),
+    alt: "Magical Cylinder",
+    href: "/yugioh/card/62279055",
+  },
 ];
 
 export default async function TrapsPage({
@@ -44,14 +56,14 @@ export default async function TrapsPage({
       "Trap Card",
       perPage,
       offset,
-      selectedSubtypes[0],
+      selectedSubtypes[0]
     ));
   } else {
     const perSubtype = Math.ceil(perPage / selectedSubtypes.length);
     const results = await Promise.all(
       selectedSubtypes.map((s) =>
-        fetchYGOCards("Trap Card", perSubtype, offset, s),
-      ),
+        fetchYGOCards("Trap Card", perSubtype, offset, s)
+      )
     );
     cards = results.flatMap((r) => r.cards).slice(0, perPage);
     total = results.reduce((sum, r) => sum + r.total, 0);
@@ -88,7 +100,10 @@ export default async function TrapsPage({
           <div>
             <h1
               className="text-2xl font-bold"
-              style={{ color: "var(--text-primary)", fontFamily: "var(--font-cinzel)" }}
+              style={{
+                color: "var(--text-primary)",
+                fontFamily: "var(--font-cinzel)",
+              }}
             >
               Trap Cards
             </h1>
@@ -103,7 +118,7 @@ export default async function TrapsPage({
           <TypeFilter options={TRAP_TYPES} selected={selectedSubtypes} />
         </Suspense>
 
-        <CardGrid cards={mapped} game="yugioh" />
+        <CardGrid cards={mapped} game="yugioh" from="/yugioh/traps" />
 
         <Pagination
           page={effectivePage}

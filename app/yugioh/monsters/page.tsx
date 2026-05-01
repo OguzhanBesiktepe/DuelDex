@@ -13,13 +13,13 @@ import { fetchYGOCards, ygoImage } from "@/lib/yugioh";
 import Pagination from "@/components/Pagination";
 
 const MONSTER_HERO_IMAGES: [
-  { src: string; alt: string },
-  { src: string; alt: string },
-  { src: string; alt: string },
+  { src: string; alt: string; href?: string },
+  { src: string; alt: string; href?: string },
+  { src: string; alt: string; href?: string },
 ] = [
-  { src: ygoImage(46986414), alt: "Dark Magician" },
-  { src: ygoImage(89631139), alt: "Blue-Eyes White Dragon" },
-  { src: ygoImage(74677422), alt: "Red-Eyes Black Dragon" },
+  { src: ygoImage(46986414), alt: "Dark Magician",       href: "/yugioh/card/46986414" },
+  { src: ygoImage(89631139), alt: "Blue-Eyes White Dragon", href: "/yugioh/card/89631139" },
+  { src: ygoImage(74677422), alt: "Red-Eyes Black Dragon",  href: "/yugioh/card/74677422" },
 ];
 
 // All API type strings — used when no specific type filter is active
@@ -160,7 +160,7 @@ export default async function MonstersPage({
           </Suspense>
         </div>
 
-        <CardGrid cards={mapped} game="yugioh" />
+        <CardGrid cards={mapped} game="yugioh" from="/yugioh/monsters" />
 
         <Pagination
           page={effectivePage}

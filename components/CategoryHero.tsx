@@ -2,21 +2,52 @@
 // each category page (Monsters, Spells, Traps, Sets) on all screen sizes.
 // Two variants: "cards" uses absolute positioning for a fanned-out look;
 // "packs" uses a flex row aligned to the bottom for a stacked-pack look.
+// Each image can optionally carry an href that wraps it in a Link.
 
+import Link from "next/link";
 import styles from "./HeroSection.module.css";
 
+interface HeroImage {
+  src: string;
+  alt: string;
+  href?: string;
+}
+
 interface CategoryHeroProps {
-  images: [
-    { src: string; alt: string },
-    { src: string; alt: string },
-    { src: string; alt: string },
-  ];
+  images: [HeroImage, HeroImage, HeroImage];
   variant?: "cards" | "packs";
   centerWidth?: number;
   sideWidth?: number;
   containerWidth?: number;
   containerHeight?: number;
   packHeight?: number;
+}
+
+// Renders a Link when href is provided, otherwise a plain div.
+// Spreads className/style onto whichever element is rendered.
+function Wrap({
+  href,
+  className,
+  style,
+  children,
+}: {
+  href?: string;
+  className?: string;
+  style?: React.CSSProperties;
+  children: React.ReactNode;
+}) {
+  if (href) {
+    return (
+      <Link href={href} className={className} style={style}>
+        {children}
+      </Link>
+    );
+  }
+  return (
+    <div className={className} style={style}>
+      {children}
+    </div>
+  );
 }
 
 export default function CategoryHero({
@@ -44,54 +75,36 @@ export default function CategoryHero({
   if (variant === "packs") {
     return (
       <>
-        {/* Mobile packs — properly sized to avoid overflow */}
+        {/* Mobile packs */}
         <div className="flex items-end gap-2 shrink-0 md:hidden">
-          <div
-            className={styles.hwPackSide}
-            style={{ width: mSideW, height: mSideH, overflow: "hidden", borderRadius: 10, boxShadow: "0 12px 28px rgba(0,0,0,0.65)" }}
-          >
+          <Wrap href={left.href} className={styles.hwPackSide} style={{ width: mSideW, height: mSideH, overflow: "hidden", borderRadius: 10, boxShadow: "0 12px 28px rgba(0,0,0,0.65)" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={left.src} alt={left.alt} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }} />
-          </div>
-          <div
-            className={styles.hwPackCenter}
-            style={{ width: mPackW, height: mPackH, overflow: "hidden", borderRadius: 10, boxShadow: "0 18px 40px rgba(0,0,0,0.72)" }}
-          >
+          </Wrap>
+          <Wrap href={center.href} className={styles.hwPackCenter} style={{ width: mPackW, height: mPackH, overflow: "hidden", borderRadius: 10, boxShadow: "0 18px 40px rgba(0,0,0,0.72)" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={center.src} alt={center.alt} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }} />
-          </div>
-          <div
-            className={styles.hwPackSide}
-            style={{ width: mSideW, height: mSideH, overflow: "hidden", borderRadius: 10, boxShadow: "0 12px 28px rgba(0,0,0,0.65)" }}
-          >
+          </Wrap>
+          <Wrap href={right.href} className={styles.hwPackSide} style={{ width: mSideW, height: mSideH, overflow: "hidden", borderRadius: 10, boxShadow: "0 12px 28px rgba(0,0,0,0.65)" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={right.src} alt={right.alt} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }} />
-          </div>
+          </Wrap>
         </div>
 
         {/* Desktop packs */}
         <div className="hidden md:flex items-end gap-4 shrink-0">
-          <div
-            className={styles.hwPackSide}
-            style={{ width: sideW, height: sideH, overflow: "hidden", borderRadius: 12, boxShadow: "0 24px 48px rgba(0,0,0,0.65)" }}
-          >
+          <Wrap href={left.href} className={styles.hwPackSide} style={{ width: sideW, height: sideH, overflow: "hidden", borderRadius: 12, boxShadow: "0 24px 48px rgba(0,0,0,0.65)" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={left.src} alt={left.alt} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }} />
-          </div>
-          <div
-            className={styles.hwPackCenter}
-            style={{ width: packW, height: packHeight, overflow: "hidden", borderRadius: 12, boxShadow: "0 36px 64px rgba(0,0,0,0.72)" }}
-          >
+          </Wrap>
+          <Wrap href={center.href} className={styles.hwPackCenter} style={{ width: packW, height: packHeight, overflow: "hidden", borderRadius: 12, boxShadow: "0 36px 64px rgba(0,0,0,0.72)" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={center.src} alt={center.alt} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }} />
-          </div>
-          <div
-            className={styles.hwPackSide}
-            style={{ width: sideW, height: sideH, overflow: "hidden", borderRadius: 12, boxShadow: "0 24px 48px rgba(0,0,0,0.65)" }}
-          >
+          </Wrap>
+          <Wrap href={right.href} className={styles.hwPackSide} style={{ width: sideW, height: sideH, overflow: "hidden", borderRadius: 12, boxShadow: "0 24px 48px rgba(0,0,0,0.65)" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={right.src} alt={right.alt} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }} />
-          </div>
+          </Wrap>
         </div>
       </>
     );
@@ -105,8 +118,7 @@ export default function CategoryHero({
     <>
       {/* Mobile — compact three-card fan beside the heading */}
       <div className="relative md:hidden shrink-0" style={{ width: 175, height: 170 }}>
-        {/* Left — anchored to left edge, no overflow */}
-        <div className={styles.catMobileFanLeft}>
+        <Wrap href={left.href} className={styles.catMobileFanLeft}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={left.src}
@@ -114,9 +126,8 @@ export default function CategoryHero({
             className={`${styles.card} ${styles.cardSide}`}
             style={{ width: mSideCardW, height: "auto", boxShadow: "0 12px 24px rgba(0,0,0,0.65)" }}
           />
-        </div>
-        {/* Center */}
-        <div className={styles.catMobileFanCenter}>
+        </Wrap>
+        <Wrap href={center.href} className={styles.catMobileFanCenter}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={center.src}
@@ -124,9 +135,8 @@ export default function CategoryHero({
             className={`${styles.card} ${styles.cardCenter}`}
             style={{ width: mCenterW, height: "auto", boxShadow: "0 18px 36px rgba(0,0,0,0.72)" }}
           />
-        </div>
-        {/* Right — anchored to right edge, no overflow */}
-        <div className={styles.catMobileFanRight}>
+        </Wrap>
+        <Wrap href={right.href} className={styles.catMobileFanRight}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={right.src}
@@ -134,7 +144,7 @@ export default function CategoryHero({
             className={`${styles.card} ${styles.cardSide}`}
             style={{ width: mSideCardW, height: "auto", boxShadow: "0 12px 24px rgba(0,0,0,0.65)" }}
           />
-        </div>
+        </Wrap>
       </div>
 
       {/* Desktop — full-size three-card fan */}
@@ -142,7 +152,7 @@ export default function CategoryHero({
         className="relative hidden shrink-0 md:block"
         style={{ width: containerWidth, height: containerHeight }}
       >
-        <div className={styles.hwLeft}>
+        <Wrap href={left.href} className={styles.hwLeft}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={left.src}
@@ -150,8 +160,8 @@ export default function CategoryHero({
             className={`${styles.card} ${styles.cardSide}`}
             style={{ width: sideWidth, height: "auto", boxShadow: "0 24px 48px rgba(0,0,0,0.65)" }}
           />
-        </div>
-        <div className={styles.hwCenter}>
+        </Wrap>
+        <Wrap href={center.href} className={styles.hwCenter}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={center.src}
@@ -159,8 +169,8 @@ export default function CategoryHero({
             className={`${styles.card} ${styles.cardCenter}`}
             style={{ width: centerWidth, height: "auto", boxShadow: "0 36px 64px rgba(0,0,0,0.72)" }}
           />
-        </div>
-        <div className={styles.hwRight}>
+        </Wrap>
+        <Wrap href={right.href} className={styles.hwRight}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={right.src}
@@ -168,7 +178,7 @@ export default function CategoryHero({
             className={`${styles.card} ${styles.cardSide}`}
             style={{ width: sideWidth, height: "auto", boxShadow: "0 24px 48px rgba(0,0,0,0.65)" }}
           />
-        </div>
+        </Wrap>
       </div>
     </>
   );

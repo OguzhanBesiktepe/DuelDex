@@ -18,6 +18,7 @@ export interface PokemonCard {
   types?: string[];
   illustrator?: string;
   description?: string;
+  effect?: string;
   stage?: string;
   attacks?: { name: string; damage?: string; effect?: string; cost?: string[] }[];
   weaknesses?: { type: string; value: string }[];

@@ -169,14 +169,25 @@ export default async function PokemonCardPage({
               )}
             </div>
 
-            {/* Description */}
-            {card.description && (
-              <p
-                className="text-sm leading-relaxed mb-6 italic"
-                style={{ color: "var(--text-muted)" }}
+            {/* Description (Pokémon flavour text) or Trainer effect text */}
+            {(card.description || card.effect) && (
+              <div
+                className="rounded-lg px-4 py-3 mb-6"
+                style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
               >
-                {card.description}
-              </p>
+                <p
+                  className="text-xs font-semibold uppercase tracking-wide mb-1"
+                  style={{ color: "var(--text-muted)" }}
+                >
+                  {card.effect && !card.description ? "Card Text" : "Pokédex Entry"}
+                </p>
+                <p
+                  className="text-sm leading-relaxed italic"
+                  style={{ color: "var(--text-primary)" }}
+                >
+                  {card.description ?? card.effect}
+                </p>
+              </div>
             )}
 
             {/* Attacks */}
