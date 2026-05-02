@@ -226,9 +226,19 @@ export async function fetchAllPokemonCards(
   if (filters?.trainerType) url += `&trainerType=${encodeURIComponent(filters.trainerType)}`;
   if (filters?.rarity) url += `&rarity=${encodeURIComponent(filters.rarity)}`;
 
-  const res = await fetch(url, { next: { revalidate: 3600 } });
+  let res: Response;
+  try {
+    res = await fetch(url, { next: { revalidate: 3600 } });
+  } catch {
+    return [];
+  }
   if (!res.ok) return [];
-  const data = await res.json();
+  let data: unknown;
+  try {
+    data = await res.json();
+  } catch {
+    return [];
+  }
   // TCGdex may return null or a non-array on unexpected inputs
   const cards: PokemonCardSummary[] = Array.isArray(data) ? data : [];
 
@@ -259,28 +269,54 @@ export async function fetchPokemonCards(
 
 export async function fetchPokemonCardById(id: string): Promise<PokemonCard | null> {
   const url = `${PKM_BASE}/cards/${id}`;
-  const res = await fetch(url, { next: { revalidate: 3600 } });
+  let res: Response;
+  try {
+    res = await fetch(url, { next: { revalidate: 3600 } });
+  } catch {
+    return null;
+  }
   if (!res.ok) return null;
-  return res.json();
+  try {
+    return await res.json();
+  } catch {
+    return null;
+  }
 }
 
 // Search cards by name — uses plain `name=` param (bracket syntax returns 500)
 export async function searchPokemonCards(query: string): Promise<PokemonCardSummary[]> {
   const url = `${PKM_BASE}/cards?name=${encodeURIComponent(query)}`;
-  const res = await fetch(url, { next: { revalidate: 60 } });
+  let res: Response;
+  try {
+    res = await fetch(url, { next: { revalidate: 60 } });
+  } catch {
+    return [];
+  }
   if (!res.ok) return [];
-  const data = await res.json();
-  return Array.isArray(data) ? data : [];
+  try {
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
 }
 
 export async function fetchPokemonCardsBySet(
   setId: string,
 ): Promise<PokemonCardSummary[]> {
-  // Use the set detail endpoint — bracket pagination is broken on the /cards endpoint
-  const res = await fetch(`${PKM_BASE}/sets/${setId}`, { next: { revalidate: 3600 } });
+  let res: Response;
+  try {
+    res = await fetch(`${PKM_BASE}/sets/${setId}`, { next: { revalidate: 3600 } });
+  } catch {
+    return [];
+  }
   if (!res.ok) return [];
-  const data = await res.json();
-  return Array.isArray(data?.cards) ? data.cards : [];
+  try {
+    const data = await res.json();
+    return Array.isArray(data?.cards) ? data.cards : [];
+  } catch {
+    return [];
+  }
 }
 
 export interface PokemonSet {
@@ -294,15 +330,33 @@ export interface PokemonSet {
 }
 
 export async function fetchPokemonSets(): Promise<PokemonSet[]> {
-  const res = await fetch(`${PKM_BASE}/sets`, { next: { revalidate: 3600 } });
+  let res: Response;
+  try {
+    res = await fetch(`${PKM_BASE}/sets`, { next: { revalidate: 3600 } });
+  } catch {
+    return [];
+  }
   if (!res.ok) return [];
-  return res.json();
+  try {
+    return await res.json();
+  } catch {
+    return [];
+  }
 }
 
 export async function fetchPokemonSetDetail(
   setId: string,
 ): Promise<(PokemonSet & { cards: PokemonCardSummary[] }) | null> {
-  const res = await fetch(`${PKM_BASE}/sets/${setId}`, { next: { revalidate: 3600 } });
+  let res: Response;
+  try {
+    res = await fetch(`${PKM_BASE}/sets/${setId}`, { next: { revalidate: 3600 } });
+  } catch {
+    return null;
+  }
   if (!res.ok) return null;
-  return res.json();
+  try {
+    return await res.json();
+  } catch {
+    return null;
+  }
 }
